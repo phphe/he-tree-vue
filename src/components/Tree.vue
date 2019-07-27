@@ -1,10 +1,10 @@
 <template lang="pug">
 .he-tree.tree
-  .tree-branch(v-for="node in data" :class="[data.open ? root.openedClass : '']")
-    slot(:data="node" :root="root")
+  .tree-branch(v-for="(node, i) in nodes" :key="metas[i].id" :class="[metas[i].folded ? root.foldedClass : root.unfoldedClass]")
+    slot(:node="node" :meta="metas[i]" :root="root")
       .tree-node {{node.text}}
-    transition(:name="root.childrenTransition")
-      Tree.tree-children(v-if="node.open" :data="node.children" :root="root")
+    transition(v-if="node.children && node.children.length > 0" :name="root.foldingTransition")
+      Tree.tree-children(v-if="!metas[i].folded" :value="node.children" :privateProps="childPrivateProps")
 </template>
 
 <script>
@@ -12,160 +12,80 @@ import * as hp from 'helper-js'
 import * as th from 'tree-helper'
 
 export default {
+  name: 'Tree',
   props: {
-    data: {},
-    root: {default: is => this},
-    openedClass: {default: 'open'},
-    childrenTransition: {},
+    value: {},
+    foldedClass: {default: 'folded'},
+    unfoldedClass: {default: 'unfolded'},
+    foldingTransition: {},
+    foldAllAtBeginning: {type: Boolean},
+    privateProps: {},
+    idMode: {default: 'object'}, // object, id(node must has id)
   },
   // components: {},
   data() {
     return {
-      // rootData: null,
+      metas: [], // metas of current level nodes
     }
   },
-  // computed: {},
-  watch: {
-    // data: {
-    //   immediate: true,
-    //   handler(data, old) {
-    //     if (data === old) {
-    //       return
-    //     }
-    //     // make rootData always use a same object
-    //     this.rootData = this.rootData || {isRoot: true, _id: `tree_${this._uid}_node_root`, children: []}
-    //     th.breadthFirstSearch(data, (node, k, parent) => {
-    //       this.compeleteNode(node, parent)
-    //     })
-    //     this.rootData.children = data
-    //   }
-    // }
+  computed: {
+    root() { return this.privateProps && this.privateProps.root || this },
+    nodes() { return this.value || [] },
+    childPrivateProps() {
+      return {
+        root: this.root
+      }
+    },
   },
+  watch: {},
   methods: {
-    compeleteNode(node, parent) {
-      const compeletedData = {
-        open: true,
-        children: [],
-        active: false,
-        style: {},
-        class: '',
-        innerStyle: {},
-        innerClass: '',
-        innerBackStyle: {},
-        innerBackClass: {},
-      }
-      for (const key in compeletedData) {
-        if (!node.hasOwnProperty(key)) {
-          this.$set(node, key, compeletedData[key])
+    nodesWatcher(nodes, oldNodes) {
+      if (oldNodes) {
+        // removed metas
+        if (this.root.idMode === 'id') {
+          const t = {}
+          nodes.forEach(node => {t[node.id]=true})
+          oldNodes.forEach(node => {
+            if (!t[node.id]) {
+              // delete node and children meta
+              th.depthFirstSearch(node, (childNode) => {
+                delete this.root.metaMap[childNode.id]
+              })
+            }
+          })
+        } else {
+          const t = new Map()
+          nodes.forEach(node => t.set(node, null))
+          oldNodes.forEach(node => {
+            if (!t.has(node)) {
+              // delete node and children meta
+              th.depthFirstSearch(node, (childNode) => {
+                this.root.metaMap.delete(childNode)
+              })
+            }
+          })
         }
       }
-      this.$set(node, 'parent', parent || this.rootData)
-      if (!node.hasOwnProperty('_id')) {
-        node._id = `tree_${this._uid}_node_${hp.strRand(this.idLength)}`
-      }
-      node._treeNodePropertiesCompleted = true
-    },
-    // pure node self
-    pure(node, withChildren, after) {
-      const t = Object.assign({}, node)
-      delete t._id
-      delete t.parent
-      delete t.children
-      delete t.open
-      delete t.active
-      delete t.style
-      delete t.class
-      delete t.innerStyle
-      delete t.innerClass
-      delete t.innerBackStyle
-      delete t.innerBackClass
-      for (const key of Object.keys(t)) {
-        if (key[0] === '_') {
-          delete t[key]
-        }
-      }
-      if (withChildren && node.children) {
-        t.children = node.children.slice()
-        t.children.forEach((v, k) => {
-          t.children[k] = this.pure(v, withChildren)
-        })
-      }
-      if (after) {
-        return after(t, node) || t
-      }
-      return t
-    },
-    getNodeById(id) {
-      let r
-      th.breadthFirstSearch(this.rootData.children, (node) => {
-        if (node._id === id) {
-          r = node
-          return false
-        }
+      //
+      this.metas = nodes.map(node => (this.idMode === 'id' ? this.root.metaMap[node.id] : this.root.metaMap.get(node)) || {
+        id: `he_tree_node_${node.id || hp.strRand()}`,
+        folded: this.root.foldAllAtBeginning,
       })
-      return r
-    },
-    getActivated() {
-      const r = []
-      th.breadthFirstSearch(this.rootData.children, (node) => {
-        if (node.active) {
-          r.push(node)
-        }
-      })
-      return r
-    },
-    getOpened() {
-      const r = []
-      th.breadthFirstSearch(this.rootData.children, (node) => {
-        if (node.open) {
-          r.push(node)
-        }
-      })
-      return r
-    },
-    activeNode(node, inactiveOld) {
-      let {activated} = this
-      if (inactiveOld) {
-        this.getActivated().forEach(node2 => {
-          node2.active = false
-        })
-      }
-      node.active = true
-    },
-    toggleActive(node, inactiveOld) {
-      if (node.active) {
-        node.active = false
-      } else {
-        this.activeNode(node, inactiveOld)
-      }
-    },
-    openNode(node, closeOld) {
-      let {opened} = this
-      if (closeOld) {
-        this.getOpened().forEach(node2 => {
-          node2.open = false
-          this.$emit('nodeOpenChanged', node2)
-        })
-      }
-      node.open = true
-      this.$emit('nodeOpenChanged', node)
-    },
-    toggleOpen(node, closeOld) {
-      if (node.open) {
-        node.open = false
-        this.$emit('nodeOpenChanged', node)
-      } else {
-        this.openNode(node, closeOld)
-      }
-    },
-    getPureData(after) {
-      return this.pure(this.rootData, true, after).children
-    },
-    deleteNode(node) {
-      return hp.arrayRemove(node.parent.children, node)
     },
   },
-  // created() {},
+  created() {
+    if (this === this.root) {
+      this.metaMap = this.idMode === 'id' ? {} : new Map()
+    }
+    this.$watch('nodes', (...args) => this.nodesWatcher(...args), {immediate: true})
+  },
   // mounted() {},
+  // beforeDestroy() {},
 }
 </script>
+
+<style>
+.he-tree .tree-children{
+  padding-left: 20px;
+}
+</style>

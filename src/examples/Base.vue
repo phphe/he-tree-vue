@@ -2,14 +2,14 @@
 <template lang="pug">
 div
   h2 Base
-  Tree(:data="originalData" draggable crossTree ref="tree1" @change="tree1Change")
-    div(slot-scope="{data, store}")
-      b(v-if="data.children && data.children.length" @click="store.toggleOpen(data)") {{data.open ? '-' : '+'}}&nbsp;
-      span {{data.text}}
+  Tree(:value="originalData" foldAllAtBeginning)
+    div(slot-scope="{node, meta, root}")
+      b(v-if="node.children && node.children.length > 0" @click="meta.folded=!meta.folded") {{meta.folded ? '+' : '-'}}&nbsp;
+      span {{node.text}}
 </template>
 
 <script>
-import Tree from '@/components/DraggableTree'
+import Tree from '@/components/Tree'
 export default {
   components: {Tree},
   data() {
