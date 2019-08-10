@@ -1,57 +1,38 @@
 <script>
-import * as hp from 'helper-js'
-import * as th from 'tree-helper'
-import DraggableTreeNode from './DraggableTreeNode.vue'
 import Tree from './Tree.vue'
-import * as ut from '../plugins/utils'
-
-const trees = [] // for multiple trees
-// DragPlaceHolder, unique
-const dplh = {
-  _id: 'draggable_tree_drag_placeHolder',
-  level: null,
-  droppable: false,
-  isDragPlaceHolder: true,
-  class: 'draggable-placeholder',
-  style: {},
-  innerStyle: {},
-  innerClass: 'draggable-placeholder-inner',
-  innerBackStyle: {},
-  innerBackClass: 'draggable-placeholder-inner-back',
-  // children: [],
-}
+import makeTreeDraggable from '../plugins/make-tree-draggable.js'
 
 export default {
   extends: Tree,
+  name: 'Tree',
   props: {
-    getTriggerEl: {type: Function},
-    draggable: {},
-    droppable: {default: true},
-    crossTree: {},
-    ondragstart: {type: Function},
-    ondragend: {type: Function},
-    preventSelect: {default: true},
+    indent: {default: 20},
   },
-  components: {
-    TreeNode: DraggableTreeNode,
-  },
-  data() {
-    return {
-      // DragPlaceHolder
-      dplh,
-      trees,
-    }
-  },
+  // components: {},
+  // data() {
+  //   return {}
+  // },
   // computed: {},
   // watch: {},
   // methods: {},
-  created() {
-    trees.push(this)
-  },
+  // created() {},
   mounted() {
-  },
-  beforeDestroy() {
-    hp.arrayRemove(trees, this)
+    if (this.isRoot) {
+      makeTreeDraggable(this.$el, {
+        indent: this.indent,
+        unfoldNodeByID: (...args) => this.unfoldNodeByID(...args),
+      })
+    }
   },
 }
 </script>
+
+<style>
+.he-tree .tree-placeholder{
+}
+.he-tree .tree-placeholder-node{
+  background: #ddf2f9;
+  border: 1px dashed #00d9ff;
+  height: 20px;
+}
+</style>

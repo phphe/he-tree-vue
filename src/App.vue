@@ -2,19 +2,13 @@
 <template lang="pug">
 #app
   BaseTree.mr
-  //- MaxLevelTree.mr
-  //- CollapsingAnimation.mr
-  //- Empty.mr
 </template>
 
 <script>
 import BaseTree from '@/examples/Base'
-import MaxLevelTree from '@/examples/MaxLevel'
-import CollapsingAnimation from '@/examples/CollapsingAnimation'
-import Empty from '@/examples/Empty'
 
 export default {
-  components: {BaseTree, MaxLevelTree, CollapsingAnimation, Empty},
+  components: {BaseTree},
   // data() {
   //   return {}
   // },

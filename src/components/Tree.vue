@@ -1,22 +1,23 @@
 <template lang="pug">
-.he-tree.tree
-  .tree-branch(v-for="(node, i) in nodes" :key="metas[i].id" :class="[metas[i].folded ? root.foldedClass : root.unfoldedClass]")
-    slot(:node="node" :meta="metas[i]" :root="root")
-      .tree-node {{node.text}}
+.tree-children(:class="{'he-tree tree-root': isRoot}")
+  .tree-branch(v-for="(node, i) in nodes" :key="metas[i].id" :id="metas[i].DOMId")
+    .tree-node
+      slot(:node="node" :meta="metas[i]" :root="root") {{node.text}}
     transition(v-if="node.children && node.children.length > 0" :name="root.foldingTransition")
-      Tree.tree-children(v-if="!metas[i].folded" :value="node.children" :privateProps="childPrivateProps")
+      Tree(v-if="!metas[i].folded" :value="node.children" :privateProps="childPrivateProps")
+        template(slot-scope="props")
+          slot(:node="props.node" :meta="props.meta" :root="props.root") {{node.text}}
 </template>
 
 <script>
 import * as hp from 'helper-js'
 import * as th from 'tree-helper'
 
+const DOM_ID_PREFIX = 'he_tree_node_'
 export default {
   name: 'Tree',
   props: {
     value: {},
-    foldedClass: {default: 'folded'},
-    unfoldedClass: {default: 'unfolded'},
     foldingTransition: {},
     foldAllAtBeginning: {type: Boolean},
     privateProps: {},
@@ -30,10 +31,13 @@ export default {
   },
   computed: {
     root() { return this.privateProps && this.privateProps.root || this },
+    isRoot() { return this.root === this },
+    level() { return this.privateProps ? this.privateProps.level: 1 },
     nodes() { return this.value || [] },
     childPrivateProps() {
       return {
-        root: this.root
+        root: this.root,
+        level: this.level + 1,
       }
     },
   },
@@ -50,6 +54,7 @@ export default {
               // delete node and children meta
               th.depthFirstSearch(node, (childNode) => {
                 delete this.root.metaMap[childNode.id]
+                delete this.root.idMap[childNode.id]
               })
             }
           })
@@ -60,22 +65,60 @@ export default {
             if (!t.has(node)) {
               // delete node and children meta
               th.depthFirstSearch(node, (childNode) => {
+                const meta = this.root.metaMap.get(childNode)
                 this.root.metaMap.delete(childNode)
+                delete this.root.idMap[meta.id]
               })
             }
           })
         }
       }
       //
-      this.metas = nodes.map(node => (this.idMode === 'id' ? this.root.metaMap[node.id] : this.root.metaMap.get(node)) || {
-        id: `he_tree_node_${node.id || hp.strRand()}`,
-        folded: this.root.foldAllAtBeginning,
+      this.metas = nodes.map(node => {
+        const oldMeta = this.idMode === 'id' ? this.root.metaMap[node.id] : this.root.metaMap.get(node)
+        if (oldMeta) {
+          return oldMeta
+        }
+        const id = node.id || hp.strRand()
+        const newMeta = {
+          id,
+          DOMId: `${DOM_ID_PREFIX}${id}`,
+          folded: this.root.foldAllAtBeginning,
+        }
+        if (this.idMode === 'id') {
+          this.root.metaMap[id] = newMeta
+        } else {
+          this.root.metaMap.set(node, newMeta)
+        }
+        this.root.idMap[id] = node
+        return newMeta
+      })
+    },
+    // by DOMId or ID
+    getNodeByID(DOMIdOrID) {
+      if (DOMIdOrID.startsWith(DOM_ID_PREFIX)) {
+        DOMIdOrID = DOMIdOrID.substring(DOM_ID_PREFIX.length)
+      }
+      return this.root.idMap[DOMIdOrID]
+    },
+    getMetaByID(DOMIdOrID) {
+      const node = this.getNodeByID(DOMIdOrID)
+      return this.root.idMode === 'id' ? this.root.metaMap[node.id] : this.root.metaMap.get(node)
+    },
+    unfoldNodeByID(DOMIdOrID) {
+      const meta = this.getMetaByID(DOMIdOrID)
+      meta.folded = false
+      return new Promise((resolve, reject) => {
+        this.$nextTick(() => {
+          resolve()
+        })
       })
     },
   },
   created() {
     if (this === this.root) {
       this.metaMap = this.idMode === 'id' ? {} : new Map()
+      this.idMap = {}
     }
     this.$watch('nodes', (...args) => this.nodesWatcher(...args), {immediate: true})
   },
@@ -85,7 +128,16 @@ export default {
 </script>
 
 <style>
+.he-tree{
+  padding: 30px;
+  border: 1px solid #ccc;
+}
 .he-tree .tree-children{
   padding-left: 20px;
+}
+.he-tree .tree-node{
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  padding: 5px;
 }
 </style>

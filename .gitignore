@@ -20,5 +20,5 @@ yarn-error.log*
 *.sw*
 
 # dev
-/src/components/autoMoveDragPlaceHolderDev.js
-/src/components/_info.json
+/src/plugins/draggable-decision-part-dev.js
+/src/plugins/_info.json

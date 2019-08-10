@@ -2,37 +2,65 @@
 <template lang="pug">
 div
   h2 Base
-  Tree(:value="originalData" foldAllAtBeginning)
+  Tree(:value="originalData" :foldAllAtBeginning="false" ref="tree")
     div(slot-scope="{node, meta, root}")
       b(v-if="node.children && node.children.length > 0" @click="meta.folded=!meta.folded") {{meta.folded ? '+' : '-'}}&nbsp;
       span {{node.text}}
 </template>
 
 <script>
-import Tree from '@/components/Tree'
+import DraggableTree from '@/components/DraggableTree.vue'
+import makeTreeDraggable from '@/plugins/make-tree-draggable'
+
 export default {
-  components: {Tree},
+  components: {Tree: DraggableTree},
   data() {
     return {
       originalData: [
-        {text: 'node 1'},
-        {text: 'node 2'},
+        {text: 'node 1', children: [
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+        ]},
+        {text: 'node 2', children: [
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+        ]},
         {text: 'node 3'},
         {text: 'node 4'},
-        {text: 'node 4 undroppable', droppable: false},
+        {text: 'node 4', droppable: false},
         {text: 'node 5', children: [
           {text: 'node 1'},
           {text: 'node 2', children: [
             {text: 'node 3'},
             {text: 'node 4'},
           ]},
-          {text: 'node 2 undroppable', droppable: false, children: [
+          {text: 'node 2', droppable: false, children: [
             {text: 'node 3'},
             {text: 'node 4'},
           ]},
           {text: 'node 2', children: [
             {text: 'node 3'},
-            {text: 'node 4 undroppable', droppable: false},
+            {text: 'node 4', droppable: false},
           ]},
           {text: 'node 3'},
           {text: 'node 4'},
@@ -55,7 +83,8 @@ export default {
     },
   },
   // created() {},
-  // mounted() {},
+  mounted() {
+  },
 }
 </script>
 

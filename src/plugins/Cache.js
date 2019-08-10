@@ -1,3 +1,4 @@
+// todo extract to helper-js
 export default class Cache {
   store = {};
   has(name) {
@@ -21,11 +22,14 @@ export default class Cache {
     }
   }
 }
-export function attachCache(obj, cache, toCache) {
+
+// attach cached getters to an object; can attach to self
+export function attachCache(obj, toCache, cache = new Cache()) {
   for (const key in toCache) {
+    const getter = toCache[key]
     Object.defineProperty(obj, key, {
       get() {
-        return cache.remember(key, () => toCache[key].call(this))
+        return cache.remember(key, () => getter.call(this))
       },
     })
   }
