@@ -4,7 +4,7 @@
     .tree-node
       slot(:node="node" :meta="metas[i]" :root="root") {{node.text}}
     transition(v-if="node.children && node.children.length > 0" :name="root.foldingTransition")
-      Tree(v-if="!metas[i].folded" :value="node.children" :privateProps="childPrivateProps")
+      Tree(v-if="!metas[i].folded" :value="node.children" :privateProps="{...childPrivateProps, parent: node}")
         template(slot-scope="props")
           slot(:node="props.node" :meta="props.meta" :root="props.root") {{node.text}}
 </template>
@@ -33,6 +33,7 @@ export default {
     root() { return this.privateProps && this.privateProps.root || this },
     isRoot() { return this.root === this },
     level() { return this.privateProps ? this.privateProps.level: 1 },
+    parent() { return this.privateProps && this.privateProps.parent },
     nodes() { return this.value || [] },
     childPrivateProps() {
       return {
@@ -84,6 +85,7 @@ export default {
           id,
           DOMId: `${DOM_ID_PREFIX}${id}`,
           folded: this.root.foldAllAtBeginning,
+          parent: this.parent,
         }
         if (this.idMode === 'id') {
           this.root.metaMap[id] = newMeta
@@ -94,6 +96,9 @@ export default {
         return newMeta
       })
     },
+    getMetaByNode(node) {
+      return this.root.idMode === 'id' ? this.root.metaMap[node.id] : this.root.metaMap.get(node)
+    },
     // by DOMId or ID
     getNodeByID(DOMIdOrID) {
       if (DOMIdOrID.startsWith(DOM_ID_PREFIX)) {
@@ -103,8 +108,19 @@ export default {
     },
     getMetaByID(DOMIdOrID) {
       const node = this.getNodeByID(DOMIdOrID)
-      return this.root.idMode === 'id' ? this.root.metaMap[node.id] : this.root.metaMap.get(node)
+      return this.getMetaByNode(node)
     },
+    * iterateParents(node, opt = {}) {
+      if (opt.withSelf) {
+        yield node
+      }
+      let cur = this.getMetaByNode(node).parent
+      while (cur) {
+        yield cur
+        cur = this.getMetaByNode(cur).parent
+      }
+    },
+    // todo remove
     unfoldNodeByID(DOMIdOrID) {
       const meta = this.getMetaByID(DOMIdOrID)
       meta.folded = false

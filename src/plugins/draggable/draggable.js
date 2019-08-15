@@ -56,6 +56,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       const el = hp.findParent(store.startEvent.target, el => hp.hasClass(el, options.branchClass), {withSelf: true})
       return el
     },
+    // todo change args
     afterGetEl: (startEvent, opt, store) => {
       const movingEl = store.el // branch
       // create placeholder
