@@ -9,11 +9,17 @@ div
 </template>
 
 <script>
-import DraggableTree from '@/components/DraggableTree.vue'
-import makeTreeDraggable from '@/plugins/make-tree-draggable'
+import Tree from '@/components/Tree.vue'
+import Draggable from '@/plugins/draggable/Draggable.vue'
+
+const MixedTree = {
+  name: 'Tree',
+  extends: Tree,
+  mixins: [Draggable],
+}
 
 export default {
-  components: {Tree: DraggableTree},
+  components: {Tree: MixedTree},
   data() {
     return {
       originalData: [

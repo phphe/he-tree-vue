@@ -18,7 +18,3 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
-
-# dev
-/src/plugins/draggable-decision-part-dev.js
-/src/plugins/_info.json

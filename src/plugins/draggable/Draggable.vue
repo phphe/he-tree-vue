@@ -1,10 +1,7 @@
 <script>
-import Tree from './Tree.vue'
-import makeTreeDraggable from '../plugins/make-tree-draggable.js'
+import makeTreeDraggable from './draggable.js'
 
 export default {
-  extends: Tree,
-  name: 'Tree',
   props: {
     indent: {default: 20},
   },
