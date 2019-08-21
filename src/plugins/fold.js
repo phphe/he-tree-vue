@@ -1,6 +1,10 @@
 import * as th from 'tree-helper'
 
 export default {
+  props: {
+    foldingTransition: {},
+    foldAllAtBeginning: {type: Boolean},
+  },
   methods: {
     fold(node) {
       const meta = this.getMetaByNode(node)
@@ -30,5 +34,8 @@ export default {
         this.unfold(childNode, {unfoldParent: false})
       })
     },
-  }
+  },
+  afterMetaCreated(meta) {
+    meta.folded = this.root.foldAllAtBeginning
+  },
 }

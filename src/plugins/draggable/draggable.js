@@ -25,7 +25,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
   }
   const destroy = draggableHelper(treeEl, {
     draggingClass: options.draggingClass,
-    // todo draggableHelper增加onstart hook
+    // todo draggableHelper增加onstart hook, 忘记原因了, 不知是否还必要
     drag(startEvent, moveEvent, opt, store) {
       // check trigger el
       if (options.triggerBySelf) {
@@ -56,8 +56,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       const el = hp.findParent(store.startEvent.target, el => hp.hasClass(el, options.branchClass), {withSelf: true})
       return el
     },
-    // todo change args
-    afterGetEl: (startEvent, opt, store) => {
+    afterGetEl: (opt, store) => {
       const movingEl = store.el // branch
       // create placeholder
       const placeholder = document.createElement('DIV')

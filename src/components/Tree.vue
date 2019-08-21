@@ -14,12 +14,10 @@ import * as hp from 'helper-js'
 import * as th from 'tree-helper'
 
 const DOM_ID_PREFIX = 'he_tree_node_'
-export default {
+const Tree = {
   name: 'Tree',
   props: {
     value: {},
-    foldingTransition: {},
-    foldAllAtBeginning: {type: Boolean},
     privateProps: {},
     idMode: {default: 'object'}, // object, id(node must has id)
   },
@@ -84,8 +82,12 @@ export default {
         const newMeta = {
           id,
           DOMId: `${DOM_ID_PREFIX}${id}`,
-          folded: this.root.foldAllAtBeginning,
           parent: this.parent,
+        }
+        if (this.$options._afterMetaCreateds) {
+          for (const func of this.$options._afterMetaCreateds) {
+            func.call(this, newMeta, node)
+          }
         }
         if (this.idMode === 'id') {
           this.root.metaMap[id] = newMeta
@@ -140,6 +142,30 @@ export default {
   },
   // mounted() {},
   // beforeDestroy() {},
+
+  //
+  mixPlugins(plugins) {
+    const MixedTree = {
+      name: 'Tree',
+      extends: Tree,
+      mixins: plugins,
+    }
+    MixedTree._afterMetaCreateds = plugins.map(v => v.afterMetaCreated).filter(v => v)
+    return MixedTree
+  },
+}
+export default Tree
+
+// todo move to helper-js
+// currying
+function joinFunctions(funcs) {
+  return function (...args) {
+    let result = args
+    for (const func of funcs) {
+      result = func.call(this, ...result)
+    }
+    return result
+  }
 }
 </script>
 

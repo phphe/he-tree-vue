@@ -10,13 +10,10 @@ div
 
 <script>
 import Tree from '@/components/Tree.vue'
+import fold from '@/plugins/fold.js'
 import Draggable from '@/plugins/draggable/Draggable.vue'
 
-const MixedTree = {
-  name: 'Tree',
-  extends: Tree,
-  mixins: [Draggable],
-}
+const MixedTree = Tree.mixPlugins([fold, Draggable])
 
 export default {
   components: {Tree: MixedTree},
