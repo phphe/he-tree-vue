@@ -3,16 +3,17 @@ import * as th from 'tree-helper'
 export default {
   props: {
     foldingTransition: {},
-    foldAllAtBeginning: {type: Boolean},
+    unfoldAllAtBeginning: {type: Boolean},
   },
   methods: {
     fold(node) {
       const meta = this.getMetaByNode(node)
-      node.folded = true
+      meta.folded = true
     },
     unfold(node, opt = {}) {
       opt = {
         unfoldParent: true,
+        foldOthers: false,
         ...opt,
       }
       if (opt.foldOthers) {
@@ -22,6 +23,14 @@ export default {
       meta.folded = false
       if (meta.parent && opt.unfoldParent) {
         this.unfold(meta.parent, opt)
+      }
+    },
+    toggleFold(node, opt) {
+      const meta = this.getMetaByNode(node)
+      if (meta.folded) {
+        this.unfold(node, opt)
+      } else {
+        this.fold(node, opt)
       }
     },
     foldAll() {
@@ -36,6 +45,6 @@ export default {
     },
   },
   afterMetaCreated(meta) {
-    meta.folded = this.root.foldAllAtBeginning
+    meta.folded = !this.root.unfoldAllAtBeginning
   },
 }
