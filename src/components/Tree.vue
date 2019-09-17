@@ -30,7 +30,7 @@ const Tree = {
   computed: {
     root() { return this.privateProps && this.privateProps.root || this },
     isRoot() { return this.root === this },
-    level() { return this.privateProps ? this.privateProps.level: 1 },
+    level() { return this.privateProps ? this.privateProps.level : 1 },
     parent() { return this.privateProps && this.privateProps.parent },
     nodes() { return this.value || [] },
     childPrivateProps() {
@@ -138,7 +138,11 @@ const Tree = {
       this.metaMap = this.idMode === 'id' ? {} : new Map()
       this.idMap = {}
     }
-    this.$watch('nodes', (...args) => this.nodesWatcher(...args), {immediate: true})
+    this.$watch(() => [this.nodes, this.level], (newArr, old) => {
+      const nodes = newArr[0]
+      const oldNodes = old && old[0]
+      this.nodesWatcher(nodes, oldNodes)
+    }, {immediate: true})
   },
   // mounted() {},
   // beforeDestroy() {},
