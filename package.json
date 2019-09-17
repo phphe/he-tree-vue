@@ -9,11 +9,11 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
-    "draggable-helper": "^1.1.1",
-    "helper-js": "^1.4.3",
+    "draggable-helper": "^2.0.0",
+    "helper-js": "^1.4.8",
     "tree-helper": "^1.0.5",
     "vue": "^2.6.10",
-    "vue-functions": "^1.0.3",
+    "vue-functions": "^1.0.5",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
