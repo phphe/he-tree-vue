@@ -11,13 +11,25 @@ export default {
   // },
   // computed: {},
   // watch: {},
-  // methods: {},
+  methods: {
+    _Draggable_unfoldNodeByID(DOMIdOrID) {
+      const meta = this.getMetaByID(DOMIdOrID)
+      if (meta) {
+        meta.folded = false
+      }
+      return new Promise((resolve, reject) => {
+        this.$nextTick(() => {
+          resolve()
+        })
+      })
+    },
+  },
   // created() {},
   mounted() {
     if (this.isRoot) {
       makeTreeDraggable(this.$el, {
         indent: this.indent,
-        unfoldNodeByID: (...args) => this.unfoldNodeByID(...args),
+        unfoldNodeByID: (...args) => this._Draggable_unfoldNodeByID(...args),
       })
     }
   },

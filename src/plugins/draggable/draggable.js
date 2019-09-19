@@ -20,7 +20,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     hiddenClass: 'hidden',
     draggingClass: 'dragging',
     indent: 20,
-    // unfoldNodeByID required
+    // unfoldNodeByID optional
     ...options,
   }
   const destroy = draggableHelper(treeEl, {
@@ -78,19 +78,25 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       // find closest branch and hovering tree
       let tree
       const movingElOf = hp.getOffset(movingEl)
-      const movingElRect = movingEl.getBoundingClientRect()
-      const elsBetweenMovingElAndTree = []
+      const movingElRect = hp.getBoundingClientRect(movingEl)
+      const elsBetweenMovingElAndTree = [] // including tree
+      const elsToTree = [] // start from top, including tree
       let movingElLooped
-      for (const itemEl of DOMUtils.elementsFromPoint(movingElRect.left, movingElRect.top)) {
+      for (const itemEl of DOMUtils.elementsFromPoint(movingElRect.x, movingElRect.y)) {
         if (movingElLooped) {
           elsBetweenMovingElAndTree.push(itemEl)
         } else if(itemEl === movingEl) {
           movingElLooped = true
         }
+        elsToTree.push(itemEl)
         if (hp.hasClass(itemEl, options.rootClass)) {
           tree = itemEl
           break
         }
+      }
+      // this is an issue, sometimes, the movingEl is not in elementsFromPoint result
+      if (!movingElLooped) {
+        elsBetweenMovingElAndTree.push(...elsToTree)
       }
       let outOfTree
       if (!tree) {
@@ -104,6 +110,12 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         }
       }
       if (outOfTree || treeBeCoved) {
+        return
+      }
+      // if cross tree
+      // the tree movingEl belongs to
+      const sourceTree = hp.findParent(movingEl, (el) => hp.hasClass(el, options.rootClass))
+      if (sourceTree !== tree) {
         return
       }
       // info ========================================
@@ -279,7 +291,9 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         }
       }
       const unfoldAndGetChildrenEl = async (branch) => {
-        await options.unfoldNodeByID(branch.getAttribute('id'))
+        if (options.unfoldNodeByID) {
+          await options.unfoldNodeByID(branch.getAttribute('id'))
+        }
         let childrenEl = branch.querySelector(`.${options.childrenClass}`)
         if (!childrenEl) {
           childrenEl = store.tempChildren

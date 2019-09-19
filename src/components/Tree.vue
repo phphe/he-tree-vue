@@ -122,16 +122,6 @@ const Tree = {
         cur = this.getMetaByNode(cur).parent
       }
     },
-    // todo remove
-    unfoldNodeByID(DOMIdOrID) {
-      const meta = this.getMetaByID(DOMIdOrID)
-      meta.folded = false
-      return new Promise((resolve, reject) => {
-        this.$nextTick(() => {
-          resolve()
-        })
-      })
-    },
   },
   created() {
     if (this === this.root) {
