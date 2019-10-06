@@ -43,6 +43,7 @@ export default {
           }
           const dropChildren = dropParent === this.root ? this.root.nodes : dropParent.children
           dropChildren.splice(store.dropPath.index, 0, dragNode)
+          return hp.waitTime(60)
         },
       })
     }

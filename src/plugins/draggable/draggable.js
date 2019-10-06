@@ -288,7 +288,6 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           doImmediately()
         }
       }
-      // todo remove?
       const unfoldAndGetChildrenEl = async (branch) => {
         if (options.unfoldNodeByID) {
           await options.unfoldNodeByID(branch.getAttribute('id'))
@@ -324,15 +323,39 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       const movingEl = store.el // branch
       store.dropPath = resolveBranchPath(store.placeholder, el => el !== movingEl)
       //
-      const pathChanged = comparePath(store.dragPath, store.dropPath)
+      // todo if placeholder not mounted
+      const pathChanged = !comparePath(store.dragPath, store.dropPath)
+      let clonedTreeEl
       if (pathChanged) {
-        // DOMUtils.insertBefore(movingEl, store.placeholder)
+        // todo cross tree
+        if (store.placeholder) {
+          store.placeholder.setAttribute('draggable-temp', 'placeholder')
+        }
+        if (store.tempChildren) {
+          store.tempChildren.setAttribute('draggable-temp', 'tempChildren')
+        }
+        clonedTreeEl = treeEl.cloneNode(true)
+        hp.backupAttr(treeEl, 'style')
+        const movingEl2 = clonedTreeEl.querySelector(`[id=${movingEl.getAttribute('id')}]`)
+        const placeholder2 = clonedTreeEl.querySelector(`[draggable-temp=placeholder]`)
+        const tempChildren2 = clonedTreeEl.querySelector(`[draggable-temp=tempChildren]`)
+        DOMUtils.insertBefore(movingEl2, placeholder2)
+        DOMUtils.removeEl(placeholder2)
+        if (tempChildren2 && !tempChildren2.querySelector(`.${options.branchClass}`)) {
+          DOMUtils.removeEl(tempChildren2)
+        }
+        treeEl.style.display = 'none'
+        DOMUtils.insertAfter(clonedTreeEl, treeEl)
       }
       DOMUtils.removeEl(store.placeholder)
       try {
         DOMUtils.removeEl(store.tempChildren)
       } catch (e) {}
       await options.ondrop(pathChanged, store, opt)
+      if (pathChanged) {
+        hp.restoreAttr(treeEl, 'style')
+        DOMUtils.removeEl(clonedTreeEl)
+      }
     },
   })
   return destroy
