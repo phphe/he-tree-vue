@@ -2,7 +2,8 @@ import * as hp from 'helper-js'
 import * as DOMUtils from './dom-utils.js'
 import * as CacheUtils from './Cache.js'
 import * as ut from './utils.js'
-import draggableHelper from 'draggable-helper'
+// import draggableHelper from 'draggable-helper'
+import draggableHelper from 'C:/Users/phphe/projects/draggable-helper/dist/draggable-helper.esm.js'
 import doDraggableDecision from './draggable-decision-part.js'
 
 // in follow code, options belongs to makeTreeDraggable, opt belongs to draggableHelper
@@ -25,8 +26,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
   }
   const destroy = draggableHelper(treeEl, {
     draggingClass: options.draggingClass,
-    // todo draggableHelper增加onstart hook, 忘记原因了, 不知是否还必要
-    drag(startEvent, moveEvent, opt, store) {
+    beforeDrag(startEvent, moveEvent, store, opt) {
       // check trigger el
       if (options.triggerBySelf) {
         if (!hp.hasClass(startEvent.target, options.triggerClass)) {
@@ -45,19 +45,17 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           return false
         }
       }
-      // hook
-      // todo ondrag args
-      if (options.ondrag && options.ondrag() === false) {
-        return false
-      }
     },
     // get the element which will be moved
-    getEl: (dragHandlerEl, opt, store) => {
+    getEl: (dragHandlerEl, store, opt) => {
       const el = hp.findParent(store.startEvent.target, el => hp.hasClass(el, options.branchClass), {withSelf: true})
       return el
     },
-    afterGetEl: (opt, store) => {
+    drag: (startEvent, moveEvent, store, opt) => {
       const movingEl = store.el // branch
+      store.dragPath = resolveBranchPath(movingEl)
+      options.ondrag && options.ondrag(store, opt)
+      // todo insert placeholder by action
       // create placeholder
       const placeholder = document.createElement('DIV')
       hp.addClass(placeholder, options.branchClass)
@@ -73,7 +71,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       hp.addClass(tempChildren, options.childrenClass)
       store.tempChildren = tempChildren
     },
-    moving: (moveEvent, opt, store) => {
+    moving: (moveEvent, store, opt) => {
       const movingEl = store.el // branch
       // find closest branch and hovering tree
       let tree
@@ -290,6 +288,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           doImmediately()
         }
       }
+      // todo remove?
       const unfoldAndGetChildrenEl = async (branch) => {
         if (options.unfoldNodeByID) {
           await options.unfoldNodeByID(branch.getAttribute('id'))
@@ -319,14 +318,49 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           DOMUtils.appendTo(store.placeholder, childrenEl)
         },
       }
-      doDraggableDecision({options, event, opt, store, info, conditions, actions, doAction})
+      doDraggableDecision({options, event, store, opt, info, conditions, actions, doAction})
     },
-    drop: (endEvent, opt, store) => {
+    drop: async (endEvent, store, opt) => {
+      const movingEl = store.el // branch
+      store.dropPath = resolveBranchPath(store.placeholder, el => el !== movingEl)
+      //
+      const pathChanged = comparePath(store.dragPath, store.dropPath)
+      if (pathChanged) {
+        // DOMUtils.insertBefore(movingEl, store.placeholder)
+      }
       DOMUtils.removeEl(store.placeholder)
       try {
         DOMUtils.removeEl(store.tempChildren)
       } catch (e) {}
+      await options.ondrop(pathChanged, store, opt)
     },
   })
   return destroy
+  function resolveBranchPath(branchEl, filter) {
+    let tree
+    const parentIds = []
+    hp.findParent(branchEl, el => {
+      if (hp.hasClass(el, options.rootClass)) {
+        tree = el
+        return true
+      }
+      if (hp.hasClass(el, options.branchClass)) {
+        parentIds.unshift(el.getAttribute('id'))
+      }
+    })
+    const siblings = []
+    for (let i = 0; i < branchEl.parentElement.children.length; i++) {
+      const el = branchEl.parentElement.children[i]
+      if (hp.hasClass(el, options.branchClass) || hp.hasClass(el, options.placeholderClass)) {
+        if (!filter || filter(el, i)) {
+          siblings.push(el)
+        }
+      }
+    }
+    const index = siblings.indexOf(branchEl)
+    return {tree, parentIds, index}
+  }
+  function comparePath(p1, p2) {
+    return p1.tree === p2.tree && p1.index === p2.index && p1.parentIds.toString() === p2.parentIds.toString()
+  }
 }

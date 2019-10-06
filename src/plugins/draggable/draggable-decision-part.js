@@ -1,7 +1,7 @@
 import * as hp from 'helper-js'
 import * as DOMUtils from './dom-utils.js'
 
-// arg {options, event, opt, store, info, conditions, actions, doAction}
+// arg {options, event, store, opt, info, conditions, actions, doAction}
 export default function ({conditions, doAction}) {
   // decision start =================================
   if (conditions['no closest'] === true){

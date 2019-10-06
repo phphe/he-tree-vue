@@ -2,13 +2,15 @@
 <template lang="pug">
 #app
   BaseTree.mr
+  TestTree.mr
 </template>
 
 <script>
 import BaseTree from '@/examples/Base'
+import TestTree from '@/examples/Test'
 
 export default {
-  components: {BaseTree},
+  components: {BaseTree, TestTree},
   // data() {
   //   return {}
   // },
