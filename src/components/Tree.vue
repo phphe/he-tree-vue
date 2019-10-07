@@ -13,7 +13,7 @@
 import * as hp from 'helper-js'
 import * as th from 'tree-helper'
 
-const DOM_ID_PREFIX = 'he_tree_branch_'
+const DOM_ID_PREFIX = 'he_tree'
 const Tree = {
   name: 'Tree',
   props: {
@@ -80,7 +80,7 @@ const Tree = {
         const id = newMeta.id || node.id || hp.strRand()
         Object.assign(newMeta, {
           id,
-          DOMId: `${DOM_ID_PREFIX}${id}`,
+          DOMId: `${DOM_ID_PREFIX}_${this.root._uid}_branch_${id}`,
           parent: this.parent,
           level: this.level,
         })
@@ -103,8 +103,9 @@ const Tree = {
     },
     // by DOMId or ID
     getNodeByID(DOMIdOrID) {
+      const id = DOMIdOrID
       if (DOMIdOrID.startsWith(DOM_ID_PREFIX)) {
-        DOMIdOrID = DOMIdOrID.substring(DOM_ID_PREFIX.length)
+        DOMIdOrID = id.split('_branch_')[1]
       }
       return this.root.idMap[DOMIdOrID]
     },
