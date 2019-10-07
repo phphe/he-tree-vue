@@ -20,7 +20,6 @@ div
 </template>
 
 <script>
-import * as DOMUtils from '../plugins/draggable/dom-utils.js'
 import * as hp from 'helper-js'
 import Tree from '@/components/Tree.vue'
 import fold from '@/plugins/fold.js'
@@ -85,13 +84,13 @@ export default {
       const {tree1} = this.$refs
       const treeEl = tree1.$el
       const clonedTreeEl = treeEl.cloneNode(true)
-      DOMUtils.removeEl(clonedTreeEl.querySelector('.tree-branch'))
+      hp.removeEl(clonedTreeEl.querySelector('.tree-branch'))
       hp.backupAttr(treeEl, 'style')
-      DOMUtils.insertBefore(clonedTreeEl, treeEl)
+      hp.insertBefore(clonedTreeEl, treeEl)
       treeEl.style.display = 'none'
       tree1.value.splice(0, 1)
       await hp.waitTime(100)
-      DOMUtils.removeEl(clonedTreeEl)
+      hp.removeEl(clonedTreeEl)
       hp.restoreAttr(treeEl, 'style')
     },
   },

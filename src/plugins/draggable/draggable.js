@@ -1,7 +1,4 @@
 import * as hp from 'helper-js'
-import * as DOMUtils from './dom-utils.js'
-import * as CacheUtils from './Cache.js'
-import * as ut from './utils.js'
 // import draggableHelper from 'draggable-helper'
 import draggableHelper from 'C:/Users/phphe/projects/draggable-helper/dist/draggable-helper.esm.js'
 import doDraggableDecision from './draggable-decision-part.js'
@@ -63,8 +60,8 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       const placeholderNode = document.createElement('DIV')
       hp.addClass(placeholderNode, options.nodeClass)
       hp.addClass(placeholderNode, options.placeholderNodeClass)
-      DOMUtils.appendTo(placeholderNode, placeholder)
-      DOMUtils.insertAfter(placeholder, movingEl)
+      hp.appendTo(placeholderNode, placeholder)
+      hp.insertAfter(placeholder, movingEl)
       store.placeholder = placeholder
       // create a tree children el to use when can't get childrenEl
       const tempChildren = document.createElement('DIV')
@@ -80,7 +77,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       const elsBetweenMovingElAndTree = [] // including tree
       const elsToTree = [] // start from top, including tree
       let movingElLooped
-      for (const itemEl of DOMUtils.elementsFromPoint(movingElRect.x, movingElRect.y)) {
+      for (const itemEl of hp.elementsFromPoint(movingElRect.x, movingElRect.y)) {
         if (movingElLooped) {
           elsBetweenMovingElAndTree.push(itemEl)
         } else if(itemEl === movingEl) {
@@ -234,8 +231,8 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       // life cycle: one move
       const conditions = {
         'no closest': () => !info.closestNode,
-        'closest is top': () => info.closestBranch === DOMUtils.findNodeList(info.tree.children, el => el !== movingEl),
-        'closest is top excluding placeholder': () => info.closestBranch === DOMUtils.findNodeList(info.tree.children, el => el !== movingEl && el !== store.placeholder),
+        'closest is top': () => info.closestBranch === hp.findNodeList(info.tree.children, el => el !== movingEl),
+        'closest is top excluding placeholder': () => info.closestBranch === hp.findNodeList(info.tree.children, el => el !== movingEl && el !== store.placeholder),
         'on closest middle': () => movingElOf.y < info.closestNodeOffset.y + info.closestNode.offsetHeight / 2,
         'at closest indent right': () => movingElOf.x > info.closestNodeOffset.x + options.indent,
         'at closest left': () => movingElOf.x < info.closestNodeOffset.x,
@@ -246,7 +243,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         'closest has children excluding placeholder movingEl': () => {
           const childrenEl = info.closestBranch.querySelector(`.${options.childrenClass}`)
           if (childrenEl) {
-            return DOMUtils.findNodeList(childrenEl.children, el => el !== movingEl && el !== store.placeholder)
+            return hp.findNodeList(childrenEl.children, el => el !== movingEl && el !== store.placeholder)
           }
         },
       }
@@ -258,8 +255,8 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         }
       })
       //
-      CacheUtils.attachCache(info, info)
-      CacheUtils.attachCache(conditions, conditions)
+      hp.attachCache(info, info)
+      hp.attachCache(conditions, conditions)
       // actions ========================================
       const doAction = (name) => {
         const action = actions[name]
@@ -269,7 +266,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
             if (store.tempChildren.children.length === 0) {
               try {
                 // try to remove tempChildren
-                DOMUtils.removeEl(store.tempChildren)
+                hp.removeEl(store.tempChildren)
               } catch (e) {}
             }
           }
@@ -295,26 +292,26 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         let childrenEl = branch.querySelector(`.${options.childrenClass}`)
         if (!childrenEl) {
           childrenEl = store.tempChildren
-          DOMUtils.appendTo(childrenEl, branch)
+          hp.appendTo(childrenEl, branch)
         }
         return childrenEl
       }
       const actions = {
         'nothing'() {}, // do nothing
-        'append to root'() { DOMUtils.appendTo(store.placeholder, info.tree) },
-        'insert before'() { DOMUtils.insertBefore(store.placeholder, info.closestBranch) },
-        'insert after'() { DOMUtils.insertAfter(store.placeholder, info.closestBranch) },
+        'append to root'() { hp.appendTo(store.placeholder, info.tree) },
+        'insert before'() { hp.insertBefore(store.placeholder, info.closestBranch) },
+        'insert after'() { hp.insertAfter(store.placeholder, info.closestBranch) },
         async prepend() {
           if (info.closestBranch === store.placeholder) {
             return
           }
           const childrenEl = await unfoldAndGetChildrenEl(info.closestBranch)
-          DOMUtils.prependTo(store.placeholder, childrenEl)
+          hp.prependTo(store.placeholder, childrenEl)
         },
-        'after above'() { DOMUtils.insertAfter(store.placeholder, info.aboveBranch) },
+        'after above'() { hp.insertAfter(store.placeholder, info.aboveBranch) },
         async 'append to prev'() {
           const childrenEl = await unfoldAndGetChildrenEl(info.closestPrev)
-          DOMUtils.appendTo(store.placeholder, childrenEl)
+          hp.appendTo(store.placeholder, childrenEl)
         },
       }
       doDraggableDecision({options, event, store, opt, info, conditions, actions, doAction})
@@ -339,22 +336,22 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         const movingEl2 = clonedTreeEl.querySelector(`[id=${movingEl.getAttribute('id')}]`)
         const placeholder2 = clonedTreeEl.querySelector(`[draggable-temp=placeholder]`)
         const tempChildren2 = clonedTreeEl.querySelector(`[draggable-temp=tempChildren]`)
-        DOMUtils.insertBefore(movingEl2, placeholder2)
-        DOMUtils.removeEl(placeholder2)
+        hp.insertBefore(movingEl2, placeholder2)
+        hp.removeEl(placeholder2)
         if (tempChildren2 && !tempChildren2.querySelector(`.${options.branchClass}`)) {
-          DOMUtils.removeEl(tempChildren2)
+          hp.removeEl(tempChildren2)
         }
         treeEl.style.display = 'none'
-        DOMUtils.insertAfter(clonedTreeEl, treeEl)
+        hp.insertAfter(clonedTreeEl, treeEl)
       }
-      DOMUtils.removeEl(store.placeholder)
+      hp.removeEl(store.placeholder)
       try {
-        DOMUtils.removeEl(store.tempChildren)
+        hp.removeEl(store.tempChildren)
       } catch (e) {}
       await options.ondrop(pathChanged, store, opt)
       if (pathChanged) {
         hp.restoreAttr(treeEl, 'style')
-        DOMUtils.removeEl(clonedTreeEl)
+        hp.removeEl(clonedTreeEl)
       }
     },
   })
