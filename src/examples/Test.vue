@@ -6,25 +6,11 @@ div
   | &nbsp;
   hr
   .test-trees
-    Tree.test-tree.mr(:value="treeData1" unfoldAllAtBeginning ref="tree1")
+    Tree.test-tree(:value="treeData1" unfoldAllAtBeginning ref="tree1")
       div(slot-scope="{node, meta, root}")
         input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
         | &nbsp;
         span {{node.text}}
-    Tree.test-tree.mr(:value="treeData2" unfoldAllAtBeginning ref="tree2")
-      div(slot-scope="{node, meta, root}")
-        b(v-if="node.children && node.children.length > 0" @click="root.toggleFold(node)") {{meta.folded ? '+' : '-'}}&nbsp;
-        input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
-        | &nbsp;
-        span {{node.text}} {{meta.nodes && meta.nodes.length}}
-    div.mr
-      h3 ID Mode
-      Tree.test-tree(:value="idModeData" unfoldAllAtBeginning idMode ref="tree3")
-        div(slot-scope="{node, meta, root}")
-          b(v-if="node.children && node.children.length > 0" @click="root.toggleFold(node)") {{meta.folded ? '+' : '-'}}&nbsp;
-          input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
-          | &nbsp;
-          span {{node.text}} {{meta.nodes && meta.nodes.length}}
 </template>
 
 <script>
@@ -68,34 +54,6 @@ export default {
         {text: 'node 3'},
         {text: 'node 4'},
         {text: 'node 4'},
-      ],
-      treeData2: [
-        {text: 'node 1', children: [
-          {text: 'node 1-0'},
-          {text: 'node 1-1'},
-          {text: 'node 1-2'},
-          {text: 'node 1-3'},
-          {text: 'node 1-4'},
-          {text: 'node 1-5'},
-          {text: 'node 1-6'},
-          {text: 'node 1-7'},
-          {text: 'node 1-8'},
-          {text: 'node 1-9'},
-        ]},
-      ],
-      idModeData: [
-        {id: 1, text: 'node 1', children: [
-          {id: 10, text: 'node 1-0'},
-          {id: 11, text: 'node 1-1'},
-          {id: 12, text: 'node 1-2'},
-          {id: 13, text: 'node 1-3'},
-          {id: 14, text: 'node 1-4'},
-          {id: 15, text: 'node 1-5'},
-          {id: 16, text: 'node 1-6'},
-          {id: 17, text: 'node 1-7'},
-          {id: 18, text: 'node 1-8'},
-          {id: 19, text: 'node 1-9'},
-        ]},
       ],
     }
   },

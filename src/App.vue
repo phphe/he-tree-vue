@@ -3,14 +3,18 @@
 #app
   BaseTree.mr
   TestTree.mr
+  IDModeTree.mr
+  DraggableProTree.mr
 </template>
 
 <script>
 import BaseTree from '@/examples/Base'
 import TestTree from '@/examples/Test'
+import IDModeTree from '@/examples/IDMode'
+import DraggableProTree from '@/examples/DraggablePro'
 
 export default {
-  components: {BaseTree, TestTree},
+  components: {BaseTree, TestTree, IDModeTree, DraggableProTree},
   // data() {
   //   return {}
   // },
