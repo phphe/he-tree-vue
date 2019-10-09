@@ -93,18 +93,18 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       if (!movingElLooped) {
         elsBetweenMovingElAndTree.push(...elsToTree)
       }
-      let outOfTree
       if (!tree) {
-        outOfTree = true
+        // out of tree
+        return
       }
       // check tree if is covered, like modal
       let treeBeCoved
       if (elsBetweenMovingElAndTree && elsBetweenMovingElAndTree[0]) {
-        if (!hp.isDescendantOf(elsBetweenMovingElAndTree[0], tree)) {
+        if (elsBetweenMovingElAndTree[0] !== tree && !hp.isDescendantOf(elsBetweenMovingElAndTree[0], tree)) {
           treeBeCoved = true
         }
       }
-      if (outOfTree || treeBeCoved) {
+      if (treeBeCoved) {
         return
       }
       // if cross tree

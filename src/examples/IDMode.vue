@@ -2,7 +2,7 @@
 <template lang="pug">
 div
   h2 ID Mode
-  Tree(:value="idModeData" unfoldAllAtBeginning idMode ref="tree3")
+  Tree.id-mode-tree(:value="idModeData" unfoldAllAtBeginning idMode ref="tree3")
     div(slot-scope="{node, meta, root}")
       b(v-if="node.children && node.children.length > 0" @click="root.toggleFold(node)") {{meta.folded ? '+' : '-'}}&nbsp;
       input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
