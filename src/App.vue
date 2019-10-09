@@ -4,6 +4,7 @@
   BaseTree.mr
   TestTree.mr
   IDModeTree.mr
+  NodeBackTree.mr
   DraggableProTree.mr
 </template>
 
@@ -11,10 +12,11 @@
 import BaseTree from '@/examples/Base'
 import TestTree from '@/examples/Test'
 import IDModeTree from '@/examples/IDMode'
+import NodeBackTree from '@/examples/NodeBack'
 import DraggableProTree from '@/examples/DraggablePro'
 
 export default {
-  components: {BaseTree, TestTree, IDModeTree, DraggableProTree},
+  components: {BaseTree, TestTree, IDModeTree, NodeBackTree, DraggableProTree},
   // data() {
   //   return {}
   // },

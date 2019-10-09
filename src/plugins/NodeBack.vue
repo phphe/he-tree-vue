@@ -5,7 +5,7 @@ export default {
     NodeBack_onmouseenter(e) {
       const trigger = e.target
       const back = document.createElement('DIV')
-      hp.addClass('node-back')
+      hp.addClass(back, 'node-back')
       const tree = hp.findParent(trigger, (el) => hp.hasClass(el, 'tree-root'))
       const treeRect = hp.getBoundingClientRect(tree)
       const treeOffset = hp.getOffset(tree)
@@ -35,5 +35,6 @@ export default {
 .he-tree .node-back{
   position: absolute;
   background: #f1f1f1;
+  z-index: -1;
 }
 </style>
