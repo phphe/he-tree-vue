@@ -15,7 +15,7 @@ div
         input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
         | &nbsp;
         span {{node.text}}
-    div(style="position: fixed;width: 500px;height: 200px;background: teal;opacity: 0.2;")
+    div(style="position: fixed;width: 400px;height: 200px;background: teal;opacity: 0.2;")
 </template>
 
 <script>

@@ -14,17 +14,21 @@ import * as hp from 'helper-js'
 import * as th from 'tree-helper'
 
 const DOM_ID_PREFIX = 'he_tree'
+const trees = []
+
 const Tree = {
   name: 'Tree',
   props: {
     value: {},
     privateProps: {},
     idMode: {default: 'object'}, // object, id(node must has id)
+    dataModification: {default: 'modify_old'}, // new, modify_old. create new data or modify old
   },
   // components: {},
   data() {
     return {
       metas: [], // metas of current level nodes
+      trees,
     }
   },
   computed: {
@@ -80,7 +84,7 @@ const Tree = {
         const id = newMeta.id || node.id || hp.strRand()
         Object.assign(newMeta, {
           id,
-          DOMId: `${DOM_ID_PREFIX}_${this.root._uid}_branch_${id}`,
+          DOMId: `${DOM_ID_PREFIX}_${this.root._uid}_${hp.strRand()}_branch_${id}`,
           parent: this.parent,
           level: this.level,
         })
@@ -101,33 +105,68 @@ const Tree = {
     getMetaByNode(node) {
       return this.root.idMode === 'id' ? this.root.metaMap[node.id] : this.root.metaMap.get(node)
     },
+    convertDOMIDToID(DOMId) {
+      let r = DOMId
+      if (DOMId.startsWith(DOM_ID_PREFIX)) {
+        r = DOMId.split('_branch_')[1]
+      }
+      return r
+    },
     // by DOMId or ID
     getNodeByID(DOMIdOrID) {
-      const id = DOMIdOrID
-      if (DOMIdOrID.startsWith(DOM_ID_PREFIX)) {
-        DOMIdOrID = id.split('_branch_')[1]
-      }
-      return this.root.idMap[DOMIdOrID]
+      const id = this.convertDOMIDToID(DOMIdOrID)
+      return this.root.idMap[id]
     },
     getMetaByID(DOMIdOrID) {
       const node = this.getNodeByID(DOMIdOrID)
       return this.getMetaByNode(node)
     },
+    getNodeParent(node) {
+      return this.getMetaByNode(node).parent
+    },
+    getNodeSiblings(node, tree, opt = {}) {
+      opt = {
+        convertToArray: true,
+        ...opt,
+      }
+      const parent = this.getNodeParent(node)
+      let r = parent ? parent.children : tree.value
+      if (opt.convertToArray) {
+        r = hp.toArrayIfNot(r)
+      }
+      return r
+    },
     * iterateParents(node, opt = {}) {
       if (opt.withSelf) {
         yield node
       }
-      let cur = this.getMetaByNode(node).parent
+      let cur = this.getNodeParent(node)
       while (cur) {
         yield cur
-        cur = this.getMetaByNode(cur).parent
+        cur = this.getNodeParent(cur)
       }
+    },
+    cloneTreeData(nodeOrNodes) {
+      const nodes = hp.toArrayIfNot(nodeOrNodes)
+      const walk = (arr) => arr.map(node => {
+        const newNode = Object.assign({}, node)
+        if (newNode.children) {
+          newNode.children = walk(newNode.children)
+        }
+        return newNode
+      })
+      let r = walk(nodes)
+      return hp.isArray(nodeOrNodes) ? r : r[0]
     },
   },
   created() {
     if (this === this.root) {
       this.metaMap = this.idMode === 'id' ? {} : new Map()
       this.idMap = {}
+      this.trees.push(this)
+      this.$once('hook:beforeDestroy', () => {
+        hp.arrayRemove(this.trees, this)
+      })
     }
     this.$watch(() => [this.nodes, this.level], (newArr, old) => {
       const nodes = newArr[0]

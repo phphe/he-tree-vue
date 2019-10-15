@@ -1,4 +1,5 @@
 import * as hp from 'helper-js'
+// todo
 // import draggableHelper from 'draggable-helper'
 import draggableHelper from 'C:/Users/phphe/projects/draggable-helper/dist/draggable-helper.esm.js'
 import doDraggableDecision from './draggable-decision-part.js'
@@ -8,6 +9,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
   options = {
     triggerClass: 'tree-node',
     triggerBySelf: false, // trigger only by the element with triggerClass, not children
+    // getTriggerEl optional
     rootClass: 'tree-root',
     childrenClass: 'tree-children',
     branchClass: 'tree-branch',
@@ -24,13 +26,16 @@ export default function makeTreeDraggable(treeEl, options = {}) {
   const destroy = draggableHelper(treeEl, {
     draggingClass: options.draggingClass,
     beforeDrag(startEvent, moveEvent, store, opt) {
+      if (options.beforeDrag && options.beforeDrag(store, opt) === false) {
+        return false
+      }
       // check trigger el
       if (options.triggerBySelf) {
         if (!hp.hasClass(startEvent.target, options.triggerClass)) {
           return false
         }
       } else {
-        const isTargetTrigger = hp.findParent(startEvent.target, (el) => {
+        const isTrigger = hp.findParent(startEvent.target, (el) => {
           if (hp.hasClass(el, options.triggerClass)) {
             return true
           }
@@ -38,7 +43,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
             return 'break'
           }
         }, {withSelf: true})
-        if (!isTargetTrigger) {
+        if (!isTrigger) {
           return false
         }
       }
@@ -50,9 +55,10 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     },
     drag: (startEvent, moveEvent, store, opt) => {
       const movingEl = store.el // branch
-      store.dragPath = resolveBranchPath(movingEl)
-      options.ondrag && options.ondrag(store, opt)
-      // todo insert placeholder by action
+      store.dragDOMPath = resolveBranchPath(movingEl)
+      if (options.ondrag && options.ondrag(store, opt) === false) {
+        return false
+      }
       // create placeholder
       const placeholder = document.createElement('DIV')
       hp.addClass(placeholder, options.branchClass)
@@ -318,10 +324,14 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     },
     drop: async (endEvent, store, opt) => {
       const movingEl = store.el // branch
-      store.dropPath = resolveBranchPath(store.placeholder, el => el !== movingEl)
+      store.dropDOMPath = resolveBranchPath(store.placeholder)
       //
       // todo if placeholder not mounted
-      const pathChanged = !comparePath(store.dragPath, store.dropPath)
+      let pathChanged = !comparePath(store.dragDOMPath, store.dropDOMPath)
+      if (options.beforeDrop && options.beforeDrop(pathChanged, store, opt) === false) {
+        pathChanged = false
+      }
+      store.pathChanged = pathChanged
       let clonedTreeEl
       if (pathChanged) {
         // todo cross tree
@@ -353,10 +363,11 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         hp.restoreAttr(treeEl, 'style')
         hp.removeEl(clonedTreeEl)
       }
+      options.afterDrop(pathChanged, store, opt)
     },
   })
   return destroy
-  function resolveBranchPath(branchEl, filter) {
+  function resolveBranchPath(branchEl) {
     let tree
     const parentIds = []
     hp.findParent(branchEl, el => {
@@ -368,16 +379,16 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         parentIds.unshift(el.getAttribute('id'))
       }
     })
-    const siblings = []
+    let index
     for (let i = 0; i < branchEl.parentElement.children.length; i++) {
       const el = branchEl.parentElement.children[i]
       if (hp.hasClass(el, options.branchClass) || hp.hasClass(el, options.placeholderClass)) {
-        if (!filter || filter(el, i)) {
-          siblings.push(el)
+        if (el === branchEl) {
+          index = i
+          break
         }
       }
     }
-    const index = siblings.indexOf(branchEl)
     return {tree, parentIds, index}
   }
   function comparePath(p1, p2) {
