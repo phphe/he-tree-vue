@@ -1,6 +1,3 @@
-// todo add 遍历children和遍历parent方法到tree作基本方法
-import * as th from 'tree-helper'
-
 export default {
   props: {},
   methods: {
@@ -15,7 +12,7 @@ export default {
       }
       // update children
       if (node.children && node.children.length > 0) {
-        th.depthFirstSearch(node.children, (childNode) => {
+        this.traverseDescendants(node.children, (childNode) => {
           this.getMetaByNode(childNode).checked = meta.checked
         })
       }
@@ -37,6 +34,11 @@ export default {
       } else {
         this.check(node)
       }
+    },
+    setCheckedOfAllNodes(to, nodeOrNodes = this.root.value) {
+      this.traverseDescendants(nodeOrNodes, (childNode) => {
+        this.getMetaByNode(childNode).checked = to
+      })
     },
   },
   afterMetaCreated(meta) {

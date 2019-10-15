@@ -80,19 +80,30 @@ const Tree = {
       this.metas = nodes.map(node => {
         const oldMeta = this.idMode === 'id' ? this.root.metaMap[node.id] : this.root.metaMap.get(node)
         const newMeta = {}
-        Object.assign(newMeta, oldMeta)
-        const id = newMeta.id || node.id || hp.strRand()
+        let id, DOMId
+        if (oldMeta) {
+          id = oldMeta.id
+          DOMId = oldMeta.DOMId
+        } else {
+          id = node.id || hp.strRand()
+          DOMId = `${DOM_ID_PREFIX}_${this.root._uid}_${hp.strRand()}_branch_${id}`
+        }
         Object.assign(newMeta, {
           id,
-          DOMId: `${DOM_ID_PREFIX}_${this.root._uid}_${hp.strRand()}_branch_${id}`,
-          parent: this.parent,
-          level: this.level,
+          DOMId,
         })
         if (this.$options._afterMetaCreateds) {
           for (const func of this.$options._afterMetaCreateds) {
             func.call(this, newMeta, node)
           }
         }
+        if (oldMeta) {
+          Object.assign(newMeta, oldMeta)
+        }
+        Object.assign(newMeta, {
+          parent: this.parent,
+          level: this.level,
+        })
         if (this.idMode === 'id') {
           this.root.metaMap[id] = newMeta
         } else {
@@ -146,6 +157,9 @@ const Tree = {
         cur = this.getNodeParent(cur)
       }
     },
+    traverseDescendants(nodeOrNodes, handler) {
+      return th.depthFirstSearch(nodeOrNodes, handler)
+    },
     cloneTreeData(nodeOrNodes) {
       const nodes = hp.toArrayIfNot(nodeOrNodes)
       const walk = (arr) => arr.map(node => {
@@ -168,10 +182,11 @@ const Tree = {
         hp.arrayRemove(this.trees, this)
       })
     }
-    this.$watch(() => [this.nodes, this.level], (newArr, old) => {
-      const nodes = newArr[0]
-      const oldNodes = old && old[0]
-      this.nodesWatcher(nodes, oldNodes)
+    this.$watch('nodes', this.nodesWatcher, {immediate: true})
+    this.$watch('level', (level, oldLevel) => {
+      for (const node of this.nodes) {
+        this.getMetaByNode(node).level = level
+      }
     }, {immediate: true})
   },
   // mounted() {},
