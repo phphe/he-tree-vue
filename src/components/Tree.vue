@@ -1,5 +1,5 @@
 <template lang="pug">
-.tree-children(:class="{'he-tree tree-root': isRoot}")
+.tree-children(:class="{'he-tree tree-root': isRoot}" :data-tree-id="_uid")
   .tree-branch(v-for="(node, i) in nodes" :key="metas[i].id" :id="metas[i].DOMId")
     .tree-node()
       slot(:node="node" :meta="metas[i]" :root="root") {{node.text}}
@@ -12,9 +12,9 @@
 <script>
 import * as hp from 'helper-js'
 import * as th from 'tree-helper'
+import * as tdhp from '@/todo-utils'
 
-const DOM_ID_PREFIX = 'he_tree'
-const trees = []
+const trees = {}
 
 const Tree = {
   name: 'Tree',
@@ -23,6 +23,7 @@ const Tree = {
     privateProps: {},
     idMode: {default: 'object'}, // object, id(node must has id)
     dataModification: {default: 'modify_old'}, // new, modify_old. create new data or modify old
+    DOM_ID_PREFIX: {default: 'he_tree'},
   },
   // components: {},
   data() {
@@ -80,13 +81,18 @@ const Tree = {
       this.metas = nodes.map(node => {
         const oldMeta = this.idMode === 'id' ? this.root.metaMap[node.id] : this.root.metaMap.get(node)
         const newMeta = {}
+        // initial meta
+        if (node.$meta) {
+          Object.assign(newMeta, node.$meta)
+        }
+        //
         let id, DOMId
         if (oldMeta) {
           id = oldMeta.id
           DOMId = oldMeta.DOMId
         } else {
           id = node.id || hp.strRand()
-          DOMId = `${DOM_ID_PREFIX}_${this.root._uid}_${hp.strRand()}_branch_${id}`
+          DOMId = `${this.DOM_ID_PREFIX}_${this.root._uid}_branch_${id}`
         }
         Object.assign(newMeta, {
           id,
@@ -118,7 +124,7 @@ const Tree = {
     },
     convertDOMIDToID(DOMId) {
       let r = DOMId
-      if (DOMId.startsWith(DOM_ID_PREFIX)) {
+      if (DOMId.startsWith(this.DOM_ID_PREFIX)) {
         r = DOMId.split('_branch_')[1]
       }
       return r
@@ -133,15 +139,16 @@ const Tree = {
       return this.getMetaByNode(node)
     },
     getNodeParent(node) {
-      return this.getMetaByNode(node).parent
+      const meta = this.getMetaByNode(node)
+      return meta ? meta.parent : null
     },
-    getNodeSiblings(node, tree, opt = {}) {
+    getNodeSiblings(node, opt = {}) {
       opt = {
         convertToArray: true,
         ...opt,
       }
       const parent = this.getNodeParent(node)
-      let r = parent ? parent.children : tree.value
+      let r = parent ? parent.children : this.root.value
       if (opt.convertToArray) {
         r = hp.toArrayIfNot(r)
       }
@@ -172,14 +179,55 @@ const Tree = {
       let r = walk(nodes)
       return hp.isArray(nodeOrNodes) ? r : r[0]
     },
+    getTreeVmByTreeEl(treeEl) {
+      return this.root.trees[treeEl.getAttribute('data-tree-id')]
+    },
+    // todo extract hooks to vue-functions
+    // get hooks in this._hooks, without which in props
+    _getNonPropHooksByName(name) {
+      if (this._hooks) {
+        return this._hooks[name]
+      }
+    },
+    addHook(name, func) {
+      if (!this._getNonPropHooksByName(name)) {
+        if (!this._hooks) {
+          this._hooks = {}
+        }
+        if (!this._hooks[name]) {
+          this._hooks[name] = []
+        }
+      }
+      this._hooks[name].push(func)
+    },
+    removeHook(name, func) {
+      const hooks = this._getNonPropHooksByName(name)
+      if (hooks) {
+        hp.arrayRemove(hooks, func)
+      }
+    },
+    hasHook(name) {
+      return this._getNonPropHooksByName(name) || this[name]
+    },
+    executeHook(name, args) {
+      const hooks = this._getNonPropHooksByName(name).slice()
+      if (hooks) {
+        if (this[name] && hp.isFunction(this[name])) {
+          hooks.push(function (next, ...args) {
+            return this[name](...args)
+          })
+        }
+        return tdhp.joinFunctionsByNext(hooks)(...args)
+      }
+    },
   },
   created() {
     if (this === this.root) {
       this.metaMap = this.idMode === 'id' ? {} : new Map()
       this.idMap = {}
-      this.trees.push(this)
+      this.trees[this._uid] = this
       this.$once('hook:beforeDestroy', () => {
-        hp.arrayRemove(this.trees, this)
+        this.$delete(this.trees, this._uid)
       })
     }
     this.$watch('nodes', this.nodesWatcher, {immediate: true})
@@ -205,17 +253,6 @@ const Tree = {
 }
 export default Tree
 
-// todo move to helper-js
-// currying
-function joinFunctions(funcs) {
-  return function (...args) {
-    let result = args
-    for (const func of funcs) {
-      result = func.call(this, ...result)
-    }
-    return result
-  }
-}
 </script>
 
 <style>

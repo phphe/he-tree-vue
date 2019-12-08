@@ -1,14 +1,16 @@
 <!-- this is an example -->
 <template lang="pug">
 div
-  h2 Test
-  button(@click="flickOnDrop") flick on drop
-  br
-  label draggable
-  input(type="checkbox" v-model="draggable")
-  hr
-  .test-trees
-    Tree.test-tree(:value="treeData1" unfoldAllAtBeginning ref="tree1" :draggable="draggable")
+  h2 Draggable Pro
+  div()
+    h5 Empty tree
+    Tree(:value="treeData2" unfoldAllAtBeginning ref="tree2" crossTree)
+      div(slot-scope="{node, meta, root}")
+        input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
+        | &nbsp;
+        span {{node.text}}
+    hr
+    Tree(:value="treeData1" unfoldAllAtBeginning ref="tree1" crossTree)
       div(slot-scope="{node, meta, root}")
         input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
         | &nbsp;
@@ -20,7 +22,7 @@ import * as hp from 'helper-js'
 import Tree from '@/components/Tree.vue'
 import fold from '@/plugins/fold.js'
 import check from '@/plugins/check.js'
-import Draggable from '@/plugins/draggable/Draggable.vue'
+import Draggable from '@/plugins/draggable-pro/Draggable.vue'
 
 const MixedTree = Tree.mixPlugins([fold, check, Draggable])
 
@@ -41,7 +43,7 @@ export default {
           {text: 'node 1-8'},
           {text: 'node 1-9'},
         ]},
-        {text: 'node 2', children: [
+        {text: 'node 2 undroppable', $meta: {droppable: false}, children: [
           {text: 'node 2-0'},
           {text: 'node 2-1'},
           {text: 'node 2-2'},
@@ -57,7 +59,7 @@ export default {
         {text: 'node 4'},
         {text: 'node 4'},
       ],
-      draggable: true,
+      treeData2: [],
     }
   },
   // computed: {},
@@ -84,7 +86,4 @@ export default {
 </script>
 
 <style>
-.test-trees{
-  display: flex;
-}
 </style>
