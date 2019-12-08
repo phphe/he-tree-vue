@@ -2,10 +2,10 @@
 <template lang="pug">
 #app
   BaseTree.mr
-  TestTree.mr
-  IDModeTree.mr
-  NodeBackTree.mr
-  DraggableProTree.mr
+  //- TestTree.mr
+  //- IDModeTree.mr
+  //- NodeBackTree.mr
+  //- DraggableProTree.mr
 </template>
 
 <script>
@@ -13,10 +13,11 @@ import BaseTree from '@/examples/Base'
 import TestTree from '@/examples/Test'
 import IDModeTree from '@/examples/IDMode'
 import NodeBackTree from '@/examples/NodeBack'
-import DraggableProTree from '@/examples/DraggablePro'
+// import DraggableProTree from '@/examples/DraggablePro'
 
 export default {
-  components: {BaseTree, TestTree, IDModeTree, NodeBackTree, DraggableProTree},
+  // components: {BaseTree, TestTree, IDModeTree, NodeBackTree, DraggableProTree},
+  components: {BaseTree, TestTree, IDModeTree, NodeBackTree},
   // data() {
   //   return {}
   // },
@@ -31,6 +32,9 @@ export default {
 <style>
 #app{
   display: flex;
+}
+.ml{
+  margin-left: 1em;
 }
 .mr{
   margin-right: 1em;

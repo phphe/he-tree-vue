@@ -6,11 +6,10 @@ export default {
     unfoldAllAtBeginning: {type: Boolean},
   },
   methods: {
-    fold(node) {
-      const meta = this.getMetaByNode(node)
-      meta.folded = true
+    fold(node, path) {
+      this.$set(node, '$folded', true)
     },
-    unfold(node, opt = {}) {
+    unfold(node, path, opt = {}) {
       opt = {
         unfoldParent: true,
         foldOthers: false,
@@ -19,32 +18,29 @@ export default {
       if (opt.foldOthers) {
         this.foldAll()
       }
-      const meta = this.getMetaByNode(node)
-      meta.folded = false
-      if (meta.parent && opt.unfoldParent) {
-        this.unfold(meta.parent, opt)
+      this.$set(node, '$folded', false)
+      if (opt.unfoldParent && path.length > 1) {
+        const parentPath = path.slice(0, path.length - 1)
+        const parent = this.getNodeByPath(parentPath)
+        this.unfold(parent, parentPath, opt)
       }
     },
-    toggleFold(node, opt) {
-      const meta = this.getMetaByNode(node)
-      if (meta.folded) {
-        this.unfold(node, opt)
+    toggleFold(node, path, opt) {
+      if (node.$folded) {
+        this.unfold(node, path, opt)
       } else {
-        this.fold(node, opt)
+        this.fold(node, path, opt)
       }
     },
     foldAll() {
-      th.depthFirstSearch(this.root.nodes, (childNode) => {
+      th.depthFirstSearch(this.value, (childNode) => {
         this.fold(childNode)
       })
     },
     unfoldAll() {
-      th.depthFirstSearch(this.root.nodes, (childNode) => {
+      th.depthFirstSearch(this.value, (childNode) => {
         this.unfold(childNode, {unfoldParent: false})
       })
     },
-  },
-  afterMetaCreated(meta) {
-    meta.folded = !this.root.unfoldAllAtBeginning
   },
 }

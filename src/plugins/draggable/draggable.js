@@ -60,23 +60,6 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       if (options.ondrag && options.ondrag(store, opt) === false) {
         return false
       }
-      // create placeholder
-      const placeholder = document.createElement('DIV')
-      hp.addClass(placeholder, options.branchClass)
-      hp.addClass(placeholder, options.placeholderClass)
-      if (options.placeholderId) {
-        placeholder.setAttribute('id', options.placeholderId)
-      }
-      const placeholderNode = document.createElement('DIV')
-      hp.addClass(placeholderNode, options.nodeClass)
-      hp.addClass(placeholderNode, options.placeholderNodeClass)
-      hp.appendTo(placeholderNode, placeholder)
-      hp.insertAfter(placeholder, movingEl)
-      store.placeholder = placeholder
-      // create a tree children el to use when can't get childrenEl
-      const tempChildren = document.createElement('DIV')
-      hp.addClass(tempChildren, options.childrenClass)
-      store.tempChildren = tempChildren
     },
     moving: (moveEvent, store, opt) => {
       store.oneMoveStore = {} // life cycle: one move
@@ -120,11 +103,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       }
       store.targetTreeEl = tree
       if (options.beforeMove && options.beforeMove(store, opt) === false) {
-        return false
-      }
-      // if cross tree
-      if (store.startTreeEl !== store.targetTreeEl) {
-        return
+        return // return to prevent action; can't return false, that will stop move
       }
       // info ========================================
       // life cycle: one move
@@ -291,6 +270,73 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           checkTempChildren()
         })
       }
+      const actions = {
+        'nothing'() {}, // do nothing
+        'append to root'() {
+          // no closest branch, just append to root
+          if (options.isTargetTreeRootDroppable(store)) {
+            hp.appendTo(store.placeholder, info.tree)
+          }
+        },
+        'insert before'() {
+          if (options.isNodeParentDroppable(info.closestBranch, store.targetTreeEl)) {
+            hp.insertBefore(store.placeholder, info.closestBranch)
+          } else {
+            secondCase(info.closestBranch)
+          }
+        },
+        'insert after'(branch = info.closestBranch) {
+          if (options.isNodeParentDroppable(branch, store.targetTreeEl)) {
+            hp.insertAfter(store.placeholder, branch)
+          } else {
+            secondCase(branch)
+          }
+        },
+        async prepend() {
+          if (info.closestBranch === store.placeholder) {
+            return
+          }
+          if (info.closestBranch && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold(info.closestBranch, store)) {
+            return doAction('insert after', info.closestBranch)
+          } else {
+            if (options.isNodeDroppable(info.closestBranch, store.targetTreeEl)) {
+              const childrenEl = await unfoldAndGetChildrenEl(info.closestBranch)
+              hp.prependTo(store.placeholder, childrenEl)
+            } else {
+              secondCase(info.closestBranch)
+            }
+          }
+        },
+        'after above'() {
+          if (options.isNodeParentDroppable(info.aboveBranch, store.targetTreeEl)) {
+            hp.insertAfter(store.placeholder, info.aboveBranch)
+          } else {
+            secondCase(info.aboveBranch)
+          }
+        },
+        async 'append to prev'() {
+          if (info.closestPrev === store.placeholder) {
+            return
+          }
+          if (info.closestPrev && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold(info.closestPrev, store)) {
+            return doAction('insert after', info.closestPrev)
+          } else {
+            if (options.isNodeDroppable(info.closestPrev, store.targetTreeEl)) {
+              const childrenEl = await unfoldAndGetChildrenEl(info.closestPrev)
+              hp.appendTo(store.placeholder, childrenEl)
+            } else {
+              secondCase(info.closestPrev)
+            }
+          }
+        },
+      }
+      // second case for actions, when target position not droppable
+      const secondCase = async (branchEl) => {
+        const targetEl = options._findClosestDroppablePosition(branchEl, store.targetTreeEl)
+        if (targetEl) {
+          hp.insertAfter(store.placeholder, targetEl)
+        }
+      }
       const unfoldAndGetChildrenEl = async (branch) => {
         await options.unfoldNodeByID(branch.getAttribute('id'), store)
         let childrenEl = branch.querySelector(`.${options.childrenClass}`)
@@ -300,35 +346,32 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         }
         return childrenEl
       }
-      const actions = {
-        'nothing'() {}, // do nothing
-        'append to root'() { hp.appendTo(store.placeholder, info.tree) },
-        'insert before'() { hp.insertBefore(store.placeholder, info.closestBranch) },
-        'insert after'(branch = info.closestBranch) { hp.insertAfter(store.placeholder, branch) },
-        async prepend() {
-          if (info.closestBranch === store.placeholder) {
-            return
+      // actions end ========================================
+      //
+      const checkPlaceholder = () => {
+        if (!store.placeholder) {
+          // create placeholder
+          const placeholder = document.createElement('DIV')
+          hp.addClass(placeholder, options.branchClass)
+          hp.addClass(placeholder, options.placeholderClass)
+          if (options.placeholderId) {
+            placeholder.setAttribute('id', options.placeholderId)
           }
-          if (info.closestBranch && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold(info.closestBranch, store)) {
-            return doAction('insert after', info.closestBranch)
-          } else {
-            const childrenEl = await unfoldAndGetChildrenEl(info.closestBranch)
-            hp.prependTo(store.placeholder, childrenEl)
-          }
-        },
-        'after above'() { hp.insertAfter(store.placeholder, info.aboveBranch) },
-        async 'append to prev'() {
-          if (info.closestPrev === store.placeholder) {
-            return
-          }
-          if (info.closestPrev && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold(info.closestPrev, store)) {
-            return doAction('insert after', info.closestPrev)
-          } else {
-            const childrenEl = await unfoldAndGetChildrenEl(info.closestPrev)
-            hp.appendTo(store.placeholder, childrenEl)
-          }
-        },
+          const placeholderNode = document.createElement('DIV')
+          hp.addClass(placeholderNode, options.nodeClass)
+          hp.addClass(placeholderNode, options.placeholderNodeClass)
+          hp.appendTo(placeholderNode, placeholder)
+          hp.insertAfter(placeholder, movingEl)
+          store.placeholder = placeholder
+          options.afterPlaceholderCreated(store)
+          // create a tree children el to use when can't get childrenEl
+          const tempChildren = document.createElement('DIV')
+          hp.addClass(tempChildren, options.childrenClass)
+          store.tempChildren = tempChildren
+        }
       }
+      //
+      checkPlaceholder()
       doDraggableDecision({options, event, store, opt, info, conditions, actions, doAction})
     },
     drop: async (endEvent, store, opt) => {
@@ -346,7 +389,6 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       store.pathChanged = pathChanged
       let clonedTreeEl
       if (pathChanged) {
-        // todo cross tree
         if (store.placeholder) {
           store.placeholder.setAttribute('draggable-temp', 'placeholder')
         }

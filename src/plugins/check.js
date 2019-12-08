@@ -1,47 +1,38 @@
 export default {
   props: {},
   methods: {
-    afterCheckChanged(node) {
-      const meta = this.getMetaByNode(node)
+    afterCheckChanged(node, path) {
       // update parent
-      let cur = meta.parent
-      while (cur) {
-        const curMeta = this.getMetaByNode(cur)
-        curMeta.checked = cur.children.every(node2 => this.getMetaByNode(node2).checked)
-        cur = curMeta.parent
+      const nodes = this.getAllNodesByPath(path)
+      const reversedParents = nodes.slice(0, nodes.length - 1)
+      reversedParents.reverse()
+      for (const parent of reversedParents) {
+        this.$set(parent, '$checked', parent.children.every(child => child.$checked))
       }
       // update children
       if (node.children && node.children.length > 0) {
         this.traverseDescendants(node.children, (childNode) => {
-          this.getMetaByNode(childNode).checked = meta.checked
+          this.$set(childNode, '$checked', node.$checked)
         })
       }
     },
-    check(node) {
-      const meta = this.getMetaByNode(node)
-      node.checked = true
-      this.afterCheckChanged(node)
+    check(node, path) {
+      this.$set(node, '$checked', true)
+      this.afterCheckChanged(node, path)
     },
-    uncheck(node) {
-      const meta = this.getMetaByNode(node)
-      node.checked = false
-      this.afterCheckChanged(node)
+    uncheck(node, path) {
+      this.$set(node, '$checked', false)
+      this.afterCheckChanged(node, path)
     },
-    toggleCheck(node) {
-      const meta = this.getMetaByNode(node)
-      if (meta.checked) {
-        this.uncheck(node)
-      } else {
-        this.check(node)
-      }
+    toggleCheck(node, path) {
+      // node.$checked is checked by vmodel, so don't change it again, just make it reactive
+      this.$set(node, '$checked', node.$checked)
+      this.afterCheckChanged(node, path)
     },
-    setCheckedOfAllNodes(to, nodeOrNodes = this.root.value) {
+    setCheckedOfAllNodes(to, nodeOrNodes = this.value) {
       this.traverseDescendants(nodeOrNodes, (childNode) => {
-        this.getMetaByNode(childNode).checked = to
+        this.$set(childNode, '$checked', to)
       })
     },
-  },
-  afterMetaCreated(meta) {
-    meta.checked = false
   },
 }
