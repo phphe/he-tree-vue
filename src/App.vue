@@ -33,6 +33,9 @@ export default {
 #app{
   display: flex;
 }
+.flex{
+  display: flex;
+}
 .ml{
   margin-left: 1em;
 }

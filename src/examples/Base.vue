@@ -2,22 +2,22 @@
 <template lang="pug">
 div
   h2 Base
-  .base-trees
+  .base-trees.flex
     Tree.base-tree(:value="treeData1" unfoldAllAtBeginning ref="tree1")
       //- div(slot-scope="{node, index}") {{node}}
     Tree.base-tree.ml(:value="treeData1" unfoldAllAtBeginning ref="tree2")
-      div(slot-scope="{node, index, path, store}")
-        b(v-if="node.children && node.children.length > 0" @click="store.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
-        input(type="checkbox" v-model="node.$checked" @change="store.toggleCheck(node, path)")
+      div(slot-scope="{node, index, path, tree}")
+        b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
+        input(type="checkbox" v-model="node.$checked" @change="tree.toggleCheck(node, path)")
         | &nbsp;
         span {{node.text}}
-    //- Tree.base-tree.base-tree2(:value="treeData2" unfoldAllAtBeginning ref="tree3")
-    //-   div(slot-scope="{node, meta, root}")
-    //-     b(v-if="node.children && node.children.length > 0" @click="root.toggleFold(node)") {{meta.folded ? '+' : '-'}}&nbsp;
-    //-     input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
-    //-     | &nbsp;
-    //-     span {{node.text}}
-    //- div(style="position: fixed;width: 400px;height: 200px;background: teal;opacity: 0.2;display: flex;justify-content: center;align-items: center;font-size: 40px;color: #fffc;") MASK
+    Tree.base-tree.ml(:value="treeData2" unfoldAllAtBeginning ref="tree3")
+      div(slot-scope="{node, index, path, tree}")
+        b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
+        input(type="checkbox" v-model="node.$checked" @change="tree.toggleCheck(node, path)")
+        | &nbsp;
+        span {{node.text}}
+    div(style="position: fixed;width: 400px;height: 200px;background: teal;opacity: 0.2;display: flex;justify-content: center;align-items: center;font-size: 40px;color: #fffc;") MASK
 </template>
 
 <script>
@@ -154,12 +154,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.base-trees{
-  display: flex;
-}
-.base-tree2{
-  margin-left: 50px;
-}
-</style>

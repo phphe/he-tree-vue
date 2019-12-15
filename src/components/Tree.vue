@@ -9,7 +9,7 @@ const template = function (h) {
       const path = [...parentPath, index]
       const slotDefault = () => {
         if (this.$scopedSlots.default) {
-          return this.$scopedSlots.default({node, index, path, store: this})
+          return this.$scopedSlots.default({node, index, path, tree: this})
         } else if (this.$slots.default) {
           return this.$slots.default
         } else {
@@ -56,6 +56,29 @@ const Tree = {
     //     cur = this.getNodeParent(cur)
     //   }
     // },
+    * iteratePath(path, opt = {}) {
+      if (!opt.reverse) {
+        let prevPath = []
+        let prevNode
+        let prevChildren = this.value
+        for (const index of path) {
+          const currentPath = [...prevPath, index]
+          const currentNode = prevChildren[index]
+          yield {path: currentPath, node: currentNode}
+          prevPath = currentPath
+          prevNode = currentNode
+          prevChildren = currentNode.children
+        }
+      } else {
+        const allReversedNodes = this.getAllNodesByPath(path)
+        allReversedNodes.reverse()
+        let currentPath = path.slice()
+        for (const node of allReversedNodes) {
+          yield {path: currentPath, node: node}
+          currentPath = tdhp.arrayWithoutEnd(currentPath, 1)
+        }
+      }
+    },
     traverseDescendants(nodeOrNodes, handler) {
       return th.depthFirstSearch(nodeOrNodes, handler)
     },
@@ -72,21 +95,29 @@ const Tree = {
     //   return hp.isArray(nodeOrNodes) ? r : r[0]
     // },
     getTreeVmByTreeEl(treeEl) {
-      return this.root.trees[treeEl.getAttribute('data-tree-id')]
+      return this.trees[treeEl.getAttribute('data-tree-id')]
+    },
+    getAllNodesByPath(path) {
+      const nodes = []
+      for (const {node} of this.iteratePath(path)) {
+        nodes.push(node)
+      }
+      return nodes
     },
     getNodeByPath(path) {
       return hp.arrayLast(this.getAllNodesByPath(path))
     },
-    getAllNodesByPath(path) {
-      let nodes = []
-      let cur
-      let curChildren = this.value
-      for (const index of path) {
-        cur = curChildren[index]
-        nodes.push(cur)
-        curChildren = cur.children
-      }
-      return nodes
+    getPathByBranchEl(branchEl) {
+      return branchEl.getAttribute('data-tree-node-path').split(',')
+    },
+    getBranchElByPath(path) {
+      return this.$el.querySelector(`[data-tree-node-path='${path.join(',')}']`)
+    },
+    getNodeByBranchEl(branchEl) {
+      return this.getNodeByPath(this.getPathByBranchEl(branchEl))
+    },
+    getNodeParentByPath(path) {
+      return tdhp.arrayWithoutEnd(this.getAllNodesByPath(path), 1)
     },
     // todo extract hooks to vue-functions
     // get hooks in this._hooks, without which in props
@@ -127,7 +158,12 @@ const Tree = {
       }
     },
   },
-  // created() {},
+  created() {
+    this.$set(this.trees, this._uid, this)
+    this.$once('hook:beforeDestroy', () => {
+      this.$delete(this.trees, this._uid)
+    })
+  },
   // mounted() {},
   // beforeDestroy() {},
 

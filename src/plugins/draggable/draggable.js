@@ -20,7 +20,8 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     draggingClass: 'dragging',
     indent: 20,
     // placeholderId
-    // unfoldNodeByID optional
+    // unfoldTargetNodeByEl
+    // getPathByBranchEl
     ...options,
     treeEl,
   }
@@ -55,8 +56,9 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       return el
     },
     drag: (startEvent, moveEvent, store, opt) => {
+      store.dragBranchEl = store.el
       const movingEl = store.el // branch
-      store.startDOMPath = resolveBranchPath(movingEl)
+      store.startPath = options.getPathByBranchEl(movingEl)
       if (options.ondrag && options.ondrag(store, opt) === false) {
         return false
       }
@@ -338,7 +340,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         }
       }
       const unfoldAndGetChildrenEl = async (branch) => {
-        await options.unfoldNodeByID(branch.getAttribute('id'), store)
+        await options.unfoldTargetNodeByEl(branch, store)
         let childrenEl = branch.querySelector(`.${options.childrenClass}`)
         if (!childrenEl) {
           childrenEl = store.tempChildren
@@ -376,10 +378,41 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     },
     drop: async (endEvent, store, opt) => {
       const movingEl = store.el // branch
-      store.targetDOMPath = resolveBranchPath(store.placeholder)
+      const {placeholder, tempChildren} = store
       //
       // todo if placeholder not mounted
-      let pathChanged = !comparePath(store.startDOMPath, store.targetDOMPath)
+      store.targetPath = options.getPathByBranchEl(placeholder)
+      let pathChanged = isPathChanged()
+      store.targetPathNotEqualToStartPath = pathChanged
+      store.pathChangePrevented = false
+      if (options.beforeDrop && options.beforeDrop(pathChanged, store, opt) === false) {
+        pathChanged = false
+        store.pathChangePrevented = false
+      }
+      store.pathChanged = pathChanged
+      // hp.removeEl(placeholder)
+      // if (tempChildren) {
+      //   hp.removeEl(tempChildren)
+      // }
+      options.ondrop(store, (opt) => {
+        hp.removeEl(placeholder)
+        if (tempChildren) {
+          hp.removeEl(tempChildren)
+        }
+      })
+      //
+      function isPathChanged() {
+        const {startTree, targetTree, startPath, targetPath} = store
+        return startTree !== targetTree || startPath.toString() !== targetPath.toString()
+      }
+    },
+    // todo remove
+    dropold: async (endEvent, store, opt) => {
+      const movingEl = store.el // branch
+      //
+      // todo if placeholder not mounted
+      store.targetPath = options.getPathByBranchEl(store.placeholder)
+      let pathChanged = isPathChanged()
       store.expectedPathChanged = pathChanged
       store.pathChangePrevented = false
       if (options.beforeDrop && options.beforeDrop(pathChanged, store, opt) === false) {
@@ -418,34 +451,34 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         hp.removeEl(clonedTreeEl)
       }
       options.afterDrop(pathChanged, store, opt)
+      function isPathChanged() {
+        const {startTree, targetTree, startPath, targetPath} = store
+        return startTree !== targetTree || startPath.toString() !== targetPath.toString()
+      }
+      function resolveBranchPath(branchEl) {
+        let parentPath
+        hp.findParent(branchEl, el => {
+          if (hp.hasClass(el, options.rootClass)) {
+            parentPath = []
+            return true
+          }
+          if (hp.hasClass(el, options.branchClass)) {
+            parentPath = options.getPathByBranchEl(parent)
+            return true
+          }
+        })
+        let index = 0
+        for (const {value: el, index: index2} of hp.iterateALL(branchEl.parentElement.children)) {
+          if (hp.hasClass(el, options.branchClass) || hp.hasClass(el, options.placeholderClass)) {
+            if (el === branchEl) {
+              break
+            }
+            index++
+          }
+        }
+        return [...parentPath, index]
+      }
     },
   })
   return {destroy, options}
-  function resolveBranchPath(branchEl) {
-    let tree
-    const parentIds = []
-    hp.findParent(branchEl, el => {
-      if (hp.hasClass(el, options.rootClass)) {
-        tree = el
-        return true
-      }
-      if (hp.hasClass(el, options.branchClass)) {
-        parentIds.unshift(el.getAttribute('id'))
-      }
-    })
-    let index
-    for (let i = 0; i < branchEl.parentElement.children.length; i++) {
-      const el = branchEl.parentElement.children[i]
-      if (hp.hasClass(el, options.branchClass) || hp.hasClass(el, options.placeholderClass)) {
-        if (el === branchEl) {
-          index = i
-          break
-        }
-      }
-    }
-    return {tree, parentIds, index}
-  }
-  function comparePath(p1, p2) {
-    return p1.tree === p2.tree && p1.index === p2.index && p1.parentIds.toString() === p2.parentIds.toString()
-  }
 }

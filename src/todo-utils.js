@@ -38,3 +38,22 @@ export function joinFunctionsByNext(funcs) {
     }
   }
 }
+
+export function arrayGet(arr, index, endIndex) {
+  if (index < 0) {
+    index += arr.length
+  }
+  if (endIndex == null) {
+    return arr[index]
+  } else {
+    if (endIndex < 0) {
+      endIndex += arr.length
+    }
+    return arr.slice(index, endIndex - index + 1)
+  }
+}
+
+
+export function arrayWithoutEnd(arr, len) {
+  return arr.slice(0, arr.length - len)
+}
