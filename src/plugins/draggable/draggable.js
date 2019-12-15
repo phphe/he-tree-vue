@@ -65,6 +65,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       }
     },
     moving: (moveEvent, store, opt) => {
+      // return false in moving will prevent move animation; return undefined just prevent doAction
       store.oneMoveStore = {} // life cycle: one move
       const movingEl = store.el // branch
       // find closest branch and hovering tree
@@ -104,10 +105,11 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       if (treeBeCoved) {
         return
       }
-      store.targetTreeEl = tree
-      if (options.beforeMove && options.beforeMove(store, opt) === false) {
-        return // return to prevent action; can't return false, that will stop move
+      // check if target tree right
+      if (options.filterTargetTree(tree, store, opt) === false) {
+        return
       }
+      store.targetTreeEl = tree
       // info ========================================
       // life cycle: one move
       const info = {

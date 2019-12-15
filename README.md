@@ -32,3 +32,17 @@ npm run test:unit
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+tree
+draggable(tree, store)
+droppable(tree, store)
+crossTree(tree, store)
+rootDroppable(tree, store)
+
+node
+$draggable(path, tree, store)
+$droppable(path, tree, store)
+
+hook
+ondragstart(tree, store)
+ondragend(tree, store)

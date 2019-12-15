@@ -3,6 +3,8 @@ import * as hp from 'helper-js'
 import makeTreeDraggable from './draggable.js'
 import * as tdhp from '@/todo-utils'
 
+const treesStore = {}
+
 export default {
   props: {
     indent: {default: 20},
@@ -17,9 +19,11 @@ export default {
     rootDroppable: {type: [Boolean, Function], default: true},
   },
   // components: {},
-  // data() {
-  //   return {}
-  // },
+  data() {
+    return {
+      treesStore,
+    }
+  },
   // computed: {},
   // watch: {},
   methods: {
@@ -34,37 +38,6 @@ export default {
         })
       })
     },
-    // todo remove
-    _Draggable_DOMPathToNodePath(DOMPath) {
-      const {tree: treeEl, parentIds, index} = DOMPath
-      const tree = this.getTreeVmByTreeEl(treeEl)
-      // resolve indexes
-      const indexes = []
-      let cur = tree.value
-      for (const pid of parentIds) {
-        let index
-        if (!cur) {
-          break
-        }
-        for (let i = 0; i < cur.length; i++) {
-          const node = cur[i]
-          if (tree.getMetaByNode(node).id === pid) {
-            index = i
-            cur = node.children
-            break
-          }
-        }
-        indexes.push(DOMPath.index)
-      }
-      indexes.push(index)
-      //
-      return {
-        tree,
-        parent: parentIds.length > 0 ? tree.getNodeByID(hp.arrayLast(parentIds)) : null,
-        index,
-        indexes,
-      }
-    },
     // todo move to tree-helper
     // todo add tree-helper into helper-js
     getNodeByIndexPath(indexes, rootData = this.value) {
@@ -76,17 +49,32 @@ export default {
       }
       return cur
     },
-    isNodeDroppable(node, path) {
-      if (!node) {
-        // tree
-        return this.rootDroppable
-      }
-      for (const {value: node} of hp.iterateALL(this.getAllNodesByPath(path), {reverse: true})) {
-        if (node.$droppable === undefined) {
+    isNodeDraggable(node, path) {
+      const {store} = this.treesStore
+      for (const {value: node, index} of hp.iterateALL(this.getAllNodesByPath(path), {reverse: true})) {
+        const currentPath = path.slice(0, index + 1)
+        const draggable = tdhp.resolveValueOrGettter(node.$draggable, [currentPath, this, store])
+        if (draggable === undefined) {
           continue
         } else {
-          // todo if is function
-          return node.$droppable
+          return draggable
+        }
+      }
+      return true
+    },
+    isNodeDroppable(node, path) {
+      const {store} = this.treesStore
+      if (!node) {
+        // tree
+        return tdhp.resolveValueOrGettter(this.rootDroppable, [this, store])
+      }
+      for (const {value: node, index} of hp.iterateALL(this.getAllNodesByPath(path), {reverse: true})) {
+        const currentPath = path.slice(0, index + 1)
+        const droppable = tdhp.resolveValueOrGettter(node.$droppable, [currentPath, this, store])
+        if (droppable === undefined) {
+          continue
+        } else {
+          return droppable
         }
       }
       return true
@@ -129,7 +117,7 @@ export default {
   },
   // created() {},
   mounted() {
-    const options = this. _draggableOptions = {
+    const options = this._draggableOptions = {
       indent: this.indent,
       triggerClass: this.triggerClass,
       rootClass: 'tree-root',
@@ -147,7 +135,7 @@ export default {
          const node = targetTree.getNodeByBranchEl(branchEl)
          return node.$folded && node.children && node.children.length > 0 && !this.unfoldWhenDragover
       },
-      isTargetTreeRootDroppable: (store) => store.targetTree.rootDroppable,
+      isTargetTreeRootDroppable: (store) => tdhp.resolveValueOrGettter(store.targetTree.rootDroppable, [store.targetTree, store]),
       unfoldTargetNodeByEl: (...args) => this._Draggable_unfoldTargetNodeByEl(...args),
       isNodeParentDroppable: (branchEl, treeEl) => {
         const tree = this.getTreeVmByTreeEl(treeEl)
@@ -177,33 +165,43 @@ export default {
       },
       getPathByBranchEl: (branchEl) => this.getPathByBranchEl(branchEl),
       beforeDrag: (store) => {
+        this.treesStore.store = store
         store.startTree = this.getTreeVmByTreeEl(store.startTreeEl)
-        const draggable = tdhp.resolveValueOrGettter(store.startTree.draggable, [store])
+        const draggable = tdhp.resolveValueOrGettter(store.startTree.draggable, [store.startTree, store])
         if (!draggable) {
           return false
         }
       },
       ondrag: (store) => {
-        const {startTree, dragBranchEl} = store
-        store.dragNode = startTree.getNodeByBranchEl(dragBranchEl)
-        if (startTree.hasHook('ondragstart') && startTree.executeHook('ondragstart', [store]) === false) {
+        const {startTree, dragBranchEl, startPath} = store
+        const path = startTree.getPathByBranchEl(dragBranchEl)
+        store.dragNode = startTree.getNodeByPath(path)
+        if (!startTree.isNodeDraggable(store.dragNode, path)) {
+          return false
+        }
+        if (startTree.hasHook('ondragstart') && startTree.executeHook('ondragstart', [startTree, store]) === false) {
           return false
         }
         store.startTree.$emit('drag', store)
       },
-      beforeMove: (store) => {
-        store.targetTree = this.getTreeVmByTreeEl(store.targetTreeEl)
-        const {startTree, targetTree} = store
-        if (startTree !== targetTree && (!startTree.crossTree || !targetTree.crossTree)) {
+      filterTargetTree: (targetTreeEl, store) => {
+        const targetTree = this.getTreeVmByTreeEl(targetTreeEl)
+        const {startTree} = store
+        if (startTree !== targetTree) {
+          // start tree or target tree not crossTree
+          if (!tdhp.resolveValueOrGettter(startTree.crossTree, [startTree, store]) || !tdhp.resolveValueOrGettter(targetTree.crossTree, [targetTree, store])) {
+            return false
+          }
+        }
+        const targetTreeDroppable = tdhp.resolveValueOrGettter(targetTree.droppable, [targetTree, store])
+        if (!targetTreeDroppable) {
           return false
         }
-        if (!targetTree.droppable) {
-          return false
-        }
+        store.targetTree = targetTree
       },
       beforeDrop: (pathChanged, store) => {
         const {targetTree} = store
-        if (targetTree.hasHook('ondragend') && targetTree.executeHook('ondragend', [store]) === false) {
+        if (targetTree.hasHook('ondragend') && targetTree.executeHook('ondragend', [targetTree, store]) === false) {
           return false
         }
         targetTree.$emit('drop', store)
