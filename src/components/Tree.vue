@@ -40,22 +40,13 @@ const Tree = {
   // components: {},
   data() {
     return {
+      DOM_ID_PREFIX: 'he_tree',
       trees,
     }
   },
   // computed: {},
   // watch: {},
   methods: {
-    // * iterateParents(node, opt = {}) {
-    //   if (opt.withSelf) {
-    //     yield node
-    //   }
-    //   let cur = this.getNodeParent(node)
-    //   while (cur) {
-    //     yield cur
-    //     cur = this.getNodeParent(cur)
-    //   }
-    // },
     * iteratePath(path, opt = {}) {
       if (!opt.reverse) {
         let prevPath = []
@@ -82,18 +73,6 @@ const Tree = {
     traverseDescendants(nodeOrNodes, handler) {
       return th.depthFirstSearch(nodeOrNodes, handler)
     },
-    // cloneTreeData(nodeOrNodes) {
-    //   const nodes = hp.toArrayIfNot(nodeOrNodes)
-    //   const walk = (arr) => arr.map(node => {
-    //     const newNode = Object.assign({}, node)
-    //     if (newNode.children) {
-    //       newNode.children = walk(newNode.children)
-    //     }
-    //     return newNode
-    //   })
-    //   let r = walk(nodes)
-    //   return hp.isArray(nodeOrNodes) ? r : r[0]
-    // },
     getTreeVmByTreeEl(treeEl) {
       return this.trees[treeEl.getAttribute('data-tree-id')]
     },
@@ -108,7 +87,7 @@ const Tree = {
       return hp.arrayLast(this.getAllNodesByPath(path))
     },
     getPathByBranchEl(branchEl) {
-      return branchEl.getAttribute('data-tree-node-path').split(',')
+      return branchEl.getAttribute('data-tree-node-path').split(',').map(v => parseInt(v))
     },
     getBranchElByPath(path) {
       return this.$el.querySelector(`[data-tree-node-path='${path.join(',')}']`)

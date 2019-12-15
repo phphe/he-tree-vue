@@ -17,7 +17,7 @@ div
         input(type="checkbox" v-model="node.$checked" @change="tree.toggleCheck(node, path)")
         | &nbsp;
         span {{node.text}}
-    div(style="position: fixed;width: 400px;height: 200px;background: teal;opacity: 0.2;display: flex;justify-content: center;align-items: center;font-size: 40px;color: #fffc;") MASK
+    div(style="position: absolute;width: 180px;height: 100px;background: teal;opacity: 0.2;display: flex;justify-content: center;align-items: center;font-size: 40px;color: #fffc;") MASK
 </template>
 
 <script>

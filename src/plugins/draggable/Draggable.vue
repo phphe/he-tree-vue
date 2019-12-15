@@ -96,7 +96,7 @@ export default {
       const getAttrPath = (el) => {
         const pathStr = el.getAttribute('data-tree-node-path')
         if (pathStr) {
-          return pathStr.split(',')
+          return pathStr.split(',').map(v => parseInt(v))
         }
       }
       const path = getAttrPath(branchEl)
@@ -132,6 +132,15 @@ export default {
     const options = this. _draggableOptions = {
       indent: this.indent,
       triggerClass: this.triggerClass,
+      rootClass: 'tree-root',
+      childrenClass: 'tree-children',
+      branchClass: 'tree-branch',
+      nodeClass: 'tree-node',
+      nodeBackClass: 'tree-node-back',
+      placeholderClass: 'tree-placeholder',
+      placeholderNodeClass: 'tree-placeholder-node',
+      hiddenClass: 'hidden',
+      draggingClass: 'dragging',
       placeholderId: `${this.DOM_ID_PREFIX}_placeholder`,
       ifNodeFoldedAndWithChildrenAndNotAutoUnfold: (branchEl, store) => {
          const {targetTree} = store
@@ -206,7 +215,29 @@ export default {
           const startParentPath = tdhp.arrayWithoutEnd(startPath, 1)
           const startParent = startTree.getNodeByPath(startParentPath)
           const startSiblings = startParent ? startParent.children : startTree.value
-          hp.arrayRemove(startSiblings, dragNode)
+          const startIndex = hp.arrayLast(startPath)
+          startSiblings.splice(startIndex, 1)
+          // update targetPath
+          if (startTree === targetTree) {
+            if (startPath.length <= targetPath.length) {
+              const lenNoEnd = startPath.length - 1
+              let same = true
+              for (let i = 0; i < lenNoEnd; i++) {
+                const s = startPath[i]
+                const t = targetPath[i]
+                if (s !== t) {
+                  same = false
+                  break
+                }
+              }
+              if (same) {
+                const endIndex = startPath.length - 1
+                if (startPath[endIndex] < targetPath[endIndex]) {
+                  targetPath[endIndex] -= 1
+                }
+              }
+            }
+          }
           // insert to target position
           const targetParentPath = tdhp.arrayWithoutEnd(targetPath, 1)
           const targetParent = targetTree.getNodeByPath(targetParentPath)
@@ -221,36 +252,19 @@ export default {
           }
           const targetIndex = hp.arrayLast(targetPath)
           targetSiblings.splice(targetIndex, 0, dragNode)
+          // emit event
+          startTree.$emit('input', startTree.value)
+          startTree.$emit('change')
+          if (targetTree !== startTree) {
+            targetTree.$emit('input', targetTree.value)
+            targetTree.$emit('change')
+          }
         }
-        this.$forceUpdate()
-        this.$nextTick(() => {
-          t()
-        })
-      },
-      afterDrop: (pathChanged, store) => {
-        // todo remove
-        const {targetPath} = store
-        const evt = Object.assign({}, store)
-        evt.isDragTree = true
-        evt.isDropTree = true
-        evt.isCrossTree = false
-        let newData
-        if (pathChanged && this.dataModification === 'new') {
-          newData = store.newDropTreeData
-        } else {
-          newData = store.targetPath.tree.value
-        }
-        evt.newData = newData
-        if (pathChanged) {
-          this.$emit('input', newData)
-          this.$emit('change', evt)
-        }
-        this.$emit('afterDrop', evt)
       },
     }
     const _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options);
     // watch props and update options
-    ['triggerClass'].forEach(name => {
+    ['indent', 'triggerClass'].forEach(name => {
       this.$watch(name, (value) => { _makeTreeDraggable_obj.options[name] = value })
     })
   },
