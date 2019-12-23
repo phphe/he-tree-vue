@@ -2,54 +2,51 @@
 <template lang="pug">
 div
   h2 Node Back
-  Tree(:value="idModeData" idMode ref="tree3")
-    div(slot-scope="{node, meta, root}")
-      input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
+  button(@click="$refs.tree.showNodeBack([0,3], {style: 'background: #FFEB3B;'})") Show back of 1-3
+  br
+  button(@click="$refs.tree.showNodeBack([0,4], {style: 'background: #FFEB3B;', persistent: true})") Show back of 1-4 persistent
+  br
+  button(@click="$refs.tree.hideNodeBack([0,4])") hide back of 1-4
+  Tree(:value="treeData" idMode ref="tree")
+    div(slot-scope="{node, index, path, tree}")
+      b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
+      input(type="checkbox" v-model="node.$checked" @change="tree.toggleCheck(node, path)")
       | &nbsp;
       span {{node.text}}
 </template>
 
 <script>
 import * as hp from 'helper-js'
-import MixedTree from './NodeBackTree.vue'
+import Tree from '@/components/Tree.vue'
+import fold from '@/plugins/fold.js'
+import check from '@/plugins/check.js'
+import NodeBack from '@/plugins/NodeBack.vue'
+
+const MixedTree = Tree.mixPlugins([fold, check, NodeBack])
 
 export default {
   components: {Tree: MixedTree},
   data() {
     return {
-      idModeData: [
-        {id: 1, text: 'node 1', children: [
-          {id: 10, text: 'node 1-0'},
-          {id: 11, text: 'node 1-1'},
-          {id: 12, text: 'node 1-2'},
-          {id: 13, text: 'node 1-3'},
-          {id: 14, text: 'node 1-4'},
-          {id: 15, text: 'node 1-5'},
-          {id: 16, text: 'node 1-6'},
-          {id: 17, text: 'node 1-7'},
-          {id: 18, text: 'node 1-8'},
-          {id: 19, text: 'node 1-9'},
+      treeData: [
+        {text: 'node 1', children: [
+          {text: 'node 1-0'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-3'},
+          {text: 'node 1-4'},
+          {text: 'node 1-5'},
+          {text: 'node 1-6'},
+          {text: 'node 1-7'},
+          {text: 'node 1-8'},
+          {text: 'node 1-9'},
         ]},
       ],
     }
   },
   // computed: {},
   // watch: {},
-  methods: {
-    async flickOnDrop() {
-      const {tree1} = this.$refs
-      const treeEl = tree1.$el
-      const clonedTreeEl = treeEl.cloneNode(true)
-      hp.removeEl(clonedTreeEl.querySelector('.tree-branch'))
-      hp.backupAttr(treeEl, 'style')
-      hp.insertBefore(clonedTreeEl, treeEl)
-      treeEl.style.display = 'none'
-      tree1.value.splice(0, 1)
-      await hp.waitTime(100)
-      hp.removeEl(clonedTreeEl)
-      hp.restoreAttr(treeEl, 'style')
-    },
-  },
+  methods: {},
   // created() {},
   mounted() {
   },

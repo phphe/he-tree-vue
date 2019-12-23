@@ -4,19 +4,17 @@
   h3 These are just some simple examples.
   .flex
     BaseTree.mr
-    //- TestTree.mr
-    //- NodeBackTree.mr
+    NodeBackTree.mr
     //- DraggableProTree.mr
 </template>
 
 <script>
 import BaseTree from '@/examples/Base'
-import TestTree from '@/examples/Test'
 import NodeBackTree from '@/examples/NodeBack'
 // import DraggableProTree from '@/examples/DraggablePro'
 
 export default {
-  components: {BaseTree, TestTree, NodeBackTree},
+  components: {BaseTree, NodeBackTree},
   // data() {
   //   return {}
   // },

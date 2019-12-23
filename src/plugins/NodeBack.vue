@@ -2,16 +2,35 @@
 import * as hp from 'helper-js'
 export default {
   methods: {
-    showNodeBack(node) {
-      const meta = this.getMetaByNode(node)
-      const branch = document.getElementById(meta.DOMId)
-      const nodeEl = branch.querySelector(`.tree-node`)
+    showNodeBack(path, opt = {}) {
+      /*
+      opt
+        persistent
+       */
+      let nodeEl = opt.nodeEl
+      if (!nodeEl) {
+        // get by path
+        nodeEl = this.getBranchElByPath(path).querySelector('.tree-node')
+      }
       if (!nodeEl._NodeBack_el) {
         const back = document.createElement('DIV')
         hp.addClass(back, 'node-back')
+        if (opt.class) {
+          hp.addClass(back, opt.class)
+        }
+        if (opt.style) {
+          if (hp.isObject(opt.style)) {
+            Object.keys(opt.style),forEach(key => {
+              back.style[key] = opt.style[key]
+            })
+          } else {
+            back.setAttribute('style', opt.style)
+          }
+        }
         nodeEl._NodeBack_el = back
       }
       const back = nodeEl._NodeBack_el
+      back._NodeBackOptions = Object.assign(opt, back._NodeBackOptions)
       const update = () => {
         const tree = hp.findParent(nodeEl, (el) => hp.hasClass(el, 'tree-root'))
         const treeRect = hp.getBoundingClientRect(tree)
@@ -28,15 +47,47 @@ export default {
       }
       update()
     },
-    hideNodeBack(node) {
-      const meta = this.getMetaByNode(node)
-      const branch = document.getElementById(meta.DOMId)
-      const nodeEl = branch.querySelector(`.tree-node`)
+    hideNodeBack(path, opt = {}) {
+      let nodeEl = opt.nodeEl
+      if (!nodeEl) {
+        // get by path
+        nodeEl = this.getBranchElByPath(path).querySelector('.tree-node')
+      }
       if (nodeEl._NodeBack_el) {
-        hp.removeEl(nodeEl._NodeBack_el)
-        nodeEl._NodeBack_el = null
+        if (opt._byFunction && nodeEl._NodeBack_el._NodeBackOptions.persistent) {
+          // can't hide if called by function
+          // 非手动触发隐藏时, 不能隐藏持久化的(persistent=true)
+        } else {
+          hp.removeEl(nodeEl._NodeBack_el)
+          nodeEl._NodeBack_el = null
+        }
       }
     },
+  },
+  mounted() {
+    const onmouseover = (e) => {
+      const el = e.target
+      if (hp.hasClass(el, 'tree-node')) {
+        if (el === this._enteredNodeEl) {
+          // out
+          this.hideNodeBack(null, {nodeEl: el, _byFunction: true})
+          this._enteredNodeEl = null
+        } else {
+          if (this._enteredNodeEl) {
+            // out
+            this.hideNodeBack(null, {nodeEl: this._enteredNodeEl, _byFunction: true})
+          }
+          // enter
+          this._enteredNodeEl = el
+          this.showNodeBack(null, {nodeEl: el})
+        }
+      }
+    }
+    hp.onDOM(this.$el, 'mouseover', onmouseover)
+    const destroy = () => {
+      hp.offDOM(this.$el, 'mouseover', onmouseover)
+    }
+    this.$on('hook:beforeDestroy', destroy)
   },
 }
 </script>
