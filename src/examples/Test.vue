@@ -8,7 +8,7 @@ div
   input(type="checkbox" v-model="draggable")
   hr
   .test-trees
-    Tree.test-tree(:value="treeData1" unfoldAllAtBeginning ref="tree1" :draggable="draggable")
+    Tree.test-tree(:value="treeData1" ref="tree1" :draggable="draggable")
       div(slot-scope="{node, meta, root}")
         input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
         | &nbsp;

@@ -3,7 +3,6 @@ import * as th from 'tree-helper'
 export default {
   props: {
     foldingTransition: {},
-    unfoldAllAtBeginning: {type: Boolean},
   },
   methods: {
     fold(node, path) {

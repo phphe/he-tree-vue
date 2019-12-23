@@ -4,13 +4,13 @@ div
   h2 Draggable Pro
   div()
     h5 Empty tree
-    Tree(:value="treeData2" unfoldAllAtBeginning ref="tree2" crossTree)
+    Tree(:value="treeData2" ref="tree2" crossTree)
       div(slot-scope="{node, meta, root}")
         input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
         | &nbsp;
         span {{node.text}}
     hr
-    Tree(:value="treeData1" unfoldAllAtBeginning ref="tree1" crossTree)
+    Tree(:value="treeData1" ref="tree1" crossTree)
       div(slot-scope="{node, meta, root}")
         input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
         | &nbsp;

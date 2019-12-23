@@ -1,23 +1,22 @@
 <!-- this is an example -->
 <template lang="pug">
 #app
-  BaseTree.mr
-  //- TestTree.mr
-  //- IDModeTree.mr
-  //- NodeBackTree.mr
-  //- DraggableProTree.mr
+  h3 These are just some simple examples.
+  .flex
+    BaseTree.mr
+    //- TestTree.mr
+    //- NodeBackTree.mr
+    //- DraggableProTree.mr
 </template>
 
 <script>
 import BaseTree from '@/examples/Base'
 import TestTree from '@/examples/Test'
-import IDModeTree from '@/examples/IDMode'
 import NodeBackTree from '@/examples/NodeBack'
 // import DraggableProTree from '@/examples/DraggablePro'
 
 export default {
-  // components: {BaseTree, TestTree, IDModeTree, NodeBackTree, DraggableProTree},
-  components: {BaseTree, TestTree, IDModeTree, NodeBackTree},
+  components: {BaseTree, TestTree, NodeBackTree},
   // data() {
   //   return {}
   // },
@@ -31,7 +30,6 @@ export default {
 
 <style>
 #app{
-  display: flex;
 }
 .flex{
   display: flex;

@@ -2,7 +2,7 @@
 <template lang="pug">
 div
   h2 Node Back
-  Tree(:value="idModeData" unfoldAllAtBeginning idMode ref="tree3")
+  Tree(:value="idModeData" idMode ref="tree3")
     div(slot-scope="{node, meta, root}")
       input(type="checkbox" v-model="meta.checked" @change="root.afterCheckChanged(node)")
       | &nbsp;
