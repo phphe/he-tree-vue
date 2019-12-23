@@ -120,6 +120,7 @@ export default {
     const options = this._draggableOptions = {
       indent: this.indent,
       triggerClass: this.triggerClass,
+      unfoldWhenDragover: this.unfoldWhenDragover,
       rootClass: 'tree-root',
       childrenClass: 'tree-children',
       branchClass: 'tree-branch',
@@ -130,10 +131,10 @@ export default {
       hiddenClass: 'hidden',
       draggingClass: 'dragging',
       placeholderId: `${this.DOM_ID_PREFIX}_placeholder`,
-      ifNodeFoldedAndWithChildrenAndNotAutoUnfold: (branchEl, store) => {
+      ifNodeFolded: (branchEl, store) => {
          const {targetTree} = store
          const node = targetTree.getNodeByBranchEl(branchEl)
-         return node.$folded && node.children && node.children.length > 0 && !this.unfoldWhenDragover
+         return node.$folded
       },
       isTargetTreeRootDroppable: (store) => tdhp.resolveValueOrGettter(store.targetTree.rootDroppable, [store.targetTree, store]),
       unfoldTargetNodeByEl: (...args) => this._Draggable_unfoldTargetNodeByEl(...args),
@@ -262,7 +263,7 @@ export default {
     }
     const _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options);
     // watch props and update options
-    ['indent', 'triggerClass'].forEach(name => {
+    ['indent', 'triggerClass', 'unfoldWhenDragover'].forEach(name => {
       this.$watch(name, (value) => { _makeTreeDraggable_obj.options[name] = value })
     })
   },

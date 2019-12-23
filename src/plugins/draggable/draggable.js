@@ -10,6 +10,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
   options = {
     // indent: 20,
     // triggerClass: 'tree-node',
+    // unfoldWhenDragover
     // getTriggerEl optional
     // rootClass: 'tree-root',
     // childrenClass: 'tree-children',
@@ -261,8 +262,15 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         }
         const queue = store._doActionQueue
         store._doActionQueue = queue.then(async () => {
+          // record tried actions in one move
+          if (!store.oneMoveStore.triedActions) {
+            store.oneMoveStore.triedActions = []
+          }
+          const {triedActions} = store.oneMoveStore
+          //
           const action = actions[name]
           const r = action(...args)
+          triedActions.push(name)
           const checkTempChildren = () => {
             if (store.tempChildren.children.length === 0) {
               try {
@@ -276,70 +284,86 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         })
       }
       const actions = {
-        'nothing'() {}, // do nothing
-        'append to root'() {
+        async 'nothing'() {}, // do nothing
+        async 'append to root'() {
           // no closest branch, just append to root
           if (options.isTargetTreeRootDroppable(store)) {
             hp.appendTo(store.placeholder, info.tree)
           }
         },
-        'insert before'() {
+        async 'insert before'() {
           if (options.isNodeParentDroppable(info.closestBranch, store.targetTreeEl)) {
             hp.insertBefore(store.placeholder, info.closestBranch)
           } else {
-            secondCase(info.closestBranch)
+            return secondCase(info.closestBranch)
           }
         },
-        'insert after'(branch = info.closestBranch) {
+        async 'insert after'(branch = info.closestBranch) {
           if (options.isNodeParentDroppable(branch, store.targetTreeEl)) {
             hp.insertAfter(store.placeholder, branch)
           } else {
-            secondCase(branch)
+            const moved = await secondCase(branch)
+            const isFirstTriedAction = !store.oneMoveStore.triedActions || store.oneMoveStore.triedActions.length === 0
+            if (!moved && isFirstTriedAction) {
+              return thirdCase(branch)
+            }
           }
         },
         async prepend() {
           if (info.closestBranch === store.placeholder) {
             return
           }
-          if (info.closestBranch && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold(info.closestBranch, store)) {
+          if (options.ifNodeFolded(info.closestBranch, store) && !options.unfoldWhenDragover) {
             return doAction('insert after', info.closestBranch)
           } else {
             if (options.isNodeDroppable(info.closestBranch, store.targetTreeEl)) {
               const childrenEl = await unfoldAndGetChildrenEl(info.closestBranch)
               hp.prependTo(store.placeholder, childrenEl)
             } else {
-              secondCase(info.closestBranch)
+              return secondCase(info.closestBranch)
             }
           }
         },
-        'after above'() {
+        async 'after above'() {
           if (options.isNodeParentDroppable(info.aboveBranch, store.targetTreeEl)) {
             hp.insertAfter(store.placeholder, info.aboveBranch)
           } else {
-            secondCase(info.aboveBranch)
+            return secondCase(info.aboveBranch)
           }
         },
         async 'append to prev'() {
           if (info.closestPrev === store.placeholder) {
             return
           }
-          if (info.closestPrev && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold && options.ifNodeFoldedAndWithChildrenAndNotAutoUnfold(info.closestPrev, store)) {
+          if (options.ifNodeFolded(info.closestPrev, store) && !options.unfoldWhenDragover) {
             return doAction('insert after', info.closestPrev)
           } else {
             if (options.isNodeDroppable(info.closestPrev, store.targetTreeEl)) {
               const childrenEl = await unfoldAndGetChildrenEl(info.closestPrev)
               hp.appendTo(store.placeholder, childrenEl)
             } else {
-              secondCase(info.closestPrev)
+              return secondCase(info.closestPrev)
             }
           }
         },
       }
       // second case for actions, when target position not droppable
+      // return true if moved
       const secondCase = async (branchEl) => {
         const targetEl = options._findClosestDroppablePosition(branchEl, store.targetTreeEl)
         if (targetEl) {
           hp.insertAfter(store.placeholder, targetEl)
+          return true
+        }
+      }
+      // when action is after, first case and second case invalid, try prepend
+      // 当操作是'after', 第一种第二种情况无效时, 尝试prepend
+      const thirdCase = async (branchEl) => {
+        // the third case
+        hp.insertAfter(store.placeholder, targetEl)
+        if (options.isNodeDroppable(branchEl, store.targetTreeEl)) {
+          const childrenEl = await unfoldAndGetChildrenEl(branchEl)
+          hp.prependTo(store.placeholder, childrenEl)
         }
       }
       const unfoldAndGetChildrenEl = async (branch) => {
