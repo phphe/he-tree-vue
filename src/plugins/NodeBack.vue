@@ -1,12 +1,21 @@
 <script>
 import * as hp from 'helper-js'
 export default {
+  data() {
+    return {
+      nodeBackEnabled: true,
+    }
+  },
   methods: {
     showNodeBack(path, opt = {}) {
       /*
       opt
         persistent
        */
+      if (!this.nodeBackEnabled) {
+        // disabled
+        return
+      }
       let nodeEl = opt.nodeEl
       if (!nodeEl) {
         // get by path
@@ -63,6 +72,15 @@ export default {
         }
       }
     },
+    enableNodeBack() {
+      this.nodeBackEnabled = true
+    },
+    disableNodeBack() {
+      for (const {value: el} of hp.iterateALL(this.$el.querySelectorAll(`.node-back`))) {
+        hp.removeEl(el)
+      }
+      this.nodeBackEnabled = false
+    },
   },
   mounted() {
     const onmouseover = (e) => {
@@ -88,6 +106,19 @@ export default {
       hp.offDOM(this.$el, 'mouseover', onmouseover)
     }
     this.$on('hook:beforeDestroy', destroy)
+    // 
+    const ondrag = () => {
+      this.disableNodeBack()
+    }
+    const ondrop = () => {
+      this.enableNodeBack()
+    }
+    this.$root.$on('he-tree-drag', ondrag)
+    this.$root.$on('he-tree-drop', ondrop)
+    this.$on('hook:beforeDestroy', () => {
+      this.$root.$off('he-tree-drag', ondrag)
+      this.$root.$off('he-tree-drop', ondrop)
+    })
   },
 }
 </script>

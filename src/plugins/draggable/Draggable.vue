@@ -184,6 +184,7 @@ export default {
           return false
         }
         store.startTree.$emit('drag', store)
+        this.$root.$emit('he-tree-drag', store)
       },
       filterTargetTree: (targetTreeEl, store) => {
         const targetTree = this.getTreeVmByTreeEl(targetTreeEl)
@@ -206,6 +207,7 @@ export default {
           return false
         }
         targetTree.$emit('drop', store)
+        this.$root.$emit('he-tree-drop', store)
       },
       ondrop: (store, t) => {
         if (store.pathChanged) {

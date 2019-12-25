@@ -21,8 +21,9 @@ import Tree from '@/components/Tree.vue'
 import fold from '@/plugins/fold.js'
 import check from '@/plugins/check.js'
 import NodeBack from '@/plugins/NodeBack.vue'
+import Draggable from '@/plugins/draggable/Draggable.vue'
 
-const MixedTree = Tree.mixPlugins([fold, check, NodeBack])
+const MixedTree = Tree.mixPlugins([fold, check, NodeBack, Draggable])
 
 export default {
   components: {Tree: MixedTree},
