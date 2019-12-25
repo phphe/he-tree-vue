@@ -15,10 +15,8 @@ div
       b Empty Tree
       Tree.base-tree(:value="treeDataEmpty" ref="tree4")
       hr
-      b Fola all at beginning:
-      br
-      code ref="tree" @hook:mounted="$refs.tree.foldAll()"
-      Tree.base-tree(:value="treeData2" ref="tree3" @hook:mounted="$refs.tree3.foldAll()")
+      b Fola all after mounted:
+      Tree.base-tree(:value="treeData2" ref="tree3" foldAllAfterMounted)
         div(slot-scope="{node, index, path, tree}")
           b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
           input(type="checkbox" v-model="node.$checked" @change="tree.toggleCheck(node, path)")

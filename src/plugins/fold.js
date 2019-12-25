@@ -2,7 +2,8 @@ import * as th from 'tree-helper'
 
 export default {
   props: {
-    foldingTransition: {},
+    foldingTransition: {type: String},
+    foldAllAfterMounted: {type: Boolean},
   },
   methods: {
     fold(node, path) {
@@ -41,5 +42,10 @@ export default {
         this.unfold(childNode, {unfoldParent: false})
       })
     },
+  },
+  mounted() {
+    if (this.foldAllAfterMounted) {
+      this.foldAll()
+    }
   },
 }
