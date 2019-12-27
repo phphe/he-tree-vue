@@ -1,4 +1,5 @@
 export {default as Tree} from './components/Tree.vue'
-export {default as TreeNode} from './components/TreeNode.vue'
-export {default as DraggableTree} from './components/DraggableTree.vue'
-export {default as DraggableTreeNode} from './components/DraggableTreeNode.vue'
+export {default as PluginCheck} from './plugins/check.js'
+export {default as PluginFold} from './plugins/fold.js'
+export {default as PluginNodeBack} from './plugins/NodeBack.vue'
+export {default as PluginDraggable} from './plugins//draggable/Draggable.vue'

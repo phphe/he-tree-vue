@@ -106,7 +106,7 @@ export default {
       hp.offDOM(this.$el, 'mouseover', onmouseover)
     }
     this.$on('hook:beforeDestroy', destroy)
-    // 
+    //
     const ondrag = () => {
       this.disableNodeBack()
     }
