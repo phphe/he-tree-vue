@@ -1,7 +1,6 @@
 <script>
 import * as hp from 'helper-js'
 import * as th from 'tree-helper'
-import * as tdhp from '@/todo-utils'
 
 const template = function (h) {
   const treeTpl = (nodes, isRoot, parentPath) => {
@@ -66,7 +65,7 @@ const Tree = {
         let currentPath = path.slice()
         for (const node of allReversedNodes) {
           yield {path: currentPath, node: node}
-          currentPath = tdhp.arrayWithoutEnd(currentPath, 1)
+          currentPath = hp.arrayWithoutEnd(currentPath, 1)
         }
       }
     },
@@ -96,7 +95,7 @@ const Tree = {
       return this.getNodeByPath(this.getPathByBranchEl(branchEl))
     },
     getNodeParentByPath(path) {
-      return tdhp.arrayWithoutEnd(this.getAllNodesByPath(path), 1)
+      return hp.arrayWithoutEnd(this.getAllNodesByPath(path), 1)
     },
     // todo extract hooks to vue-functions
     // get hooks in this._hooks, without which in props
@@ -133,7 +132,7 @@ const Tree = {
             return this[name](...args)
           })
         }
-        return tdhp.joinFunctionsByNext(hooks)(...args)
+        return hp.joinFunctionsByNext(hooks)(...args)
       }
     },
   },

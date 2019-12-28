@@ -1,7 +1,6 @@
 <script>
 import * as hp from 'helper-js'
 import makeTreeDraggable from './draggable.js'
-import * as tdhp from '@/todo-utils'
 
 const treesStore = {}
 
@@ -53,7 +52,7 @@ export default {
       const {store} = this.treesStore
       for (const {value: node, index} of hp.iterateALL(this.getAllNodesByPath(path), {reverse: true})) {
         const currentPath = path.slice(0, index + 1)
-        const draggable = tdhp.resolveValueOrGettter(node.$draggable, [currentPath, this, store])
+        const draggable = hp.resolveValueOrGettter(node.$draggable, [currentPath, this, store])
         if (draggable === undefined) {
           continue
         } else {
@@ -66,11 +65,11 @@ export default {
       const {store} = this.treesStore
       if (!node) {
         // tree
-        return tdhp.resolveValueOrGettter(this.rootDroppable, [this, store])
+        return hp.resolveValueOrGettter(this.rootDroppable, [this, store])
       }
       for (const {value: node, index} of hp.iterateALL(this.getAllNodesByPath(path), {reverse: true})) {
         const currentPath = path.slice(0, index + 1)
-        const droppable = tdhp.resolveValueOrGettter(node.$droppable, [currentPath, this, store])
+        const droppable = hp.resolveValueOrGettter(node.$droppable, [currentPath, this, store])
         if (droppable === undefined) {
           continue
         } else {
@@ -136,12 +135,12 @@ export default {
          const node = targetTree.getNodeByBranchEl(branchEl)
          return node.$folded
       },
-      isTargetTreeRootDroppable: (store) => tdhp.resolveValueOrGettter(store.targetTree.rootDroppable, [store.targetTree, store]),
+      isTargetTreeRootDroppable: (store) => hp.resolveValueOrGettter(store.targetTree.rootDroppable, [store.targetTree, store]),
       unfoldTargetNodeByEl: (...args) => this._Draggable_unfoldTargetNodeByEl(...args),
       isNodeParentDroppable: (branchEl, treeEl) => {
         const tree = this.getTreeVmByTreeEl(treeEl)
         const path = tree.getPathByBranchEl(branchEl)
-        const parentPath = tdhp.arrayWithoutEnd(path, 1)
+        const parentPath = hp.arrayWithoutEnd(path, 1)
         const parent = tree.getNodeByPath(parentPath)
         return tree.isNodeDroppable(parent, parentPath)
       },
@@ -154,7 +153,7 @@ export default {
       _findClosestDroppablePosition: (branchEl, treeEl) => {
         const tree = this.getTreeVmByTreeEl(treeEl)
         const path = tree.getPathByBranchEl(branchEl)
-        const findPath = tdhp.arrayWithoutEnd(path, 2) // no node and its parent
+        const findPath = hp.arrayWithoutEnd(path, 2) // no node and its parent
         for (const {node, path} of this.iteratePath(findPath, {reverse: true})) {
           if (tree.isNodeDroppable(node, path)) {
             return tree.getBranchElByPath(path)
@@ -168,7 +167,7 @@ export default {
       beforeDrag: (store) => {
         this.treesStore.store = store
         store.startTree = this.getTreeVmByTreeEl(store.startTreeEl)
-        const draggable = tdhp.resolveValueOrGettter(store.startTree.draggable, [store.startTree, store])
+        const draggable = hp.resolveValueOrGettter(store.startTree.draggable, [store.startTree, store])
         if (!draggable) {
           return false
         }
@@ -191,11 +190,11 @@ export default {
         const {startTree} = store
         if (startTree !== targetTree) {
           // start tree or target tree not crossTree
-          if (!tdhp.resolveValueOrGettter(startTree.crossTree, [startTree, store]) || !tdhp.resolveValueOrGettter(targetTree.crossTree, [targetTree, store])) {
+          if (!hp.resolveValueOrGettter(startTree.crossTree, [startTree, store]) || !hp.resolveValueOrGettter(targetTree.crossTree, [targetTree, store])) {
             return false
           }
         }
-        const targetTreeDroppable = tdhp.resolveValueOrGettter(targetTree.droppable, [targetTree, store])
+        const targetTreeDroppable = hp.resolveValueOrGettter(targetTree.droppable, [targetTree, store])
         if (!targetTreeDroppable) {
           return false
         }
@@ -213,7 +212,7 @@ export default {
         if (store.pathChanged) {
           const {startTree, targetTree, startPath, targetPath, dragNode} = store
           // remove from start position
-          const startParentPath = tdhp.arrayWithoutEnd(startPath, 1)
+          const startParentPath = hp.arrayWithoutEnd(startPath, 1)
           const startParent = startTree.getNodeByPath(startParentPath)
           const startSiblings = startParent ? startParent.children : startTree.value
           const startIndex = hp.arrayLast(startPath)
@@ -240,7 +239,7 @@ export default {
             }
           }
           // insert to target position
-          const targetParentPath = tdhp.arrayWithoutEnd(targetPath, 1)
+          const targetParentPath = hp.arrayWithoutEnd(targetPath, 1)
           const targetParent = targetTree.getNodeByPath(targetParentPath)
           let targetSiblings
           if (targetParent) {
