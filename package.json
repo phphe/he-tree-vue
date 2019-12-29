@@ -1,26 +1,40 @@
 {
   "name": "he-tree",
   "version": "1.0.0",
-  "private": true,
+  "description": "",
+  "main": "dist/he-tree.cjs.js",
+  "module": "dist/he-tree.esm.js",
+  "files": [
+    "dist"
+  ],
+  "unpkg": "dist/he-tree.js",
+  "bugs": {
+    "url": "https://github.com/phphe/he-tree/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phphe/he-tree.git"
+  },
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:lib": "vue-cli-service build --target lib --name heTree src/lib-entry.js",
+    "build:lib": "rollup -c",
+    "dev:lib": "node build/build.js --watch",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "draggable-helper": "^2.0.0",
-    "helper-js": "^1.4.12",
-    "tree-helper": "^1.0.5",
-    "vue": "^2.6.10",
-    "vue-functions": "^1.0.5",
-    "core-js": "^3.4.3"
+    "core-js": "^3.4.3",
+    "draggable-helper": "^3.0.1",
+    "helper-js": "^1.4.14",
+    "tree-helper": "^1.4.14",
+    "vue-functions": "^1.0.6"
   },
   "devDependencies": {
-    "pug": "^2.0.4",
-    "pug-plain-loader": "^1.0.0",
+    "vue": "^2.6.10",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
+    "pug": "^2.0.4",
+    "pug-plain-loader": "^1.0.0",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
     "vue-template-compiler": "^2.6.10"
