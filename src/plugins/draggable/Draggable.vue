@@ -29,7 +29,7 @@ export default {
       const {targetTree} = store
       const path = targetTree.getPathByBranchEl(branchEl)
       const node = targetTree.getNodeByPath(path)
-      targetTree.unfold(node, path)
+      targetTree.unfold && targetTree.unfold(node, path)
       return new Promise((resolve, reject) => {
         targetTree.$nextTick(() => {
           resolve()

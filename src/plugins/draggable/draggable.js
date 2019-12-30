@@ -69,12 +69,14 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       const movingEl = store.el // branch
       // find closest branch and hovering tree
       let tree
-      const movingElOf = hp.getOffset(movingEl)
-      const movingElRect = hp.getBoundingClientRect(movingEl)
+      const movingNode = movingEl.querySelector(`.${options.nodeClass}`)
+      const movingNodeOf = hp.getOffset(movingNode)
+      const movingNodeRect = hp.getBoundingClientRect(movingNode)
       const elsBetweenMovingElAndTree = [] // including tree
       const elsToTree = [] // start from top, including tree
-      let movingElLooped
-      for (const itemEl of hp.elementsFromPoint(movingElRect.x, movingElRect.y)) {
+      // loop to find put els between movingEl and tree
+      let movingElLooped // 已循环到了movingEl
+      for (const itemEl of hp.elementsFromPoint(movingNodeRect.x, movingNodeRect.y)) {
         if (movingElLooped) {
           elsBetweenMovingElAndTree.push(itemEl)
         } else if(itemEl === movingEl) {
@@ -113,6 +115,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       // life cycle: one move
       const info = {
         tree: () => tree,
+        root: () => info.tree.querySelector(`.${options.childrenClass}`),
         closestNode: () => {
           const nodes = [] // all visible nodes sort by y
           const walkToGetNodes = (branch) => {
@@ -124,7 +127,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
               }
             }
             //
-            const childrenEl = branch === info.tree ? branch : branch.querySelector(`.${options.childrenClass}`)
+            const childrenEl = branch.querySelector(`.${options.childrenClass}`)
             if (childrenEl) {
               for (let i = 0; i < childrenEl.children.length; i++) {
                 const child = childrenEl.children[i]
@@ -141,7 +144,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           }
           //
           let found
-          const t = hp.binarySearch(nodes, (node) => hp.getOffset(node).y - movingElOf.y, null, null, true)
+          const t = hp.binarySearch(nodes, (node) => hp.getOffset(node).y - movingNodeOf.y, null, null, true)
           if (t.hit) {
             found = t.value
           } else {
@@ -199,7 +202,8 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           }
           //
           while (cur) {
-            if (hp.getOffset(cur).x <= movingElOf.x) {
+            const curNode = cur.querySelector(`.${options.nodeClass}`)
+            if (hp.getOffset(curNode).x <= movingNodeOf.x) {
               break
             }
             let hasNextBranch
@@ -227,11 +231,11 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       // life cycle: one move
       const conditions = {
         'no closest': () => !info.closestNode,
-        'closest is top': () => info.closestBranch === hp.findNodeList(info.tree.children, el => el !== movingEl),
-        'closest is top excluding placeholder': () => info.closestBranch === hp.findNodeList(info.tree.children, el => el !== movingEl && el !== store.placeholder),
-        'on closest middle': () => movingElOf.y < info.closestNodeOffset.y + info.closestNode.offsetHeight / 2,
-        'at closest indent right': () => movingElOf.x > info.closestNodeOffset.x + options.indent,
-        'at closest left': () => movingElOf.x < info.closestNodeOffset.x,
+        'closest is top': () => info.closestBranch === hp.findNodeList(info.root.children, el => el !== movingEl),
+        'closest is top excluding placeholder': () => info.closestBranch === hp.findNodeList(info.root.children, el => el !== movingEl && el !== store.placeholder),
+        'on closest middle': () => movingNodeOf.y < info.closestNodeOffset.y + info.closestNode.offsetHeight / 2,
+        'at closest indent right': () => movingNodeOf.x > info.closestNodeOffset.x + options.indent,
+        'at closest left': () => movingNodeOf.x < info.closestNodeOffset.x,
         'closest is placeholder': () => info.closestBranch === store.placeholder,
         'no aboveBranch': () => !info.aboveBranch,
         'closest has next': () => info.closestNext,
@@ -285,7 +289,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         async 'append to root'() {
           // no closest branch, just append to root
           if (options.isTargetTreeRootDroppable(store)) {
-            hp.appendTo(store.placeholder, info.tree)
+            hp.appendTo(store.placeholder, info.root)
           }
         },
         async 'insert before'() {

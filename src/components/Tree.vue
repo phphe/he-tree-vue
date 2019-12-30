@@ -6,7 +6,7 @@ const template = function (h) {
   // convert undefined to empty str
   const noUndefined = (str) => str ? str : ''
   // tree tpl, to render recursively
-  const treeTpl = (nodes, parent, parentPath) => {
+  const childrenListTpl = (nodes, parent, parentPath) => {
     const indentStyle = {paddingLeft: parentPath.length * this.indent + 'px'}
     const branchTpl = (node, index) => {
       const path = [...parentPath, index]
@@ -41,20 +41,19 @@ const template = function (h) {
           </div>
         </div>
         {(node.children && node.children.length) > 0 && <transitionComponent name={this.$props.foldingTransitionName}>
-          {!node.$folded && treeTpl(node.children, node, path)}
+          {!node.$folded && childrenListTpl(node.children, node, path)}
         </transitionComponent>}
       </div>
     }
-    return <div class={`tree-children ${parent && noUndefined(parent.$childrenClass)}`}
+    return <div class={`tree-children ${noUndefined(parent && parent.$childrenClass)}`}
       style={parent && parent.$childrenStyle}
-      data-tree-id={!parent ? this._uid : false}
     >
       {nodes.map(branchTpl)}
     </div>
   }
-  return <div class="he-tree tree-root">
+  return <div class="he-tree tree-root" data-tree-id={this._uid}>
     {this.blockHeader && this.blockHeader()}
-    {treeTpl(this.value, null, [])}
+    {childrenListTpl(this.value, null, [])}
     {this.blockFooter && this.blockFooter()}
   </div>
 }
