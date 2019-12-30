@@ -188,9 +188,6 @@ export default Tree
 </script>
 
 <style>
-.he-tree{}
-.he-tree .tree-children{
-}
 .he-tree .tree-node{
   border: 1px solid #ccc;
   margin-bottom: 5px;

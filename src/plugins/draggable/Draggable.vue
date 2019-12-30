@@ -279,4 +279,7 @@ export default {
   border: 1px dashed #00d9ff;
   height: 20px;
 }
+.he-tree .dragging .tree-node-back:hover{
+  background-color: inherit;
+}
 </style>

@@ -2,11 +2,6 @@
 <template lang="pug">
 div
   h2 Node Back
-  button(@click="$refs.tree.showNodeBack([0,3], {style: 'background: #FFEB3B;'})") Show back of 1-3
-  br
-  button(@click="$refs.tree.showNodeBack([0,4], {style: 'background: #FFEB3B;', persistent: true})") Show back of 1-4 persistent
-  br
-  button(@click="$refs.tree.hideNodeBack([0,4])") hide back of 1-4
   Tree(:value="treeData" idMode ref="tree")
     div(slot-scope="{node, index, path, tree}")
       b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
@@ -20,10 +15,9 @@ import * as hp from 'helper-js'
 import Tree from '@/components/Tree.vue'
 import fold from '@/plugins/fold.js'
 import check from '@/plugins/check.js'
-import NodeBack from '@/plugins/NodeBack.vue'
 import Draggable from '@/plugins/draggable/Draggable.vue'
 
-const MixedTree = Tree.mixPlugins([fold, check, NodeBack, Draggable])
+const MixedTree = Tree.mixPlugins([fold, check, Draggable])
 
 export default {
   components: {Tree: MixedTree},
@@ -55,4 +49,7 @@ export default {
 </script>
 
 <style>
+.tree-node-back:hover{
+  background: #d2f7f7;
+}
 </style>
