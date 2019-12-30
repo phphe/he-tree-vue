@@ -400,20 +400,21 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     drop: async (endEvent, store, opt) => {
       const movingEl = store.el // branch
       const {placeholder, tempChildren} = store
-      //
-      // todo if placeholder not mounted
-      store.targetPath = options.getPathByBranchEl(placeholder)
-      let pathChanged = isPathChanged()
-      store.targetPathNotEqualToStartPath = pathChanged
-      store.pathChangePrevented = false
-      if (options.beforeDrop && options.beforeDrop(pathChanged, store, opt) === false) {
-        pathChanged = false
+      if (placeholder) {
+        // placeholder not mounted is rarely
+        store.targetPath = options.getPathByBranchEl(placeholder)
+        let pathChanged = isPathChanged()
+        store.targetPathNotEqualToStartPath = pathChanged
         store.pathChangePrevented = false
-      }
-      store.pathChanged = pathChanged
-      hp.removeEl(placeholder)
-      if (tempChildren) {
-        hp.removeEl(tempChildren)
+        if (options.beforeDrop && options.beforeDrop(pathChanged, store, opt) === false) {
+          pathChanged = false
+          store.pathChangePrevented = false
+        }
+        store.pathChanged = pathChanged
+        hp.removeEl(placeholder)
+        if (tempChildren) {
+          hp.removeEl(tempChildren)
+        }
       }
       options.ondrop(store, opt)
       //
