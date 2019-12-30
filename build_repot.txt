@@ -1,6 +1,0 @@
-File                      Size                     Gzipped
-
- dist\heTree.umd.min.js    92.37 KiB                29.04 KiB
- dist\heTree.umd.js        468.98 KiB               110.47 KiB
- dist\heTree.common.js     468.60 KiB               110.36 KiB
- dist\heTree.css           0.31 KiB                 0.19 KiB

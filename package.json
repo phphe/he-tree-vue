@@ -1,25 +1,24 @@
 {
-  "name": "he-tree",
+  "name": "he-tree-vue",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/he-tree.cjs.js",
-  "module": "dist/he-tree.esm.js",
+  "main": "dist/he-tree-vue.cjs.js",
+  "module": "dist/he-tree-vue.esm.js",
   "files": [
     "dist"
   ],
-  "unpkg": "dist/he-tree.js",
+  "unpkg": "dist/he-tree-vue.js",
   "bugs": {
-    "url": "https://github.com/phphe/he-tree/issues"
+    "url": "https://github.com/phphe/he-tree-vue/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/phphe/he-tree.git"
+    "url": "https://github.com/phphe/he-tree-vue.git"
   },
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "build:lib": "rollup -c",
-    "dev:lib": "node build/build.js --watch",
+    "build": "node scripts/build.js",
+    "build-web": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
@@ -37,6 +36,8 @@
     "pug-plain-loader": "^1.0.0",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "bili": "^3.4.2",
+    "rollup-plugin-vue": "^4.3.2"
   }
 }
