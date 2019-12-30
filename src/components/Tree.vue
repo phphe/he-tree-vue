@@ -3,30 +3,56 @@ import * as hp from 'helper-js'
 import * as th from 'tree-helper'
 
 const template = function (h) {
-  const treeTpl = (nodes, isRoot, parentPath) => {
+  // convert undefined to empty str
+  const noUndefined = (str) => str ? str : ''
+  // tree tpl, to render recursively
+  const treeTpl = (nodes, parent, parentPath) => {
+    const indentStyle = {paddingLeft: parentPath.length * this.indent + 'px'}
     const branchTpl = (node, index) => {
       const path = [...parentPath, index]
+      const transitionComponent = this.foldingTransition || 'transition'
       const slotDefault = () => {
-        if (this.$scopedSlots.default) {
-          return this.$scopedSlots.default({node, index, path, tree: this})
-        } else if (this.$slots.default) {
-          return this.$slots.default
+        const original = () => {
+          if (this.$scopedSlots.default) {
+            return this.$scopedSlots.default({node, index, path, tree: this})
+          } else if (this.$slots.default) {
+            return this.$slots.default
+          } else {
+            return node.text
+          }
+        }
+        if (this.overrideSlot_default) {
+          return this.overrideSlot_default(original)
         } else {
-          return node.text
+          return original()
         }
       }
-      return <div class="tree-branch" data-tree-node-path={path.join(',')}>
-        <div class="tree-node">{slotDefault()}</div>
-        {(node.children && node.children.length) > 0 && <transition name={this.$props.foldingTransition}>
-          {!node.$folded && treeTpl(node.children, false, path)}
-        </transition>}
+      let nodebackStyle = indentStyle
+      if (node.$nodeBackStyle) {
+        nodebackStyle = {...nodebackStyle, ...node.$nodeBackStyle}
+      }
+      return <div class={`tree-branch ${noUndefined(node.$branchClass)}`}
+        style={node.$branchStyle}
+        data-tree-node-path={path.join(',')}
+      >
+        <div class={`tree-node-back ${noUndefined(node.$nodeBackClass)}`} style={nodebackStyle}>
+          <div class={`tree-node ${noUndefined(node.$nodeClass)}`} style={node.$nodeStyle}>
+            {slotDefault()}
+          </div>
+        </div>
+        {(node.children && node.children.length) > 0 && <transitionComponent name={this.$props.foldingTransitionName}>
+          {!node.$folded && treeTpl(node.children, node, path)}
+        </transitionComponent>}
       </div>
     }
-    return <div class={`${isRoot ? 'he-tree tree-root' : ''} tree-children`} data-tree-id={isRoot ? this._uid : false}>
+    return <div class={`tree-children ${parent ? noUndefined(parent.$childrenClass) : 'he-tree tree-root'}`}
+      style={parent && parent.$childrenStyle}
+      data-tree-id={!parent ? this._uid : false}
+    >
       {nodes.map(branchTpl)}
     </div>
   }
-  return treeTpl(this.value, true, [])
+  return treeTpl(this.value, null, [])
 }
 
 const trees = {}
@@ -35,11 +61,11 @@ const Tree = {
   render: template,
   props: {
     value: {},
+    indent: {default: 20},
   },
   // components: {},
   data() {
     return {
-      DOM_ID_PREFIX: 'he_tree',
       trees,
     }
   },
@@ -151,6 +177,7 @@ const Tree = {
       name: 'Tree',
       extends: Tree,
       mixins: plugins,
+      mixPlugins: this.mixPlugins,
     }
     MixedTree._afterMetaCreateds = plugins.map(v => v.afterMetaCreated).filter(v => v)
     return MixedTree
@@ -161,12 +188,8 @@ export default Tree
 </script>
 
 <style>
-.he-tree{
-  padding: 30px;
-  border: 1px solid #ccc;
-}
+.he-tree{}
 .he-tree .tree-children{
-  padding-left: 20px;
 }
 .he-tree .tree-node{
   border: 1px solid #ccc;

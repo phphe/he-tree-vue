@@ -6,7 +6,6 @@ const treesStore = {}
 
 export default {
   props: {
-    indent: {default: 20},
     triggerClass: {type: String, default: 'tree-node'},
     draggable: {type: [Boolean, Function], default: true},
     ondragstart: {type: Function},
@@ -126,10 +125,11 @@ export default {
       nodeClass: 'tree-node',
       nodeBackClass: 'tree-node-back',
       placeholderClass: 'tree-placeholder',
+      placeholderNodeBackClass: 'tree-placeholder-node-back',
       placeholderNodeClass: 'tree-placeholder-node',
       hiddenClass: 'hidden',
       draggingClass: 'dragging',
-      placeholderId: `${this.DOM_ID_PREFIX}_placeholder`,
+      placeholderId: `he_tree_drag_placeholder`,
       ifNodeFolded: (branchEl, store) => {
          const {targetTree} = store
          const node = targetTree.getNodeByBranchEl(branchEl)

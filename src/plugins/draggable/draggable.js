@@ -15,6 +15,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     // nodeClass: 'tree-node',
     // nodeBackClass: 'tree-node-back',
     // placeholderClass: 'tree-placeholder',
+    // placeholderNodeBackClass: 'tree-placeholder-node-back',
     // placeholderNodeClass: 'tree-placeholder-node',
     // hiddenClass: 'hidden',
     // draggingClass: 'dragging',
@@ -268,16 +269,15 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           const action = actions[name]
           const r = action(...args)
           triedActions.push(name)
-          const checkTempChildren = () => {
-            if (store.tempChildren.children.length === 0) {
-              try {
-                // try to remove tempChildren
-                hp.removeEl(store.tempChildren)
-              } catch (e) {}
-            }
-          }
           await r
-          checkTempChildren()
+          // set indent of placeholder
+          const placeholderPath = options.getPathByBranchEl(store.placeholder)
+          const placeholderNodeBack = store.placeholder.querySelector(`.${options.nodeBackClass}`)
+          placeholderNodeBack.style.paddingLeft = (placeholderPath.length - 1) * options.indent + 'px'
+          // remove tempChildren if empty
+          if (store.tempChildren.children.length === 0) {
+            hp.removeEl(store.tempChildren)
+          }
         })
       }
       const actions = {
@@ -376,17 +376,14 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       //
       const checkPlaceholder = () => {
         if (!store.placeholder) {
-          // create placeholder
-          const placeholder = document.createElement('DIV')
-          hp.addClass(placeholder, options.branchClass)
-          hp.addClass(placeholder, options.placeholderClass)
-          if (options.placeholderId) {
-            placeholder.setAttribute('id', options.placeholderId)
-          }
-          const placeholderNode = document.createElement('DIV')
-          hp.addClass(placeholderNode, options.nodeClass)
-          hp.addClass(placeholderNode, options.placeholderNodeClass)
-          hp.appendTo(placeholderNode, placeholder)
+          const placeholder = createElementFromHTML(`
+            <div id="${options.placeholderId}" class="${options.branchClass} ${options.placeholderClass}">
+              <div class="${options.nodeBackClass} ${options.placeholderNodeBackClass}">
+                <div class="${options.nodeClass} ${options.placeholderNodeClass}">
+                </div>
+              </div>
+            </div>
+          `)
           hp.insertAfter(placeholder, movingEl)
           store.placeholder = placeholder
           options.afterPlaceholderCreated(store)
@@ -427,4 +424,16 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     },
   })
   return {destroy, options}
+}
+
+// todo move to helper-js
+// return NodeList if there are multiple top-level nodes
+function createElementFromHTML(htmlString) {
+  var div = document.createElement('div');
+  div.innerHTML = htmlString.trim();
+  if (div.childNodes.length > 1) {
+    return div.childNodes
+  } else {
+    return div.childNodes[0]
+  }
 }

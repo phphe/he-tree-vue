@@ -2,7 +2,8 @@ import * as th from 'tree-helper'
 
 export default {
   props: {
-    foldingTransition: {type: String},
+    foldingTransitionName: {type: String},
+    foldingTransition: {},
     foldAllAfterMounted: {type: Boolean},
   },
   methods: {
