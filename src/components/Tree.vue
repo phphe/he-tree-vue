@@ -22,7 +22,7 @@ const template = function (h) {
           }
         }
         if (this.overrideSlot_default) {
-          return this.overrideSlot_default(original)
+          return this.overrideSlotDefault(original)
         } else {
           return original()
         }
@@ -45,14 +45,18 @@ const template = function (h) {
         </transitionComponent>}
       </div>
     }
-    return <div class={`tree-children ${parent ? noUndefined(parent.$childrenClass) : 'he-tree tree-root'}`}
+    return <div class={`tree-children ${parent && noUndefined(parent.$childrenClass)}`}
       style={parent && parent.$childrenStyle}
       data-tree-id={!parent ? this._uid : false}
     >
       {nodes.map(branchTpl)}
     </div>
   }
-  return treeTpl(this.value, null, [])
+  return <div class="he-tree tree-root">
+    {this.blockHeader && this.blockHeader()}
+    {treeTpl(this.value, null, [])}
+    {this.blockFooter && this.blockFooter()}
+  </div>
 }
 
 const trees = {}

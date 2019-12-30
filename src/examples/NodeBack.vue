@@ -2,7 +2,7 @@
 <template lang="pug">
 div
   h2 Node Back
-  Tree(:value="treeData" idMode ref="tree")
+  Tree.tree-with-nodeba-back(:value="treeData" idMode ref="tree")
     div(slot-scope="{node, index, path, tree}")
       b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
       input(type="checkbox" v-model="node.$checked" @change="tree.toggleCheck(node, path)")
@@ -49,7 +49,7 @@ export default {
 </script>
 
 <style>
-.tree-node-back:hover{
+.tree-with-nodeba-back .tree-node-back:hover{
   background: #d2f7f7;
 }
 </style>
