@@ -8,11 +8,13 @@ export default {
   props: {
     triggerClass: {type: String, default: 'tree-node'},
     draggable: {type: [Boolean, Function], default: true},
+    droppable: {type: [Boolean, Function], default: true},
+    eachDraggable: {type: [Boolean, Function], default: true},
+    eachDroppable: {type: [Boolean, Function], default: true},
     ondragstart: {type: Function},
     ondragend: {type: Function},
     unfoldWhenDragover: {type: Boolean, default: true},
     // pro props
-    droppable: {type: [Boolean, Function], default: true},
     crossTree: {type: [Boolean, Function], default: false},
   },
   // components: {},
@@ -50,7 +52,8 @@ export default {
       const {store} = this.treesStore
       for (const {value: node, index} of hp.iterateALL(this.getAllNodesByPath(path), {reverse: true})) {
         const currentPath = path.slice(0, index + 1)
-        const draggable = hp.resolveValueOrGettter(node.$draggable, [currentPath, this, store])
+        const draggableOpt = node.$draggable !== undefined ? node.$draggable : this.eachDraggable
+        const draggable = hp.resolveValueOrGettter(draggableOpt, [currentPath, this, store])
         if (draggable === undefined) {
           continue
         } else {
@@ -65,7 +68,8 @@ export default {
       allNodes.unshift(this.rootNode)
       for (const {value: node, index} of hp.iterateALL(allNodes, {reverse: true})) {
         const currentPath = path.slice(0, index + 1)
-        const droppable = hp.resolveValueOrGettter(node.$droppable, [currentPath, this, store])
+        const droppableOpt = node.$droppable !== undefined ? node.$droppable : this.eachDroppable
+        const droppable = hp.resolveValueOrGettter(droppableOpt, [currentPath, this, store])
         if (droppable === undefined) {
           continue
         } else {

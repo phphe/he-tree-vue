@@ -1,6 +1,5 @@
 import * as hp from 'helper-js'
-// import draggableHelper from 'draggable-helper'
-import draggableHelper from 'C:\\Users\\phphe\\projects\\draggable-helper\\dist\\draggable-helper.esm.js'
+import draggableHelper from 'draggable-helper'
 import doDraggableDecision from './draggable-decision-part.js'
 
 // in follow code, options belongs to makeTreeDraggable, opt belongs to draggableHelper

@@ -23,21 +23,21 @@
   },
   "dependencies": {
     "core-js": "^3.4.3",
-    "draggable-helper": "^3.0.1",
+    "draggable-helper": "^3.0.3",
     "helper-js": "^1.4.14",
     "tree-helper": "^1.4.14",
     "vue-functions": "^1.0.6"
   },
   "devDependencies": {
-    "vue": "^2.6.10",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
+    "bili": "^3.4.2",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
+    "rollup-plugin-vue": "^4.3.2",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
-    "vue-template-compiler": "^2.6.10",
-    "bili": "^3.4.2",
-    "rollup-plugin-vue": "^4.3.2"
+    "vue": "^2.6.10",
+    "vue-template-compiler": "^2.6.10"
   }
 }
