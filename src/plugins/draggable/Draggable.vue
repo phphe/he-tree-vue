@@ -14,7 +14,6 @@ export default {
     // pro props
     droppable: {type: [Boolean, Function], default: true},
     crossTree: {type: [Boolean, Function], default: false},
-    rootDroppable: {type: [Boolean, Function], default: true},
   },
   // components: {},
   data() {
@@ -62,11 +61,9 @@ export default {
     },
     isNodeDroppable(node, path) {
       const {store} = this.treesStore
-      if (!node) {
-        // tree
-        return hp.resolveValueOrGettter(this.rootDroppable, [this, store])
-      }
-      for (const {value: node, index} of hp.iterateALL(this.getAllNodesByPath(path), {reverse: true})) {
+      const allNodes = this.getAllNodesByPath(path)
+      allNodes.unshift(this.rootNode)
+      for (const {value: node, index} of hp.iterateALL(allNodes, {reverse: true})) {
         const currentPath = path.slice(0, index + 1)
         const droppable = hp.resolveValueOrGettter(node.$droppable, [currentPath, this, store])
         if (droppable === undefined) {
@@ -119,6 +116,7 @@ export default {
       indent: this.indent,
       triggerClass: this.triggerClass,
       unfoldWhenDragover: this.unfoldWhenDragover,
+      treeClass: 'he-tree',
       rootClass: 'tree-root',
       childrenClass: 'tree-children',
       branchClass: 'tree-branch',
@@ -135,7 +133,13 @@ export default {
          const node = targetTree.getNodeByBranchEl(branchEl)
          return node.$folded
       },
-      isTargetTreeRootDroppable: (store) => hp.resolveValueOrGettter(store.targetTree.rootDroppable, [store.targetTree, store]),
+      isTargetTreeRootDroppable: (store) => {
+        const droppable = hp.resolveValueOrGettter(store.targetTree.rootNode.$droppable, [store.targetTree, store])
+        if (droppable !== undefined) {
+          return droppable
+        }
+        return true
+      },
       unfoldTargetNodeByEl: (...args) => this._Draggable_unfoldTargetNodeByEl(...args),
       isNodeParentDroppable: (branchEl, treeEl) => {
         const tree = this.getTreeVmByTreeEl(treeEl)
@@ -259,6 +263,11 @@ export default {
             targetTree.$emit('input', targetTree.value)
             targetTree.$emit('change')
           }
+          return new Promise((resolve, reject) => {
+            targetTree.$nextTick(() => {
+              resolve()
+            })
+          })
         }
       },
     }

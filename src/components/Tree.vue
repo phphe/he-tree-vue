@@ -45,15 +45,15 @@ const template = function (h) {
         </transitionComponent>}
       </div>
     }
-    return <div class={`tree-children ${noUndefined(parent && parent.$childrenClass)}`}
-      style={parent && parent.$childrenStyle}
+    return <div class={`tree-children ${noUndefined(parent===this.rootNode && 'tree-root')} ${noUndefined(parent.$childrenClass)}`}
+      style={parent.$childrenStyle}
     >
       {nodes.map(branchTpl)}
     </div>
   }
-  return <div class="he-tree tree-root" data-tree-id={this._uid}>
+  return <div class="he-tree" data-tree-id={this._uid}>
     {this.blockHeader && this.blockHeader()}
-    {childrenListTpl(this.value, null, [])}
+    {childrenListTpl(this.rootNode.children, this.rootNode, [])}
     {this.blockFooter && this.blockFooter()}
   </div>
 }
@@ -65,6 +65,7 @@ const Tree = {
   props: {
     value: {},
     indent: {default: 20},
+    rootNode: {default: is => ({})},
   },
   // components: {},
   data() {
@@ -166,6 +167,11 @@ const Tree = {
     },
   },
   created() {
+    //
+    const updateRootNode = () => { this.$set(this.rootNode, 'children', this.value) }
+    this.$watch('rootNode', updateRootNode, {immediate: true})
+    this.$watch('value', updateRootNode, {immediate: true})
+    //
     this.$set(this.trees, this._uid, this)
     this.$once('hook:beforeDestroy', () => {
       this.$delete(this.trees, this._uid)

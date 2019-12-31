@@ -1,5 +1,6 @@
 import * as hp from 'helper-js'
-import draggableHelper from 'draggable-helper'
+// import draggableHelper from 'draggable-helper'
+import draggableHelper from 'C:\\Users\\phphe\\projects\\draggable-helper\\dist\\draggable-helper.esm.js'
 import doDraggableDecision from './draggable-decision-part.js'
 
 // in follow code, options belongs to makeTreeDraggable, opt belongs to draggableHelper
@@ -27,6 +28,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
   }
   const destroy = draggableHelper(treeEl, {
     draggingClass: options.draggingClass,
+    restoreDOMManuallyOndrop: true,
     beforeDrag(startEvent, moveEvent, store, opt) {
       store.startTreeEl = treeEl
       if (options.beforeDrag && options.beforeDrag(store, opt) === false) {
@@ -83,7 +85,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           movingElLooped = true
         }
         elsToTree.push(itemEl)
-        if (hp.hasClass(itemEl, options.rootClass)) {
+        if (hp.hasClass(itemEl, options.treeClass)) {
           tree = itemEl
           break
         }
@@ -404,8 +406,16 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     drop: async (endEvent, store, opt) => {
       const movingEl = store.el // branch
       const {placeholder, tempChildren} = store
+      // use mask tree to avoid flick caused by DOM update in short time
+      // 复制 targetTreeEl 作为遮罩, 避免短时间内更新DOM引起的闪烁
+      let maskTree
       if (placeholder) {
         // placeholder not mounted is rarely
+        // create mask tree
+        maskTree = store.targetTreeEl.cloneNode(true)
+        store.targetTreeEl.style.display = 'none'
+        hp.insertAfter(maskTree, store.targetTreeEl)
+        //
         store.targetPath = options.getPathByBranchEl(placeholder)
         let pathChanged = isPathChanged()
         store.targetPathNotEqualToStartPath = pathChanged
@@ -420,7 +430,14 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           hp.removeEl(tempChildren)
         }
       }
-      options.ondrop(store, opt)
+      store.restoreDOM()
+      await options.ondrop(store, opt)
+      // remove mask tree
+      if (maskTree) {
+        await hp.waitTime(30)
+        hp.removeEl(maskTree)
+        store.targetTreeEl.style.display = 'block'
+      }
       //
       function isPathChanged() {
         const {startTree, targetTree, startPath, targetPath} = store
