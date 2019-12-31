@@ -11,7 +11,7 @@ export default {
       }
       // update children
       if (node.children && node.children.length > 0) {
-        this.traverseDescendants(node.children, (childNode) => {
+        this.walkTreeData(node.children, (childNode) => {
           this.$set(childNode, '$checked', node.$checked)
         })
       }
@@ -29,8 +29,8 @@ export default {
       this.$set(node, '$checked', node.$checked)
       this.afterCheckChanged(node, path)
     },
-    setCheckedOfAllNodes(to, nodeOrNodes = this.value) {
-      this.traverseDescendants(nodeOrNodes, (childNode) => {
+    setCheckedOfAllNodes(to, nodeOrNodes = this.treeData) {
+      this.walkTreeData(nodeOrNodes, (childNode) => {
         this.$set(childNode, '$checked', to)
       })
     },

@@ -39,7 +39,7 @@ export default {
     },
     // todo move to tree-helper
     // todo add tree-helper into helper-js
-    getNodeByIndexPath(indexes, rootData = this.value) {
+    getNodeByIndexPath(indexes, rootData = this.treeData) {
       let cur
       let children = rootData
       for (const index of indexes) {
@@ -222,7 +222,7 @@ export default {
           // remove from start position
           const startParentPath = hp.arrayWithoutEnd(startPath, 1)
           const startParent = startTree.getNodeByPath(startParentPath)
-          const startSiblings = startParent ? startParent.children : startTree.value
+          const startSiblings = startParent ? startParent.children : startTree.treeData
           const startIndex = hp.arrayLast(startPath)
           startSiblings.splice(startIndex, 1)
           // update targetPath
@@ -256,15 +256,15 @@ export default {
             }
             targetSiblings = targetParent.children
           } else {
-            targetSiblings = targetTree.value
+            targetSiblings = targetTree.treeData
           }
           const targetIndex = hp.arrayLast(targetPath)
           targetSiblings.splice(targetIndex, 0, dragNode)
           // emit event
-          startTree.$emit('input', startTree.value)
+          startTree.$emit('input', startTree.treeData)
           startTree.$emit('change')
           if (targetTree !== startTree) {
-            targetTree.$emit('input', targetTree.value)
+            targetTree.$emit('input', targetTree.treeData)
             targetTree.$emit('change')
           }
           return new Promise((resolve, reject) => {

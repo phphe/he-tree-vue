@@ -34,12 +34,12 @@ export default {
       }
     },
     foldAll() {
-      th.depthFirstSearch(this.value, (childNode) => {
+      th.depthFirstSearch(this.treeData, (childNode) => {
         this.fold(childNode)
       })
     },
     unfoldAll() {
-      th.depthFirstSearch(this.value, (childNode) => {
+      th.depthFirstSearch(this.treeData, (childNode) => {
         this.unfold(childNode, {unfoldParent: false})
       })
     },

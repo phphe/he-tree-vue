@@ -1,6 +1,9 @@
 <script>
 import * as hp from 'helper-js'
-import * as th from 'tree-helper'
+// todo
+// import * as vf from 'vue-functions'
+import * as vf from 'C:\\Users\\phphe\\projects\\vue-functions\\dist\\vue-functions.esm.js'
+import * as ut from '../utils.js'
 
 const template = function (h) {
   // convert undefined to empty str
@@ -62,8 +65,10 @@ const trees = {}
 
 const Tree = {
   render: template,
+  mixins: [vf.updatablePropsEvenUnbound({
+    value: {$localName: 'treeData'},
+  })],
   props: {
-    value: {},
     indent: {default: 20},
     rootNode: {default: is => ({})},
   },
@@ -80,7 +85,7 @@ const Tree = {
       if (!opt.reverse) {
         let prevPath = []
         let prevNode
-        let prevChildren = this.value
+        let prevChildren = this.treeData
         for (const index of path) {
           const currentPath = [...prevPath, index]
           const currentNode = prevChildren[index]
@@ -99,9 +104,7 @@ const Tree = {
         }
       }
     },
-    traverseDescendants(nodeOrNodes, handler) {
-      return th.depthFirstSearch(nodeOrNodes, handler)
-    },
+    walkTreeData: ut.walkTreeData,
     getTreeVmByTreeEl(treeEl) {
       return this.trees[treeEl.getAttribute('data-tree-id')]
     },
@@ -126,6 +129,11 @@ const Tree = {
     },
     getNodeParentByPath(path) {
       return hp.arrayWithoutEnd(this.getAllNodesByPath(path), 1)
+    },
+    cloneTreeData: ut.cloneTreeData,
+    // return cloned new tree data without property witch starts with `$`
+    getPureTreeData(treeData=this.treeData) {
+      return ut.getPureTreeData(treeData)
     },
     // todo extract hooks to vue-functions
     // get hooks in this._hooks, without which in props
@@ -168,9 +176,9 @@ const Tree = {
   },
   created() {
     //
-    const updateRootNode = () => { this.$set(this.rootNode, 'children', this.value) }
+    const updateRootNode = () => { this.$set(this.rootNode, 'children', this.treeData) }
     this.$watch('rootNode', updateRootNode, {immediate: true})
-    this.$watch('value', updateRootNode, {immediate: true})
+    this.$watch('treeData', updateRootNode, {immediate: true})
     //
     this.$set(this.trees, this._uid, this)
     this.$once('hook:beforeDestroy', () => {
