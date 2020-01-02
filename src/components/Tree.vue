@@ -1,8 +1,6 @@
 <script>
 import * as hp from 'helper-js'
-// todo
-// import * as vf from 'vue-functions'
-import * as vf from 'C:\\Users\\phphe\\projects\\vue-functions\\dist\\vue-functions.esm.js'
+import * as vf from 'vue-functions'
 import * as ut from '../utils.js'
 
 const template = function (h) {
@@ -65,9 +63,12 @@ const trees = {}
 
 const Tree = {
   render: template,
-  mixins: [vf.updatablePropsEvenUnbound({
-    value: {$localName: 'treeData'},
-  })],
+  mixins: [
+    vf.updatablePropsEvenUnbound({
+      value: {$localName: 'treeData'},
+    }),
+    vf.hookHelper,
+  ],
   props: {
     indent: {default: 20},
     rootNode: {default: is => ({})},
@@ -81,6 +82,7 @@ const Tree = {
   // computed: {},
   // watch: {},
   methods: {
+    // todo move iteratePath, getAllNodesByPath, getNodeByPath to helper-js
     * iteratePath(path, opt = {}) {
       if (!opt.reverse) {
         let prevPath = []
@@ -135,44 +137,6 @@ const Tree = {
     getPureTreeData(treeData=this.treeData) {
       return ut.getPureTreeData(treeData)
     },
-    // todo extract hooks to vue-functions
-    // get hooks in this._hooks, without which in props
-    _getNonPropHooksByName(name) {
-      if (this._hooks) {
-        return this._hooks[name]
-      }
-    },
-    addHook(name, func) {
-      if (!this._getNonPropHooksByName(name)) {
-        if (!this._hooks) {
-          this._hooks = {}
-        }
-        if (!this._hooks[name]) {
-          this._hooks[name] = []
-        }
-      }
-      this._hooks[name].push(func)
-    },
-    removeHook(name, func) {
-      const hooks = this._getNonPropHooksByName(name)
-      if (hooks) {
-        hp.arrayRemove(hooks, func)
-      }
-    },
-    hasHook(name) {
-      return this._getNonPropHooksByName(name) || this[name]
-    },
-    executeHook(name, args) {
-      const hooks = this._getNonPropHooksByName(name).slice()
-      if (hooks) {
-        if (this[name] && hp.isFunction(this[name])) {
-          hooks.push(function (next, ...args) {
-            return this[name](...args)
-          })
-        }
-        return hp.joinFunctionsByNext(hooks)(...args)
-      }
-    },
   },
   created() {
     //
@@ -196,7 +160,6 @@ const Tree = {
       mixins: plugins,
       mixPlugins: this.mixPlugins,
     }
-    MixedTree._afterMetaCreateds = plugins.map(v => v.afterMetaCreated).filter(v => v)
     return MixedTree
   },
 }

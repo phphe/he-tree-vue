@@ -1,5 +1,3 @@
-// todo include tree-helper into helper-js
-import * as th from 'tree-helper'
 import * as hp from 'helper-js'
 
 export function cloneTreeData(treeData) {
@@ -25,7 +23,7 @@ export function cloneTreeData(treeData) {
   return notArray ? result[0] : result
 }
 
-export const walkTreeData = th.depthFirstSearch
+export const walkTreeData = hp.walkTreeData
 
 export function getPureTreeData(treeData) {
   const newTreeData = cloneTreeData(treeData)

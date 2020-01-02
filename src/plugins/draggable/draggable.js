@@ -381,7 +381,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       //
       const checkPlaceholder = () => {
         if (!store.placeholder) {
-          const placeholder = createElementFromHTML(`
+          const placeholder = hp.createElementFromHTML(`
             <div id="${options.placeholderId}" class="${options.branchClass} ${options.placeholderClass}">
               <div class="${options.nodeBackClass} ${options.placeholderNodeBackClass}">
                 <div class="${options.nodeClass} ${options.placeholderNodeClass}">
@@ -445,16 +445,4 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     },
   })
   return {destroy, options}
-}
-
-// todo move to helper-js
-// return NodeList if there are multiple top-level nodes
-function createElementFromHTML(htmlString) {
-  var div = document.createElement('div');
-  div.innerHTML = htmlString.trim();
-  if (div.childNodes.length > 1) {
-    return div.childNodes
-  } else {
-    return div.childNodes[0]
-  }
 }

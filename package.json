@@ -17,24 +17,30 @@
   },
   "scripts": {
     "dev": "vue-cli-service serve",
+    "build:web": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
     "build": "node scripts/build.js",
-    "build-web": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit"
+    "dev:lib": "rollup -w -c scripts/config.js --environment TARGET:umd",
+    "build:esm": "rollup -c scripts/config.js --environment TARGET:esm",
+    "dev:esm": "rollup -w -c scripts/config.js --environment TARGET:esm"
   },
   "dependencies": {
-    "core-js": "^3.4.3",
     "draggable-helper": "^3.0.3",
-    "helper-js": "^1.4.14",
-    "tree-helper": "^1.4.14",
-    "vue-functions": "^1.0.6"
+    "helper-js": "^1.4.17",
+    "rollup-helper": "^2.0.6",
+    "vue-functions": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "@vue/babel-preset-jsx": "^1.1.2",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
-    "bili": "^3.4.2",
+    "core-js": "^2.6.11",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
-    "rollup-plugin-vue": "^4.3.2",
+    "rollup-plugin-css-only": "^2.0.0",
+    "rollup-plugin-vue": "5.1.1",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
     "vue": "^2.6.10",

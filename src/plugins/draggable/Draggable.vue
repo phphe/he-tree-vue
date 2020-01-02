@@ -37,17 +37,6 @@ export default {
         })
       })
     },
-    // todo move to tree-helper
-    // todo add tree-helper into helper-js
-    getNodeByIndexPath(indexes, rootData = this.treeData) {
-      let cur
-      let children = rootData
-      for (const index of indexes) {
-        cur = children[index]
-        children = cur.children
-      }
-      return cur
-    },
     isNodeDraggable(node, path) {
       const {store} = this.treesStore
       for (const {value: node, index} of hp.iterateALL(this.getAllNodesByPath(path), {reverse: true})) {

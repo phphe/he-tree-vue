@@ -1,4 +1,4 @@
-import * as th from 'tree-helper'
+import * as hp from 'helper-js'
 
 export default {
   props: {
@@ -34,12 +34,12 @@ export default {
       }
     },
     foldAll() {
-      th.depthFirstSearch(this.treeData, (childNode) => {
+      hp.walkTreeData(this.treeData, (childNode) => {
         this.fold(childNode)
       })
     },
     unfoldAll() {
-      th.depthFirstSearch(this.treeData, (childNode) => {
+      hp.walkTreeData(this.treeData, (childNode) => {
         this.unfold(childNode, {unfoldParent: false})
       })
     },
