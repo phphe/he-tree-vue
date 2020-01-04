@@ -25,8 +25,7 @@ export default {
       this.afterCheckChanged(node, path)
     },
     toggleCheck(node, path) {
-      // node.$checked is checked by vmodel, so don't change it again, just make it reactive
-      this.$set(node, '$checked', node.$checked)
+      this.$set(node, '$checked', !node.$checked)
       this.afterCheckChanged(node, path)
     },
     setCheckedOfAllNodes(to, nodeOrNodes = this.treeData) {

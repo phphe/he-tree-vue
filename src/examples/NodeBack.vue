@@ -5,7 +5,7 @@ div
   Tree.tree-with-nodeba-back(:value="treeData" idMode ref="tree")
     div(slot-scope="{node, index, path, tree}")
       b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
-      input(type="checkbox" v-model="node.$checked" @change="tree.toggleCheck(node, path)")
+      input(type="checkbox" :checked="node.$checked" @change="tree.toggleCheck(node, path)")
       | &nbsp;
       span {{node.text}}
 </template>
