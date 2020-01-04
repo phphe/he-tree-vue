@@ -118,7 +118,6 @@ export default {
       placeholderClass: 'tree-placeholder',
       placeholderNodeBackClass: 'tree-placeholder-node-back',
       placeholderNodeClass: 'tree-placeholder-node',
-      hiddenClass: 'hidden',
       draggingClass: 'dragging',
       placeholderId: `he_tree_drag_placeholder`,
       ifNodeFolded: (branchEl, store) => {

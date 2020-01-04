@@ -84,7 +84,6 @@ if (argv.target) {
 function babelTargetEsmodules() {
   return {
     runtimeHelpers: true,
-    exclude: [/^.*?node_modules\/.+$/],
     babelrc: false,
     presets: [
       ['@vue/cli-plugin-babel/preset', {

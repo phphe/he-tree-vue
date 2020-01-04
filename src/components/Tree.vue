@@ -22,8 +22,8 @@ const template = function (h) {
             return node.text
           }
         }
-        if (this.overrideSlot_default) {
-          return this.overrideSlotDefault(original)
+        if (this.overrideSlotDefault) {
+          return this.overrideSlotDefault({node, index, path, tree: this}, original)
         } else {
           return original()
         }
@@ -32,7 +32,7 @@ const template = function (h) {
       if (node.$nodeBackStyle) {
         nodebackStyle = {...nodebackStyle, ...node.$nodeBackStyle}
       }
-      return <div class={`tree-branch ${noUndefined(node.$branchClass)}`}
+      return <div class={`tree-branch ${noUndefined(node.$branchClass)} ${noUndefined(node.$hidden&&'he-tree--hidden')}`}
         style={node.$branchStyle}
         data-tree-node-path={path.join(',')}
       >
@@ -52,7 +52,7 @@ const template = function (h) {
       {nodes.map(branchTpl)}
     </div>
   }
-  return <div class="he-tree" data-tree-id={this._uid}>
+  return <div class={`he-tree ${this.treeClass}`} data-tree-id={this._uid}>
     {this.blockHeader && this.blockHeader()}
     {childrenListTpl(this.rootNode.children, this.rootNode, [])}
     {this.blockFooter && this.blockFooter()}
@@ -77,6 +77,7 @@ const Tree = {
   data() {
     return {
       trees,
+      treeClass: '',
     }
   },
   // computed: {},
@@ -106,7 +107,9 @@ const Tree = {
         }
       }
     },
-    walkTreeData: ut.walkTreeData,
+    walkTreeData(handler, ...args) {
+      return ut.walkTreeData(this.treeData, handler, ...args)
+    },
     getTreeVmByTreeEl(treeEl) {
       return this.trees[treeEl.getAttribute('data-tree-id')]
     },
@@ -132,7 +135,15 @@ const Tree = {
     getNodeParentByPath(path) {
       return hp.arrayWithoutEnd(this.getAllNodesByPath(path), 1)
     },
-    cloneTreeData: ut.cloneTreeData,
+    removeNodeByPath(path) {
+      const parentPath = path.slice()
+      const index = parentPath.pop()
+      const parent = this.getNodeByPath(parentPath) || this.rootNode
+      parent.children.splice(index, 1)
+    },
+    cloneTreeData() {
+      return ut.cloneTreeData(this.treeData)
+    },
     // return cloned new tree data without property witch starts with `$`
     getPureTreeData(treeData=this.treeData) {
       return ut.getPureTreeData(treeData)
@@ -172,5 +183,8 @@ export default Tree
   border: 1px solid #ccc;
   margin-bottom: 5px;
   padding: 5px;
+}
+.he-tree--hidden{
+  display: none;
 }
 </style>
