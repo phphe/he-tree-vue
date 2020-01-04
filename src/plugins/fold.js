@@ -8,7 +8,10 @@ export default {
   },
   methods: {
     fold(node, path) {
-      this.$set(node, '$folded', true)
+      if (!node.$folded) {
+        this.$set(node, '$folded', true)
+        this.$emit('folded', {node, path})
+      }
     },
     unfold(node, path, opt = {}) {
       opt = {
@@ -19,7 +22,10 @@ export default {
       if (opt.foldOthers) {
         this.foldAll()
       }
-      this.$set(node, '$folded', false)
+      if (node.$folded) {
+        this.$set(node, '$folded', false)
+        this.$emit('unfolded', {node, path, opt})
+      }
       if (opt.unfoldParent && path.length > 1) {
         const parentPath = path.slice(0, path.length - 1)
         const parent = this.getNodeByPath(parentPath)
