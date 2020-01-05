@@ -296,14 +296,14 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           if (options.isNodeParentDroppable(info.closestBranch, store.targetTreeEl)) {
             hp.insertBefore(store.placeholder, info.closestBranch)
           } else {
-            return secondCase(info.closestBranch)
+            return secondCase(getParentBranchByEl(info.closestBranch))
           }
         },
         async 'insert after'(branch = info.closestBranch) {
           if (options.isNodeParentDroppable(branch, store.targetTreeEl)) {
             hp.insertAfter(store.placeholder, branch)
           } else {
-            const moved = await secondCase(branch)
+            const moved = await secondCase(getParentBranchByEl(branch))
             const isFirstTriedAction = !store.oneMoveStore.triedActions || store.oneMoveStore.triedActions.length === 0
             if (!moved && isFirstTriedAction) {
               return thirdCase(branch)
@@ -329,7 +329,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           if (options.isNodeParentDroppable(info.aboveBranch, store.targetTreeEl)) {
             hp.insertAfter(store.placeholder, info.aboveBranch)
           } else {
-            return secondCase(info.aboveBranch)
+            return secondCase(getParentBranchByEl(info.aboveBranch))
           }
         },
         async 'append to prev'() {
@@ -444,6 +444,16 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     },
   })
   return {destroy, options}
+  function getParentBranchByEl(el) {
+    return hp.findParent(el, el => {
+      if (hp.hasClass(el, options.branchClass)) {
+        return true
+      }
+      if (hp.hasClass(el, options.rootClass)) {
+        return 'break'
+      }
+    })
+  }
 }
 
 function isElementHidden(el) {

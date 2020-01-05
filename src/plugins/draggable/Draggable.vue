@@ -14,8 +14,6 @@ export default {
     ondragstart: {type: Function},
     ondragend: {type: Function},
     unfoldWhenDragover: {type: Boolean, default: true},
-    // pro props
-    crossTree: {type: [Boolean, Function], default: false},
   },
   // components: {},
   data() {
@@ -39,7 +37,9 @@ export default {
     },
     isNodeDraggable(node, path) {
       const {store} = this.treesStore
-      for (const {value: node, index} of hp.iterateALL(this.getAllNodesByPath(path), {reverse: true})) {
+      const allNodes = this.getAllNodesByPath(path)
+      allNodes.unshift(this.rootNode)
+      for (const {value: node, index} of hp.iterateAll(allNodes, {reverse: true})) {
         const currentPath = path.slice(0, index + 1)
         const draggableOpt = node.$draggable !== undefined ? node.$draggable : this.eachDraggable
         const draggable = hp.resolveValueOrGettter(draggableOpt, [currentPath, this, store])
@@ -55,17 +55,26 @@ export default {
       const {store} = this.treesStore
       const allNodes = this.getAllNodesByPath(path)
       allNodes.unshift(this.rootNode)
-      for (const {value: node, index} of hp.iterateALL(allNodes, {reverse: true})) {
+      let droppableFinal, resolved
+      for (const {value: node, index} of hp.iterateAll(allNodes, {reverse: true})) {
         const currentPath = path.slice(0, index + 1)
         const droppableOpt = node.$droppable !== undefined ? node.$droppable : this.eachDroppable
         const droppable = hp.resolveValueOrGettter(droppableOpt, [currentPath, this, store])
         if (droppable === undefined) {
           continue
         } else {
-          return droppable
+          droppableFinal = droppable
+          resolved = true
+          break
         }
       }
-      return true
+      if (!resolved) {
+        droppableFinal = true
+      }
+      if (this._internal_hook_isNodeDroppable) {
+        return this._internal_hook_isNodeDroppable({droppableFinal, node, path, store})
+      }
+      return droppableFinal
     },
     // override
     getPathByBranchEl(branchEl) {
@@ -92,7 +101,7 @@ export default {
         }
       })
       let index = 0
-      for (const {value: el, index: index2} of hp.iterateALL(branchEl.parentElement.children)) {
+      for (const {value: el, index: index2} of hp.iterateAll(branchEl.parentElement.children)) {
         if (hp.hasClass(el, 'tree-branch') || hp.hasClass(el, 'tree-placeholder')) {
           if (el === branchEl) {
             break
@@ -149,11 +158,17 @@ export default {
       _findClosestDroppablePosition: (branchEl, treeEl) => {
         const tree = this.getTreeVmByTreeEl(treeEl)
         const path = tree.getPathByBranchEl(branchEl)
-        const findPath = hp.arrayWithoutEnd(path, 2) // no node and its parent
+        const findPath = hp.arrayWithoutEnd(path, 1)
+        let cur = path
         for (const {node, path} of this.iteratePath(findPath, {reverse: true})) {
           if (tree.isNodeDroppable(node, path)) {
-            return tree.getBranchElByPath(path)
+            return tree.getBranchElByPath(cur)
+          } else {
+            cur = path
           }
+        }
+        if (tree.isNodeDroppable(this.rootNode, [])) {
+          return tree.getBranchElByPath(cur)
         }
       },
       afterPlaceholderCreated: (store) => {
@@ -185,8 +200,9 @@ export default {
         const targetTree = this.getTreeVmByTreeEl(targetTreeEl)
         const {startTree} = store
         if (startTree !== targetTree) {
-          // start tree or target tree not crossTree
-          if (!hp.resolveValueOrGettter(startTree.crossTree, [startTree, store]) || !hp.resolveValueOrGettter(targetTree.crossTree, [targetTree, store])) {
+          if (this._internal_hook_filterTargetTree) {
+            return this._internal_hook_filterTargetTree(store)
+          } else {
             return false
           }
         }
@@ -195,6 +211,9 @@ export default {
           return false
         }
         store.targetTree = targetTree
+        if (!hp.resolveValueOrGettter(store.startTree===store.targetTree) && hp.resolveValueOrGettter(this._Draggable_unfoldTargetNode, [false, this.treeData]) !== this.rootNode.children) {
+          return false
+        }
       },
       beforeDrop: (pathChanged, store) => {
         const {targetTree} = store
