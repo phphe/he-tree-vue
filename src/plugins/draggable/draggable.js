@@ -265,14 +265,14 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         const queue = store._doActionQueue
         store._doActionQueue = queue.then(async () => {
           // record tried actions in one move
-          if (!store.oneMoveStore.triedActions) {
-            store.oneMoveStore.triedActions = []
+          if (!store.oneMoveStore.actionRecords) {
+            store.oneMoveStore.actionRecords = []
           }
-          const {triedActions} = store.oneMoveStore
+          const {actionRecords} = store.oneMoveStore
           //
           const action = actions[name]
           const r = action(...args)
-          triedActions.push(name)
+          actionRecords.push(name)
           await r
           // set indent of placeholder
           const placeholderPath = options.getPathByBranchEl(store.placeholder)
@@ -304,7 +304,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
             hp.insertAfter(store.placeholder, branch)
           } else {
             const moved = await secondCase(getParentBranchByEl(branch))
-            const isFirstTriedAction = !store.oneMoveStore.triedActions || store.oneMoveStore.triedActions.length === 0
+            const isFirstTriedAction = !store.oneMoveStore.actionRecords || store.oneMoveStore.actionRecords.length === 1
             if (!moved && isFirstTriedAction) {
               return thirdCase(branch)
             }
@@ -351,17 +351,18 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       // second case for actions, when target position not droppable
       // return true if moved
       const secondCase = async (branchEl) => {
-        const targetEl = options._findClosestDroppablePosition(branchEl, store.targetTreeEl)
-        if (targetEl) {
-          hp.insertAfter(store.placeholder, targetEl)
-          return true
+        if (branchEl) {
+          const targetEl = options._findClosestDroppablePosition(branchEl, store.targetTreeEl)
+          if (targetEl) {
+            hp.insertAfter(store.placeholder, targetEl)
+            return true
+          }
         }
       }
       // when action is after, first case and second case invalid, try prepend
       // 当操作是'after', 第一种第二种情况无效时, 尝试prepend
       const thirdCase = async (branchEl) => {
         // the third case
-        hp.insertAfter(store.placeholder, targetEl)
         if (options.isNodeDroppable(branchEl, store.targetTreeEl)) {
           const childrenEl = await unfoldAndGetChildrenEl(branchEl)
           hp.prependTo(store.placeholder, childrenEl)

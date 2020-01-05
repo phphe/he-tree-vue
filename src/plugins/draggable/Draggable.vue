@@ -203,6 +203,7 @@ export default {
           if (this._internal_hook_filterTargetTree) {
             return this._internal_hook_filterTargetTree(store)
           } else {
+            console.log('he-tree: The plugin DraggablePro is required for `crossTree` feature.')
             return false
           }
         }
