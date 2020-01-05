@@ -33,11 +33,11 @@ const template = function (h) {
         nodebackStyle = {...nodebackStyle, ...node.$nodeBackStyle}
       }
       return <div class={`tree-branch ${noUndefined(node.$branchClass)} ${noUndefined(node.$hidden&&'he-tree--hidden')}`}
-        style={node.$branchStyle}
+        style={node.$branchStyle || {}}
         data-tree-node-path={path.join(',')}
       >
-        <div class={`tree-node-back ${noUndefined(node.$nodeBackClass)}`} style={nodebackStyle}>
-          <div class={`tree-node ${noUndefined(node.$nodeClass)}`} style={node.$nodeStyle}>
+        <div class={`tree-node-back ${noUndefined(node.$nodeBackClass)}`} style={nodebackStyle || {}}>
+          <div class={`tree-node ${noUndefined(node.$nodeClass)}`} style={node.$nodeStyle || {}}>
             {slotDefault()}
           </div>
         </div>
@@ -47,7 +47,7 @@ const template = function (h) {
       </div>
     }
     return <div class={`tree-children ${noUndefined(parent===this.rootNode && 'tree-root')} ${noUndefined(parent.$childrenClass)}`}
-      style={parent.$childrenStyle}
+      style={parent.$childrenStyle || {}}
     >
       {nodes.map(branchTpl)}
     </div>
