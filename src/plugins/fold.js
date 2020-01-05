@@ -1,5 +1,3 @@
-import * as hp from 'helper-js'
-
 export default {
   props: {
     foldingTransitionName: {type: String},
@@ -10,7 +8,6 @@ export default {
     fold(node, path) {
       if (!node.$folded) {
         this.$set(node, '$folded', true)
-        this.$emit('folded', {node, path})
       }
     },
     unfold(node, path, opt = {}) {
@@ -24,7 +21,6 @@ export default {
       }
       if (node.$folded) {
         this.$set(node, '$folded', false)
-        this.$emit('unfolded', {node, path, opt})
       }
       if (opt.unfoldParent && path.length > 1) {
         const parentPath = path.slice(0, path.length - 1)
@@ -40,12 +36,12 @@ export default {
       }
     },
     foldAll() {
-      hp.walkTreeData(this.treeData, (childNode) => {
+      this.walkTreeData((childNode) => {
         this.fold(childNode)
       })
     },
     unfoldAll() {
-      hp.walkTreeData(this.treeData, (childNode) => {
+      this.walkTreeData((childNode) => {
         this.unfold(childNode, {unfoldParent: false})
       })
     },

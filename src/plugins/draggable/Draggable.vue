@@ -1,5 +1,6 @@
 <script>
 import * as hp from 'helper-js'
+import * as ut from '../../utils'
 import makeTreeDraggable from './draggable.js'
 
 const treesStore = {}
@@ -118,6 +119,7 @@ export default {
       indent: this.indent,
       triggerClass: this.triggerClass,
       unfoldWhenDragover: this.unfoldWhenDragover,
+      cloneWhenDrag: this.cloneWhenDrag,
       treeClass: 'he-tree',
       rootClass: 'tree-root',
       childrenClass: 'tree-children',
@@ -187,6 +189,9 @@ export default {
         const {startTree, dragBranchEl, startPath} = store
         const path = startTree.getPathByBranchEl(dragBranchEl)
         store.dragNode = startTree.getNodeByPath(path)
+        if (this.cloneWhenDrag) {
+          store.dragNode = ut.cloneTreeData(store.dragNode)
+        }
         if (!startTree.isNodeDraggable(store.dragNode, path)) {
           return false
         }
@@ -201,7 +206,9 @@ export default {
         const {startTree} = store
         if (startTree !== targetTree) {
           if (this._internal_hook_filterTargetTree) {
-            return this._internal_hook_filterTargetTree(store)
+            if (this._internal_hook_filterTargetTree(targetTree, store) === false) {
+              return false
+            }
           } else {
             console.log('he-tree: The plugin DraggablePro is required for `crossTree` feature.')
             return false
@@ -227,29 +234,31 @@ export default {
       ondrop: (store, t) => {
         if (store.pathChanged) {
           const {startTree, targetTree, startPath, targetPath, dragNode} = store
-          // remove from start position
-          const startParentPath = hp.arrayWithoutEnd(startPath, 1)
-          const startParent = startTree.getNodeByPath(startParentPath)
-          const startSiblings = startParent ? startParent.children : startTree.treeData
-          const startIndex = hp.arrayLast(startPath)
-          startSiblings.splice(startIndex, 1)
-          // update targetPath
-          if (startTree === targetTree) {
-            if (startPath.length <= targetPath.length) {
-              const lenNoEnd = startPath.length - 1
-              let same = true
-              for (let i = 0; i < lenNoEnd; i++) {
-                const s = startPath[i]
-                const t = targetPath[i]
-                if (s !== t) {
-                  same = false
-                  break
+          if (this.cloneWhenDrag !== true) {
+            // remove from start position
+            const startParentPath = hp.arrayWithoutEnd(startPath, 1)
+            const startParent = startTree.getNodeByPath(startParentPath)
+            const startSiblings = startParentPath.length === 0 ? startTree.treeData : startParent.children
+            const startIndex = hp.arrayLast(startPath)
+            startSiblings.splice(startIndex, 1)
+            // update targetPath
+            if (startTree === targetTree) {
+              if (startPath.length <= targetPath.length) {
+                const lenNoEnd = startPath.length - 1
+                let same = true
+                for (let i = 0; i < lenNoEnd; i++) {
+                  const s = startPath[i]
+                  const t = targetPath[i]
+                  if (s !== t) {
+                    same = false
+                    break
+                  }
                 }
-              }
-              if (same) {
-                const endIndex = startPath.length - 1
-                if (startPath[endIndex] < targetPath[endIndex]) {
-                  targetPath[endIndex] -= 1
+                if (same) {
+                  const endIndex = startPath.length - 1
+                  if (startPath[endIndex] < targetPath[endIndex]) {
+                    targetPath[endIndex] -= 1
+                  }
                 }
               }
             }
@@ -258,13 +267,13 @@ export default {
           const targetParentPath = hp.arrayWithoutEnd(targetPath, 1)
           const targetParent = targetTree.getNodeByPath(targetParentPath)
           let targetSiblings
-          if (targetParent) {
+          if (targetParentPath.length === 0) {
+            targetSiblings = targetTree.treeData
+          } else {
             if (!targetParent.children) {
               this.$set(targetParent, 'children', [])
             }
             targetSiblings = targetParent.children
-          } else {
-            targetSiblings = targetTree.treeData
           }
           const targetIndex = hp.arrayLast(targetPath)
           targetSiblings.splice(targetIndex, 0, dragNode)
@@ -285,8 +294,11 @@ export default {
     }
     const _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options);
     // watch props and update options
-    ['indent', 'triggerClass', 'unfoldWhenDragover'].forEach(name => {
-      this.$watch(name, (value) => { _makeTreeDraggable_obj.options[name] = value })
+    ['indent', 'triggerClass', 'unfoldWhenDragover', 'cloneWhenDrag'].forEach(name => {
+      this.$watch(name, (value) => {
+        _makeTreeDraggable_obj.options[name] = value
+        _makeTreeDraggable_obj.optionsUpdated()
+      })
     })
   },
 }

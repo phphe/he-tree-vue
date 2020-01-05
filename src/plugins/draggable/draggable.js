@@ -24,9 +24,10 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     ...options,
     treeEl,
   }
-  const destroy = draggableHelper(treeEl, {
+  const {destroy, draggableHelperOptions} = draggableHelper(treeEl, {
     draggingClass: options.draggingClass,
     restoreDOMManuallyOndrop: true,
+    clone: options.cloneWhenDrag,
     beforeDrag(startEvent, moveEvent, store, opt) {
       store.startTreeEl = treeEl
       if (options.beforeDrag && options.beforeDrag(store, opt) === false) {
@@ -444,7 +445,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       }
     },
   })
-  return {destroy, options}
+  return {destroy, options, optionsUpdated}
   function getParentBranchByEl(el) {
     return hp.findParent(el, el => {
       if (hp.hasClass(el, options.branchClass)) {
@@ -454,6 +455,9 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         return 'break'
       }
     })
+  }
+  function optionsUpdated() {
+    draggableHelperOptions.clone = options.cloneWhenDrag
   }
 }
 

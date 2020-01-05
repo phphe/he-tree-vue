@@ -81,47 +81,26 @@ const Tree = {
     }
   },
   // computed: {},
-  // watch: {},
-  methods: {
-    // todo move iteratePath, getAllNodesByPath, getNodeByPath to helper-js
-    * iteratePath(path, opt = {}) {
-      if (!opt.reverse) {
-        let prevPath = []
-        let prevNode
-        let prevChildren = this.treeData
-        for (const index of path) {
-          const currentPath = [...prevPath, index]
-          const currentNode = prevChildren[index]
-          yield {path: currentPath, node: currentNode}
-          prevPath = currentPath
-          prevNode = currentNode
-          prevChildren = currentNode.children
-        }
-      } else {
-        const allReversedNodes = this.getAllNodesByPath(path)
-        allReversedNodes.reverse()
-        let currentPath = path.slice()
-        for (const node of allReversedNodes) {
-          yield {path: currentPath, node: node}
-          currentPath = hp.arrayWithoutEnd(currentPath, 1)
-        }
+  watch: {
+    treeData: {
+      immediate: true,
+      handler(treeData) {
+        this._TreeDataHelper = new hp.TreeData(this.treeData)
       }
-    },
-    walkTreeData(handler, ...args) {
-      return ut.walkTreeData(this.treeData, handler, ...args)
+    }
+  },
+  methods: {
+    iteratePath(path, opt) {
+      return this._TreeDataHelper.iteratePath(path, opt)
     },
     getTreeVmByTreeEl(treeEl) {
       return this.trees[treeEl.getAttribute('data-tree-id')]
     },
     getAllNodesByPath(path) {
-      const nodes = []
-      for (const {node} of this.iteratePath(path)) {
-        nodes.push(node)
-      }
-      return nodes
+      return this._TreeDataHelper.getAllNodes(path)
     },
     getNodeByPath(path) {
-      return hp.arrayLast(this.getAllNodesByPath(path))
+      return this._TreeDataHelper.getNode(path)
     },
     getPathByBranchEl(branchEl) {
       return branchEl.getAttribute('data-tree-node-path').split(',').map(v => parseInt(v))
@@ -133,20 +112,20 @@ const Tree = {
       return this.getNodeByPath(this.getPathByBranchEl(branchEl))
     },
     getNodeParentByPath(path) {
-      return hp.arrayWithoutEnd(this.getAllNodesByPath(path), 1)
+      return this._TreeDataHelper.getNodeParent(path)
     },
     removeNodeByPath(path) {
-      const parentPath = path.slice()
-      const index = parentPath.pop()
-      const parent = this.getNodeByPath(parentPath) || this.rootNode
-      parent.children.splice(index, 1)
+      return this._TreeDataHelper.removeNode(path)
     },
-    cloneTreeData() {
-      return ut.cloneTreeData(this.treeData)
+    walkTreeData(handler, opt) {
+      return ut.walkTreeData(this.treeData, handler, opt)
+    },
+    cloneTreeData(opt) {
+      return ut.cloneTreeData(this.treeData, opt)
     },
     // return cloned new tree data without property witch starts with `$`
-    getPureTreeData(treeData=this.treeData) {
-      return ut.getPureTreeData(treeData)
+    getPureTreeData() {
+      return ut.getPureTreeData(this.treeData)
     },
   },
   created() {

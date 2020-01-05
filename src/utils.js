@@ -1,38 +1,22 @@
-import * as hp from 'helper-js'
+import {TreeData} from 'helper-js'
 
-export function cloneTreeData(treeData) {
-  let notArray
-  if (!hp.isArray(treeData)) {
-    treeData = [treeData]
-    notArray = true
-  }
-  const getNewNodes = (nodes) => {
-    const newNodes = nodes.map(node => {
-      const newNode = {}
-      Object.keys(node).forEach(key => {
-        newNode[key] = node[key]
-        if (key === 'children') {
-          newNode[key] = getNewNodes(node[key])
-        }
-      })
-      return newNode
-    })
-    return newNodes
-  }
-  const result = getNewNodes(treeData)
-  return notArray ? result[0] : result
+export function cloneTreeData(treeData, opt) {
+  return (new TreeData(treeData)).clone(opt)
 }
 
-export const walkTreeData = hp.walkTreeData
+export function walkTreeData(treeData, handler, opt) {
+  return (new TreeData(treeData)).walk(handler, opt)
+}
 
 export function getPureTreeData(treeData) {
-  const newTreeData = cloneTreeData(treeData)
-  walkTreeData(newTreeData, (node) => {
-    Object.keys(node).forEach(key => {
-      if (key[0] === '$') {
-        delete node[key]
-      }
-    })
-  })
-  return newTreeData
+  const opt = {
+    afterNodeCreated: newNode => {
+      Object.keys(newNode).forEach(key => {
+        if (key[0] === '$') {
+          delete newNode[key]
+        }
+      })
+    },
+  }
+  return cloneTreeData(treeData, opt)
 }

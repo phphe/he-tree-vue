@@ -1,3 +1,5 @@
+import * as ut from '../utils.js'
+
 export default {
   props: {},
   methods: {
@@ -11,7 +13,7 @@ export default {
       }
       // update children
       if (node.children && node.children.length > 0) {
-        this.walkTreeData(node.children, (childNode) => {
+        ut.walkTreeData(node.children, (childNode) => {
           this.$set(childNode, '$checked', node.$checked)
         })
       }
@@ -29,7 +31,7 @@ export default {
       this.afterCheckChanged(node, path)
     },
     setCheckedOfAllNodes(to, nodeOrNodes = this.treeData) {
-      this.walkTreeData(nodeOrNodes, (childNode) => {
+      ut.walkTreeData(nodeOrNodes, (childNode) => {
         this.$set(childNode, '$checked', to)
       })
     },
