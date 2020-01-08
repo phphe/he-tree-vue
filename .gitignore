@@ -1,7 +1,6 @@
 .DS_Store
 node_modules
-# todo
-dist/
+dist/he-tree-vue-pro*
 
 # local env files
 .env.local
