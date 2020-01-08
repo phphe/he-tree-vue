@@ -10,8 +10,8 @@ export default {
     triggerClass: {type: String, default: 'tree-node'},
     draggable: {type: [Boolean, Function], default: true},
     droppable: {type: [Boolean, Function], default: true},
-    eachDraggable: {type: [Boolean, Function]},
-    eachDroppable: {type: [Boolean, Function]},
+    eachDraggable: {type: [Function]}, // type: [Boolean, Function]
+    eachDroppable: {type: [Function]}, // type: [Boolean, Function]
     ondragstart: {type: Function},
     ondragend: {type: Function},
     unfoldWhenDragover: {type: Boolean, default: true},
