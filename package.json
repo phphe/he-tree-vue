@@ -19,7 +19,8 @@
     "dev": "vue-cli-service serve",
     "build:web": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "build:pro": "node scripts/build-pro.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.7.7",
