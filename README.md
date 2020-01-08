@@ -1,29 +1,4 @@
-# vue-test
+# he-tree-vue
+A draggable sortable nested vue tree component. [Demo](https://he-tree-vue.phphe.com), [Document](https://he-tree-vue.phphe.com)
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+可拖拽可排序vue树组件. [演示](https://he-tree-vue.phphe.com/zh), [文档](https://he-tree-vue.phphe.com/zh)
