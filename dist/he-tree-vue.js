@@ -1,6 +1,6 @@
 /*!
  * he-tree-vue v1.0.0-beta
- * (c) undefined
+ * (c) phphe <phphe@outlook.com> (https://github.com/phphe) Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
 (function (global, factory) {

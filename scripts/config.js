@@ -100,7 +100,7 @@ function defaultBanner(pkg) {
   return `
 /*!
  * ${pkg.name} v${pkg.version}
- * (c) ${pkg.author}
+ * (c) ${pkg.author} Homepage: ${pkg.homepage}
  * Released under the ${pkg.license} License.
  */`.trim()
 }

@@ -8,6 +8,8 @@
     "dist"
   ],
   "unpkg": "dist/he-tree-vue.js",
+  "author": "phphe <phphe@outlook.com> (https://github.com/phphe)",
+  "homepage": "https://he-tree-vue.phphe.com",
   "bugs": {
     "url": "https://github.com/phphe/he-tree-vue/issues"
   },
