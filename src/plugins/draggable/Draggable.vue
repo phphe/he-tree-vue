@@ -10,8 +10,8 @@ export default {
     triggerClass: {type: String, default: 'tree-node'},
     draggable: {type: [Boolean, Function], default: true},
     droppable: {type: [Boolean, Function], default: true},
-    eachDraggable: {type: [Boolean, Function], default: true},
-    eachDroppable: {type: [Boolean, Function], default: true},
+    eachDraggable: {type: [Boolean, Function]},
+    eachDroppable: {type: [Boolean, Function]},
     ondragstart: {type: Function},
     ondragend: {type: Function},
     unfoldWhenDragover: {type: Boolean, default: true},
@@ -210,7 +210,6 @@ export default {
               return false
             }
           } else {
-            console.log('he-tree: The plugin DraggablePro is required for `crossTree` feature.')
             return false
           }
         }

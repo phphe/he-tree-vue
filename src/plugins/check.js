@@ -30,10 +30,5 @@ export default {
       this.$set(node, '$checked', !node.$checked)
       this.afterCheckChanged(node, path)
     },
-    setCheckedOfAllNodes(to, nodeOrNodes = this.treeData) {
-      ut.walkTreeData(nodeOrNodes, (childNode) => {
-        this.$set(childNode, '$checked', to)
-      })
-    },
   },
 }

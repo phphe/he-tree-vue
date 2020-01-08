@@ -65,12 +65,12 @@ const Tree = {
   render: template,
   mixins: [
     vf.updatablePropsEvenUnbound({
-      value: {$localName: 'treeData'},
+      value: {$localName: 'treeData', required: true},
     }),
     vf.hookHelper,
   ],
   props: {
-    indent: {default: 20},
+    indent: {type: Number, default: 20},
     rootNode: {default: is => ({})},
   },
   // components: {},

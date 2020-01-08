@@ -12,7 +12,6 @@ export default {
     },
     unfold(node, path, opt = {}) {
       opt = {
-        unfoldParent: true,
         foldOthers: false,
         ...opt,
       }
@@ -21,11 +20,6 @@ export default {
       }
       if (node.$folded) {
         this.$set(node, '$folded', false)
-      }
-      if (opt.unfoldParent && path.length > 1) {
-        const parentPath = path.slice(0, path.length - 1)
-        const parent = this.getNodeByPath(parentPath)
-        this.unfold(parent, parentPath, opt)
       }
     },
     toggleFold(node, path, opt) {
