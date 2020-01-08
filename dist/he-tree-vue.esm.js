@@ -1225,11 +1225,13 @@ var script = {
       default: true
     },
     eachDraggable: {
-      type: [Boolean, Function]
+      type: [Function]
     },
+    // type: [Boolean, Function]
     eachDroppable: {
-      type: [Boolean, Function]
+      type: [Function]
     },
+    // type: [Boolean, Function]
     ondragstart: {
       type: Function
     },
