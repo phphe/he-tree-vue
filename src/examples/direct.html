@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div id="app">
+      <he-tree :value="treeData" ref="tree">
+          <!-- <div slot-scope="{node, index, path, tree}"><b v-if="node.children &amp;&amp; node.children.length &gt; 0" @click="tree.toggleFold(node, path)">{{node.$folded ? '+' : '-'}}&nbsp;</b><input type="checkbox" v-model="node.$checked" @change="tree.toggleCheck(node, path)" />&nbsp;<span>{{node.text}}</span></div> -->
+      </he-tree>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <link rel="stylesheet" href="../../dist/he-tree-vue.css">
+    <script src="../../dist/he-tree-vue.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      var Tree = heTreeVue.Tree;
+      var Fold = heTreeVue.Fold;
+      var Check = heTreeVue.Check;
+      var Draggable = heTreeVue.Draggable;
+      Vue.component('he-tree', heTreeVue.Tree.mixPlugins([Fold, Check, Draggable]))
+      var app = new Vue({
+        el: '#app',
+        data: {
+          treeData: [
+            {text: 'node 1', children: [
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+            ]},
+            {text: 'node 2', children: [
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+              {text: 'node 1-1'},
+              {text: 'node 1-2'},
+            ]},
+            {text: 'node 3'},
+            {text: 'node 4'},
+            {text: 'node 4', droppable: false},
+            {text: 'node 5', children: [
+              {text: 'node 1'},
+              {text: 'node 2', children: [
+                {text: 'node 3'},
+                {text: 'node 4'},
+              ]},
+              {text: 'node 2', droppable: false, children: [
+                {text: 'node 3'},
+                {text: 'node 4'},
+              ]},
+              {text: 'node 2', children: [
+                {text: 'node 3'},
+                {text: 'node 4', droppable: false},
+              ]},
+              {text: 'node 3'},
+              {text: 'node 4'},
+              {text: 'node 3'},
+              {text: 'node 4'},
+              {text: 'node 3'},
+              {text: 'node 4'},
+              {text: 'node 3'},
+              {text: 'node 4'},
+            ]},
+          ]
+        }
+      })
+    </script>
+  </body>
+</html>
