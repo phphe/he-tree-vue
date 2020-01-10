@@ -1,6 +1,6 @@
 /*!
- * he-tree-vue v1.0.0-beta
- * (c) phphe <phphe@outlook.com> (https://github.com/phphe) Homepage: https://he-tree-vue.phphe.com
+ * he-tree-vue v1.0.0
+ * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
 (function (global, factory) {
@@ -8,42 +8,6 @@
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
   (global = global || self, factory(global.heTreeVue = {}));
 }(this, (function (exports) { 'use strict';
-
-  function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-    try {
-      var info = gen[key](arg);
-      var value = info.value;
-    } catch (error) {
-      reject(error);
-      return;
-    }
-
-    if (info.done) {
-      resolve(value);
-    } else {
-      Promise.resolve(value).then(_next, _throw);
-    }
-  }
-
-  function _asyncToGenerator(fn) {
-    return function () {
-      var self = this,
-          args = arguments;
-      return new Promise(function (resolve, reject) {
-        var gen = fn.apply(self, args);
-
-        function _next(value) {
-          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-        }
-
-        function _throw(err) {
-          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-        }
-
-        _next(undefined);
-      });
-    };
-  }
 
   function _defineProperty(obj, key, value) {
     if (key in obj) {
@@ -60,1296 +24,144 @@
     return obj;
   }
 
-  function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-
-    if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      if (enumerableOnly) symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-      keys.push.apply(keys, symbols);
-    }
-
-    return keys;
-  }
-
-  function _objectSpread2(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i] != null ? arguments[i] : {};
-
-      if (i % 2) {
-        ownKeys(Object(source), true).forEach(function (key) {
-          _defineProperty(target, key, source[key]);
-        });
-      } else if (Object.getOwnPropertyDescriptors) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-      } else {
-        ownKeys(Object(source)).forEach(function (key) {
-          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-      }
-    }
-
-    return target;
-  }
-
-  function _toConsumableArray(arr) {
-    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
-  }
+  var defineProperty = _defineProperty;
 
   function _arrayWithoutHoles(arr) {
     if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+        arr2[i] = arr[i];
+      }
 
       return arr2;
     }
   }
 
+  var arrayWithoutHoles = _arrayWithoutHoles;
+
   function _iterableToArray(iter) {
     if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
   }
+
+  var iterableToArray = _iterableToArray;
 
   function _nonIterableSpread() {
     throw new TypeError("Invalid attempt to spread non-iterable instance");
   }
 
-  function _defineProperty$1(obj, key, value) {
-    if (key in obj) {
-      Object.defineProperty(obj, key, {
-        value: value,
-        enumerable: true,
-        configurable: true,
-        writable: true
-      });
-    } else {
-      obj[key] = value;
-    }
+  var nonIterableSpread = _nonIterableSpread;
 
-    return obj;
+  function _toConsumableArray(arr) {
+    return arrayWithoutHoles(arr) || iterableToArray(arr) || nonIterableSpread();
   }
 
-  var defineProperty = _defineProperty$1;
-
-  /*!
-   * helper-js v1.4.26
-   * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
-   * Released under the MIT License.
-   */
-
-  function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-  function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-  function isArray(v) {
-    return Object.prototype.toString.call(v) === '[object Array]';
-  }
-  function isObject(v) {
-    return Object.prototype.toString.call(v) === '[object Object]';
-  }
-  function isFunction(v) {
-    return typeof v === 'function';
-  }
-
-  function arrayRemove(arr, v) {
-    var index;
-    var count = 0;
-
-    while ((index = arr.indexOf(v)) > -1) {
-      arr.splice(index, 1);
-      count++;
-    }
-
-    return count;
-  }
-  function arrayLast(arr) {
-    return arr[arr.length - 1];
-  }
-  function arrayWithoutEnd(arr, len) {
-    return arr.slice(0, arr.length - len);
-  } // object
-
-  function* iterateAll(val) {
-    var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    // opt: {reverse, exclude}
-    if (!opt.reverse) {
-      if (val.length != null) {
-        for (var i = 0; i < val.length; i++) {
-          var info = {
-            value: val[i],
-            index: i
-          };
-
-          if (!opt.exclude || !opt.exclude(info)) {
-            yield info;
-          }
-        }
-      } else if (isObject(val)) {
-        for (var key of Object.keys(val)) {
-          var _info = {
-            value: val[key],
-            key
-          };
-
-          if (!opt.exclude || !opt.exclude(_info)) {
-            yield _info;
-          }
-        }
-      } else {
-        throw 'Unsupported type';
-      }
-    } else {
-      if (val.length != null) {
-        for (var _i5 = val.length - 1; _i5 >= 0; _i5--) {
-          var _info2 = {
-            value: val[_i5],
-            index: _i5
-          };
-
-          if (!opt.exclude || !opt.exclude(_info2)) {
-            yield _info2;
-          }
-        }
-      } else if (isObject(val)) {
-        var keys = Object.keys(val);
-        keys.reverse();
-
-        for (var _key2 of keys) {
-          var _info3 = {
-            value: val[_key2],
-            key: _key2
-          };
-
-          if (!opt.exclude || !opt.exclude(_info3)) {
-            yield _info3;
-          }
-        }
-      } else {
-        throw 'Unsupported type';
-      }
-    }
-  } // Deprecated in next version
-  // Depth-First-Search
-  // todo change args in next version
-
-  function depthFirstSearch(obj, handler) {
-    var childrenKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'children';
-    var reverse = arguments.length > 3 ? arguments[3] : undefined;
-    var rootChildren = isArray(obj) ? obj : [obj]; //
-
-    class StopException {}
-
-    var func = (children, parent, parentPath) => {
-      if (reverse) {
-        children = children.slice();
-        children.reverse();
-      }
-
-      var len = children.length;
-
-      for (var i = 0; i < len; i++) {
-        var item = children[i];
-        var index = reverse ? len - i - 1 : i;
-        var path = parentPath ? [...parentPath, index] : []; // todo change args in next version
-
-        var r = handler(item, index, parent, path);
-
-        if (r === false) {
-          // stop
-          throw new StopException();
-        } else if (r === 'skip children') {
-          continue;
-        } else if (r === 'skip siblings') {
-          break;
-        }
-
-        if (item[childrenKey] != null) {
-          func(item[childrenKey], item, path);
-        }
-      }
-    };
-
-    try {
-      func(rootChildren, null, isArray(obj) ? [] : null);
-    } catch (e) {
-      if (e instanceof StopException) ; else {
-        throw e;
-      }
-    }
-  }
-  var walkTreeData = depthFirstSearch;
-  class TreeData {
-    // data = null;
-    constructor(data) {
-      this.childrenKey = 'children';
-      this.data = data;
-    }
-
-    get rootChildren() {
-      var {
-        childrenKey
-      } = this;
-
-      if (!this.data) {
-        this.data = [];
-      }
-
-      var {
-        data
-      } = this;
-      return isArray(data) ? data : data[childrenKey];
-    }
-
-    *iteratePath(path) {
-      var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var {
-        childrenKey,
-        rootChildren
-      } = this;
-
-      if (!opt.reverse) {
-        var prevPath = [];
-        var prevChildren = rootChildren;
-
-        for (var index of path) {
-          var currentPath = [...prevPath, index];
-          var currentNode = prevChildren[index];
-          yield {
-            path: currentPath,
-            node: currentNode
-          };
-          prevPath = currentPath;
-          prevChildren = currentNode[childrenKey];
-        }
-      } else {
-        var list = [...this.iteratePath(path, _objectSpread({}, opt, {
-          reverse: false
-        }))];
-        list.reverse();
-
-        for (var {
-          path: _path,
-          node
-        } of list) {
-          yield {
-            path: _path,
-            node
-          };
-        }
-      }
-    }
-
-    getAllNodes(path) {
-      var all = [];
-
-      for (var {
-        node
-      } of this.iteratePath(path)) {
-        all.push(node);
-      }
-
-      return all;
-    }
-
-    getNode(path) {
-      return arrayLast(this.getAllNodes(path));
-    }
-
-    getNodeIndexAndParent(path) {
-      var parentPath = path.slice();
-      var index = parentPath.pop();
-      return {
-        parent: this.getNode(parentPath),
-        index,
-        parentPath
-      };
-    }
-
-    getNodeParent(path) {
-      return this.getNodeIndexAndParent(path).parent;
-    }
-
-    setPathNode(path, node) {
-      if (path == null || path.length === 0) {
-        this.data = node;
-      } else {
-        var {
-          childrenKey,
-          rootChildren
-        } = this;
-        var {
-          parent,
-          index
-        } = this.getNodeIndexAndParent(path);
-        var parentChildren = path.length === 1 ? rootChildren : parent[childrenKey];
-        parentChildren[index] = node;
-      }
-    }
-
-    removeNode(path) {
-      var {
-        childrenKey,
-        rootChildren
-      } = this;
-      var {
-        parent,
-        index
-      } = this.getNodeIndexAndParent(path);
-      var parentChildren = path.length === 1 ? rootChildren : parent[childrenKey];
-      var node = parentChildren[index];
-      parentChildren.splice(index, 1);
-      return node;
-    }
-
-    walk(handler) {
-      var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var {
-        childrenKey,
-        data
-      } = this; // todo change args in next version
-
-      return walkTreeData(data, handler, childrenKey, opt.reverse);
-    }
-
-    clone() {
-      var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      // opt.afterNodeCreated(newNode, {oldNode: node, index, parent, path})
-      // todo change args in next version
-      var {
-        childrenKey
-      } = this;
-      var td = new TreeData();
-      this.walk((node, index, parent, path) => {
-        var newNode = Object.assign({}, node);
-
-        if (newNode[childrenKey]) {
-          newNode[childrenKey] = [];
-        }
-
-        if (opt.afterNodeCreated) {
-          opt.afterNodeCreated(newNode, {
-            oldNode: node,
-            index,
-            parent,
-            path
-          });
-        }
-
-        td.setPathNode(path, newNode);
-      });
-      return td.data;
-    }
-
-  } // function helper | method helper ============================
-
-  function resolveValueOrGettter(valueOrGetter) {
-    var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-
-    if (isFunction(valueOrGetter)) {
-      return valueOrGetter(...args);
-    } else {
-      return valueOrGetter;
-    }
-  }
-
-  function joinFunctionsByNext(funcs) {
-    var next = () => {};
-
-    for (var {
-      value: func
-    } of iterateAll(funcs, {
-      reverse: true
-    })) {
-      var currentNext = next;
-      next = wrapFuncWithNext(func, currentNext);
-    }
-
-    return next;
-
-    function wrapFuncWithNext(func, next) {
-      return function () {
-        for (var _len5 = arguments.length, args = new Array(_len5), _key7 = 0; _key7 < _len5; _key7++) {
-          args[_key7] = arguments[_key7];
-        }
-
-        return func(next, ...args);
-      };
-    }
-  } // promise
-  /* eslint-enable */
-  // dom =====================================================
-  // return NodeList if there are multiple top-level nodes
-
-  function createElementFromHTML(htmlString) {
-    var div = document.createElement('div');
-    div.innerHTML = htmlString.trim();
-
-    if (div.childNodes.length > 1) {
-      return div.childNodes;
-    } else {
-      return div.childNodes[0];
-    }
-  }
-  function isDescendantOf(el, parent) {
-    while (true) {
-      if (el.parentElement == null) {
-        return false;
-      } else if (el.parentElement === parent) {
-        return true;
-      } else {
-        el = el.parentElement;
-      }
-    }
-  }
-  function removeEl(el) {
-    if (el.parentNode !== null) {
-      return el.parentNode.removeChild(el);
-    }
-  } // refer: https://stackoverflow.com/questions/871399/cross-browser-method-for-detecting-the-scrolltop-of-the-browser-window
-
-  function getScroll() {
-    if (typeof pageYOffset != 'undefined') {
-      //most browsers except IE before #9
-      return {
-        top: pageYOffset,
-        left: pageXOffset
-      };
-    } else {
-      var B = document.body; //IE 'quirks'
-
-      var D = document.documentElement; //IE with doctype
-
-      D = D.clientHeight ? D : B;
-      return {
-        top: D.scrollTop,
-        left: D.scrollLeft
-      };
-    }
-  } // refer: https://gist.github.com/aderaaij/89547e34617b95ac29d1
-
-  function getOffset(el) {
-    var rect = getBoundingClientRect(el);
-    var scroll = getScroll();
-    return {
-      x: rect.left + scroll.left,
-      y: rect.top + scroll.top
-    };
-  } // there is some trap in el.offsetParent, so use this func to fix
-  function getBoundingClientRect(el) {
-    // refer: http://www.51xuediannao.com/javascript/getBoundingClientRect.html
-    var xy = el.getBoundingClientRect();
-    var top = xy.top - document.documentElement.clientTop,
-        //document.documentElement.clientTop 在IE67中始终为2，其他高级点的浏览器为0
-    bottom = xy.bottom,
-        left = xy.left - document.documentElement.clientLeft,
-        //document.documentElement.clientLeft 在IE67中始终为2，其他高级点的浏览器为0
-    right = xy.right,
-        width = xy.width || right - left,
-        //IE67不存在width 使用right - left获得
-    height = xy.height || bottom - top;
-    var x = left;
-    var y = top;
-    return {
-      top,
-      right,
-      bottom,
-      left,
-      width,
-      height,
-      x,
-      y
-    };
-  }
-  function findParent(el, callback, opt) {
-    var cur = opt && opt.withSelf ? el : el.parentElement;
-
-    while (cur) {
-      var r = callback(cur);
-
-      if (r === 'break') {
-        return;
-      } else if (r) {
-        return cur;
-      } else {
-        cur = cur.parentElement;
-      }
-    }
-  }
-
-  function hasClass(el, className) {
-    if (el.classList) {
-      return el.classList.contains(className);
-    } else {
-      return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
-    }
-  } // source: http://youmightnotneedjquery.com/
-
-  function addClass(el, className) {
-    if (!hasClass(el, className)) {
-      if (el.classList) {
-        el.classList.add(className);
-      } else {
-        el.className += ' ' + className;
-      }
-    }
-  } // source: http://youmightnotneedjquery.com/
-  function findNodeList(list, callback) {
-    var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    var iterator = iterateAll(list, {
-      reverse: opt.reverse
-    });
-
-    for (var {
-      value,
-      index
-    } of iterator) {
-      if (callback(value, index)) {
-        return value;
-      }
-    }
-  }
-  function elementsFromPoint() {
-    var func = document.elementsFromPoint || document.msElementsFromPoint || elementsFromPoint;
-
-    for (var _len9 = arguments.length, args = new Array(_len9), _key11 = 0; _key11 < _len9; _key11++) {
-      args[_key11] = arguments[_key11];
-    }
-
-    return func.apply(document, args);
-
-    function elementsFromPoint(x, y) {
-      var parents = [];
-      var parent = void 0;
-
-      do {
-        if (parent !== document.elementFromPoint(x, y)) {
-          parent = document.elementFromPoint(x, y);
-          parents.push(parent);
-          parent.style.pointerEvents = 'none';
-        } else {
-          parent = false;
-        }
-      } while (parent);
-
-      parents.forEach(function (parent) {
-        return parent.style.pointerEvents = 'all';
-      });
-      return parents;
-    }
-  }
-
-  function insertBefore(el, target) {
-    target.parentElement.insertBefore(el, target);
-  }
-  function insertAfter(el, target) {
-    target.parentElement.insertBefore(el, target.nextSibling);
-  }
-  function prependTo(el, target) {
-    target.insertBefore(el, target.firstChild);
-  }
-  function appendTo(el, target) {
-    target.appendChild(el);
-  } // advance
-  // binarySearch 二分查找
-  // callback(mid, i) should return mid - your_value
-
-  function binarySearch(arr, callback, start, end, returnNearestIfNoHit) {
-    var max = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1000;
-    var midNum;
-    var mid;
-
-    if (start == null) {
-      start = 0;
-      end = arr.length - 1;
-    }
-
-    var i = 0;
-    var r;
-
-    while (start >= 0 && start <= end) {
-      if (i >= max) {
-        throw Error("binarySearch: loop times is over ".concat(max, ", you can increase the limit."));
-      }
-
-      midNum = Math.floor((end - start) / 2 + start);
-      mid = arr[midNum];
-      r = callback(mid, i);
-
-      if (r > 0) {
-        end = midNum - 1;
-      } else if (r < 0) {
-        start = midNum + 1;
-      } else {
-        return {
-          index: midNum,
-          value: mid,
-          count: i + 1,
-          hit: true
-        };
-      }
-
-      i++;
-    }
-
-    return returnNearestIfNoHit ? {
-      index: midNum,
-      value: mid,
-      count: i + 1,
-      hit: false,
-      bigger: r > 0
-    } : null;
-  } //
-  function waitTime(milliseconds, callback) {
-    return new Promise(function (resolve, reject) {
-      setTimeout(function () {
-        callback && callback();
-        resolve();
-      }, milliseconds);
-    });
-  } // overload waitFor(condition, time = 100, maxCount = 1000))
-  class Cache {
-    constructor() {
-      this.store = {};
-    }
-
-    has(name) {
-      return this.store.hasOwnProperty(name);
-    }
-
-    remember(name, getter) {
-      if (!this.has(name)) {
-        this.store[name] = {
-          value: getter()
-        };
-      }
-
-      return this.store[name].value;
-    }
-
-    forget(name) {
-      if (name) {
-        if (this.has(name)) {
-          delete this.store[name];
-        }
-      } else {
-        this.store = {};
-      }
-    }
-
-  } // attach cached getters to an object; can attach to self
-
-  function attachCache(obj, toCache) {
-    var cache = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Cache();
-
-    var _loop4 = function _loop4(key) {
-      var getter = toCache[key];
-      Object.defineProperty(obj, key, {
-        get() {
-          return cache.remember(key, () => getter.call(this));
-        }
-
-      });
-    };
-
-    for (var key in toCache) {
-      _loop4(key);
-    }
-  }
-
-  /*!
-   * vue-functions v2.0.1
-   * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
-   * Released under the MIT License.
-   */
-
-  /**
-   * [updatablePropsEvenUnbound description]
-   * @param  {[type]} props [object or getter]
-   * @return {[type]}       [description]
-   * props eg: {
-      value: {$localName: 'current', $localSetter: (value, vm)},
-    }
-     default localName is `localProps_${name}`
-   */
-
-  function updatablePropsEvenUnbound(props) {
-    if (isFunction(props)) {
-      props = props();
-    } else {
-      // object
-      props = Object.assign({}, props);
-    }
-
-    var standardProps = {}; // without key starts with `$`
-
-    var _loop = function _loop(name) {
-      var prop = props[name]; // complete 补全选项
-
-      if (!prop.$localName) {
-        prop.$localName = "localProps_".concat(name);
-      }
-
-      if (!prop.$localSetter) {
-        prop.$localSetter = value => value;
-      } // make standardProp
-
-
-      var standardProp = {};
-      standardProps[name] = standardProp;
-      Object.keys(props[name]).forEach(key => {
-        if (key[0] !== '$') {
-          standardProp[key] = prop[key];
-        }
-      });
-    };
-
-    for (var name in props) {
-      _loop(name);
-    }
-
-    var component = {
-      props: standardProps,
-      computed: {},
-      watch: {}
-    };
-
-    component.data = function () {
-      var t = {
-        localValueOfUpdatableProps: {}
-      };
-
-      for (var _name of Object.keys(props)) {
-        t.localValueOfUpdatableProps[_name] = this[_name];
-      }
-
-      return t;
-    };
-
-    var _loop2 = function _loop2(_name2) {
-      var prop = props[_name2];
-
-      component.watch[_name2] = function (value) {
-        this.localValueOfUpdatableProps[_name2] = prop.$localSetter(value, this);
-      };
-
-      var localName = prop.$localName;
-      component.computed[localName] = {
-        get() {
-          return this.localValueOfUpdatableProps[_name2];
-        },
-
-        set(value) {
-          if (_name2 === 'value') {
-            this.$emit('input', value);
-          } else {
-            this.$emit("update:".concat(_name2), value);
-          }
-
-          this.localValueOfUpdatableProps[_name2] = prop.$localSetter(value, this);
-        }
-
-      };
-    };
-
-    for (var _name2 of Object.keys(props)) {
-      _loop2(_name2);
-    }
-
-    return component;
-  }
-  var hookHelper = {
-    methods: {
-      // todo extract hooks to vue-functions
-      // get hooks in this._hooks, without which in props
-      _getNonPropHooksByName(name) {
-        if (this._hooks) {
-          return this._hooks[name];
-        }
-      },
-
-      addHook(name, func) {
-        if (!this._getNonPropHooksByName(name)) {
-          if (!this._hooks) {
-            this._hooks = {};
-          }
-
-          if (!this._hooks[name]) {
-            this._hooks[name] = [];
-          }
-        }
-
-        this._hooks[name].push(func);
-      },
-
-      removeHook(name, func) {
-        var hooks = this._getNonPropHooksByName(name);
-
-        if (hooks) {
-          arrayRemove(hooks, func);
-        }
-      },
-
-      hasHook(name) {
-        return this._getNonPropHooksByName(name) || this[name];
-      },
-
-      executeHook(name, args) {
-        var hooks = this._getNonPropHooksByName(name).slice();
-
-        if (hooks) {
-          if (this[name] && isFunction(this[name])) {
-            hooks.push(function (next) {
-              for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                args[_key - 1] = arguments[_key];
-              }
-
-              return this[name](...args);
-            });
-          }
-
-          return joinFunctionsByNext(hooks)(...args);
-        }
-      }
-
-    }
-  };
-
-  function cloneTreeData(treeData, opt) {
-    return new TreeData(treeData).clone(opt);
-  }
-  function walkTreeData$1(treeData, handler, opt) {
-    return new TreeData(treeData).walk(handler, opt);
-  }
-  function getPureTreeData(treeData) {
-    var opt = {
-      afterNodeCreated: function afterNodeCreated(newNode) {
-        Object.keys(newNode).forEach(function (key) {
-          if (key[0] === '$') {
-            delete newNode[key];
-          }
-        });
-      }
-    };
-    return cloneTreeData(treeData, opt);
-  }
-
-  var template = function template(h) {
-    var _this = this;
-
-    // convert undefined to empty str
-    var noUndefined = function noUndefined(str) {
-      return str ? str : '';
-    }; // tree tpl, to render recursively
-
-
-    var childrenListTpl = function childrenListTpl(nodes, parent, parentPath) {
-      var indentStyle = {
-        paddingLeft: parentPath.length * _this.indent + 'px'
-      };
-
-      var branchTpl = function branchTpl(node, index) {
-        var path = [].concat(_toConsumableArray(parentPath), [index]);
-        var transitionComponent = _this.foldingTransition || 'transition';
-
-        var slotDefault = function slotDefault() {
-          var original = function original() {
-            if (_this.$scopedSlots["default"]) {
-              return _this.$scopedSlots["default"]({
-                node: node,
-                index: index,
-                path: path,
-                tree: _this
-              });
-            } else if (_this.$slots["default"]) {
-              return _this.$slots["default"];
-            } else {
-              return node.text;
-            }
-          };
-
-          if (_this.overrideSlotDefault) {
-            return _this.overrideSlotDefault({
-              node: node,
-              index: index,
-              path: path,
-              tree: _this
-            }, original);
-          } else {
-            return original();
-          }
-        };
-
-        var nodebackStyle = indentStyle;
-
-        if (node.$nodeBackStyle) {
-          nodebackStyle = _objectSpread2({}, nodebackStyle, {}, node.$nodeBackStyle);
-        }
-
-        return h("div", {
-          "class": "tree-branch ".concat(noUndefined(node.$branchClass), " ").concat(noUndefined(node.$hidden && 'he-tree--hidden')),
-          "style": node.$branchStyle || {},
-          "attrs": {
-            "data-tree-node-path": path.join(',')
-          }
-        }, [h("div", {
-          "class": "tree-node-back ".concat(noUndefined(node.$nodeBackClass)),
-          "style": nodebackStyle || {}
-        }, [h("div", {
-          "class": "tree-node ".concat(noUndefined(node.$nodeClass)),
-          "style": node.$nodeStyle || {}
-        }, [slotDefault()])]), (node.children && node.children.length) > 0 && h(transitionComponent, {
-          "attrs": {
-            "name": _this.$props.foldingTransitionName
-          }
-        }, [!node.$folded && childrenListTpl(node.children, node, path)])]);
-      };
-
-      return h("div", {
-        "class": "tree-children ".concat(noUndefined(parent === _this.rootNode && 'tree-root'), " ").concat(noUndefined(parent.$childrenClass)),
-        "style": parent.$childrenStyle || {}
-      }, [nodes.map(branchTpl)]);
-    };
-
-    return h("div", {
-      "class": "he-tree ".concat(this.treeClass),
-      "attrs": {
-        "data-tree-id": this._uid
-      }
-    }, [this.blockHeader && this.blockHeader(), childrenListTpl(this.rootNode.children, this.rootNode, []), this.blockFooter && this.blockFooter()]);
-  };
-
-  var trees = {};
-  var Tree = {
-    render: template,
-    mixins: [updatablePropsEvenUnbound({
-      value: {
-        $localName: 'treeData',
-        required: true
-      }
-    }), hookHelper],
-    props: {
-      indent: {
-        type: Number,
-        "default": 20
-      },
-      rootNode: {
-        "default": function _default(is) {
-          return {};
-        }
-      }
-    },
-    // components: {},
-    data: function data() {
-      return {
-        trees: trees,
-        treeClass: ''
-      };
-    },
-    // computed: {},
-    watch: {
-      treeData: {
-        immediate: true,
-        handler: function handler(treeData) {
-          this._TreeDataHelper = new TreeData(this.treeData);
-        }
-      }
-    },
-    methods: {
-      iteratePath: function iteratePath(path, opt) {
-        return this._TreeDataHelper.iteratePath(path, opt);
-      },
-      getTreeVmByTreeEl: function getTreeVmByTreeEl(treeEl) {
-        return this.trees[treeEl.getAttribute('data-tree-id')];
-      },
-      getAllNodesByPath: function getAllNodesByPath(path) {
-        return this._TreeDataHelper.getAllNodes(path);
-      },
-      getNodeByPath: function getNodeByPath(path) {
-        return this._TreeDataHelper.getNode(path);
-      },
-      getPathByBranchEl: function getPathByBranchEl(branchEl) {
-        return branchEl.getAttribute('data-tree-node-path').split(',').map(function (v) {
-          return parseInt(v);
-        });
-      },
-      getBranchElByPath: function getBranchElByPath(path) {
-        return this.$el.querySelector("[data-tree-node-path='".concat(path.join(','), "']"));
-      },
-      getNodeByBranchEl: function getNodeByBranchEl(branchEl) {
-        return this.getNodeByPath(this.getPathByBranchEl(branchEl));
-      },
-      getNodeParentByPath: function getNodeParentByPath(path) {
-        return this._TreeDataHelper.getNodeParent(path);
-      },
-      removeNodeByPath: function removeNodeByPath(path) {
-        return this._TreeDataHelper.removeNode(path);
-      },
-      walkTreeData: function walkTreeData(handler, opt) {
-        return walkTreeData$1(this.treeData, handler, opt);
-      },
-      cloneTreeData: function cloneTreeData$1(opt) {
-        return cloneTreeData(this.treeData, opt);
-      },
-      // return cloned new tree data without property witch starts with `$`
-      getPureTreeData: function getPureTreeData$1() {
-        return getPureTreeData(this.treeData);
-      }
-    },
-    created: function created() {
-      var _this2 = this;
-
-      //
-      var updateRootNode = function updateRootNode() {
-        _this2.$set(_this2.rootNode, 'children', _this2.treeData);
-      };
-
-      this.$watch('rootNode', updateRootNode, {
-        immediate: true
-      });
-      this.$watch('treeData', updateRootNode, {
-        immediate: true
-      }); //
-
-      this.$set(this.trees, this._uid, this);
-      this.$once('hook:beforeDestroy', function () {
-        _this2.$delete(_this2.trees, _this2._uid);
-      });
-    },
-    // mounted() {},
-    // beforeDestroy() {},
-    //
-    mixPlugins: function mixPlugins(plugins) {
-      var MixedTree = {
-        name: 'Tree',
-        "extends": Tree,
-        mixins: plugins,
-        mixPlugins: this.mixPlugins
-      };
-      return MixedTree;
-    }
-  };
-
-  function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-      if (typeof shadowMode !== 'boolean') {
-          createInjectorSSR = createInjector;
-          createInjector = shadowMode;
-          shadowMode = false;
-      }
-      // Vue.extend constructor export interop.
-      const options = typeof script === 'function' ? script.options : script;
-      // render functions
-      if (template && template.render) {
-          options.render = template.render;
-          options.staticRenderFns = template.staticRenderFns;
-          options._compiled = true;
-          // functional template
-          if (isFunctionalTemplate) {
-              options.functional = true;
-          }
-      }
-      // scopedId
-      if (scopeId) {
-          options._scopeId = scopeId;
-      }
-      let hook;
-      if (moduleIdentifier) {
-          // server build
-          hook = function (context) {
-              // 2.3 injection
-              context =
-                  context || // cached call
-                      (this.$vnode && this.$vnode.ssrContext) || // stateful
-                      (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext); // functional
-              // 2.2 with runInNewContext: true
-              if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-                  context = __VUE_SSR_CONTEXT__;
-              }
-              // inject component styles
-              if (style) {
-                  style.call(this, createInjectorSSR(context));
-              }
-              // register component module identifier for async chunk inference
-              if (context && context._registeredComponents) {
-                  context._registeredComponents.add(moduleIdentifier);
-              }
-          };
-          // used by ssr in case component is cached and beforeCreate
-          // never gets called
-          options._ssrRegister = hook;
-      }
-      else if (style) {
-          hook = shadowMode
-              ? function (context) {
-                  style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
-              }
-              : function (context) {
-                  style.call(this, createInjector(context));
-              };
-      }
-      if (hook) {
-          if (options.functional) {
-              // register for functional component in vue file
-              const originalRender = options.render;
-              options.render = function renderWithStyleInjection(h, context) {
-                  hook.call(context);
-                  return originalRender(h, context);
-              };
-          }
-          else {
-              // inject component registration as beforeCreate hook
-              const existing = options.beforeCreate;
-              options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-          }
-      }
-      return script;
-  }
-
-  /* script */
-  var __vue_script__ = Tree;
-  /* template */
-
-  /* style */
-
-  var __vue_inject_styles__ = undefined;
-  /* scoped */
-
-  var __vue_scope_id__ = undefined;
-  /* module identifier */
-
-  var __vue_module_identifier__ = undefined;
-  /* functional template */
-
-  var __vue_is_functional_template__ = undefined;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  var __vue_component__ = normalizeComponent({}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
-
-  var fold = {
-    props: {
-      foldingTransitionName: {
-        type: String
-      },
-      foldingTransition: {},
-      foldAllAfterMounted: {
-        type: Boolean
-      }
-    },
-    methods: {
-      fold: function fold(node, path) {
-        if (!node.$folded) {
-          this.$set(node, '$folded', true);
-        }
-      },
-      unfold: function unfold(node, path) {
-        var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-        opt = _objectSpread2({
-          foldOthers: false
-        }, opt);
-
-        if (opt.foldOthers) {
-          this.foldAll();
-        }
-
-        if (node.$folded) {
-          this.$set(node, '$folded', false);
-        }
-      },
-      toggleFold: function toggleFold(node, path, opt) {
-        if (node.$folded) {
-          this.unfold(node, path, opt);
-        } else {
-          this.fold(node, path, opt);
-        }
-      },
-      foldAll: function foldAll() {
-        var _this = this;
-
-        this.walkTreeData(function (childNode) {
-          _this.fold(childNode);
-        });
-      },
-      unfoldAll: function unfoldAll() {
-        var _this2 = this;
-
-        this.walkTreeData(function (childNode) {
-          _this2.unfold(childNode, {
-            unfoldParent: false
-          });
-        });
-      }
-    },
-    mounted: function mounted() {
-      if (this.foldAllAfterMounted) {
-        this.foldAll();
-      }
-    }
-  };
-
-  var check = {
-    props: {},
-    methods: {
-      afterCheckChanged: function afterCheckChanged(node, path) {
-        var _this = this;
-
-        // update parent
-        var nodes = this.getAllNodesByPath(path);
-        var reversedParents = nodes.slice(0, nodes.length - 1);
-        reversedParents.reverse();
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = reversedParents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var parent = _step.value;
-            this.$set(parent, '$checked', parent.children.every(function (child) {
-              return child.$checked;
-            }));
-          } // update children
-
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-
-        if (node.children && node.children.length > 0) {
-          walkTreeData$1(node.children, function (childNode) {
-            _this.$set(childNode, '$checked', node.$checked);
-          });
-        }
-      },
-      check: function check(node, path) {
-        this.$set(node, '$checked', true);
-        this.afterCheckChanged(node, path);
-      },
-      uncheck: function uncheck(node, path) {
-        this.$set(node, '$checked', false);
-        this.afterCheckChanged(node, path);
-      },
-      toggleCheck: function toggleCheck(node, path) {
-        this.$set(node, '$checked', !node.$checked);
-        this.afterCheckChanged(node, path);
-      }
-    }
-  };
+  var toConsumableArray = _toConsumableArray;
 
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
+
+  var _typeof_1 = createCommonjsModule(function (module) {
+  function _typeof(obj) {
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      module.exports = _typeof = function _typeof(obj) {
+        return typeof obj;
+      };
+    } else {
+      module.exports = _typeof = function _typeof(obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
+  module.exports = _typeof;
+  });
+
+  var getPrototypeOf = createCommonjsModule(function (module) {
+  function _getPrototypeOf(o) {
+    module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+
+  module.exports = _getPrototypeOf;
+  });
+
+  function _superPropBase(object, property) {
+    while (!Object.prototype.hasOwnProperty.call(object, property)) {
+      object = getPrototypeOf(object);
+      if (object === null) break;
+    }
+
+    return object;
+  }
+
+  var superPropBase = _superPropBase;
+
+  var get = createCommonjsModule(function (module) {
+  function _get(target, property, receiver) {
+    if (typeof Reflect !== "undefined" && Reflect.get) {
+      module.exports = _get = Reflect.get;
+    } else {
+      module.exports = _get = function _get(target, property, receiver) {
+        var base = superPropBase(target, property);
+        if (!base) return;
+        var desc = Object.getOwnPropertyDescriptor(base, property);
+
+        if (desc.get) {
+          return desc.get.call(receiver);
+        }
+
+        return desc.value;
+      };
+    }
+
+    return _get(target, property, receiver || target);
+  }
+
+  module.exports = _get;
+  });
+
+  var setPrototypeOf = createCommonjsModule(function (module) {
+  function _setPrototypeOf(o, p) {
+    module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+      o.__proto__ = p;
+      return o;
+    };
+
+    return _setPrototypeOf(o, p);
+  }
+
+  module.exports = _setPrototypeOf;
+  });
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  var createClass = _createClass;
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  var classCallCheck = _classCallCheck;
 
   var runtime_1 = createCommonjsModule(function (module) {
   /**
@@ -2081,11 +893,772 @@
 
   var regenerator = runtime_1;
 
-  /*!
-   * helper-js v1.4.25
-   * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
-   * Released under the MIT License.
-   */
+  var _marked =
+  /*#__PURE__*/
+  regenerator.mark(iterateAll);
+
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      if (enumerableOnly) symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+      keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+
+      if (i % 2) {
+        ownKeys(Object(source), true).forEach(function (key) {
+          defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+
+    return target;
+  } // local store
+
+  function isArray(v) {
+    return Object.prototype.toString.call(v) === '[object Array]';
+  }
+
+  function isObject(v) {
+    return Object.prototype.toString.call(v) === '[object Object]';
+  }
+
+  function isFunction(v) {
+    return typeof v === 'function';
+  }
+
+
+  function arrayRemove(arr, v) {
+    var index;
+    var count = 0;
+
+    while ((index = arr.indexOf(v)) > -1) {
+      arr.splice(index, 1);
+      count++;
+    }
+
+    return count;
+  }
+
+  function arrayLast(arr) {
+    return arr[arr.length - 1];
+  }
+
+  function arrayWithoutEnd(arr, len) {
+    return arr.slice(0, arr.length - len);
+  } // object
+
+
+  function iterateAll(val) {
+    var opt,
+        i,
+        info,
+        _i8,
+        _Object$keys2,
+        key,
+        _info,
+        _i5,
+        _info2,
+        keys,
+        _i9,
+        _keys2,
+        _key2,
+        _info3,
+        _args = arguments;
+
+    return regenerator.wrap(function iterateAll$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            opt = _args.length > 1 && _args[1] !== undefined ? _args[1] : {}; // opt: {reverse, exclude}
+
+            if (opt.reverse) {
+              _context.next = 30;
+              break;
+            }
+
+            if (!(val.length != null)) {
+              _context.next = 14;
+              break;
+            }
+
+            i = 0;
+
+          case 4:
+            if (!(i < val.length)) {
+              _context.next = 12;
+              break;
+            }
+
+            info = {
+              value: val[i],
+              index: i
+            };
+
+            if (!(!opt.exclude || !opt.exclude(info))) {
+              _context.next = 9;
+              break;
+            }
+
+            _context.next = 9;
+            return info;
+
+          case 9:
+            i++;
+            _context.next = 4;
+            break;
+
+          case 12:
+            _context.next = 28;
+            break;
+
+          case 14:
+            if (!isObject(val)) {
+              _context.next = 27;
+              break;
+            }
+
+            _i8 = 0, _Object$keys2 = Object.keys(val);
+
+          case 16:
+            if (!(_i8 < _Object$keys2.length)) {
+              _context.next = 25;
+              break;
+            }
+
+            key = _Object$keys2[_i8];
+            _info = {
+              value: val[key],
+              key: key
+            };
+
+            if (!(!opt.exclude || !opt.exclude(_info))) {
+              _context.next = 22;
+              break;
+            }
+
+            _context.next = 22;
+            return _info;
+
+          case 22:
+            _i8++;
+            _context.next = 16;
+            break;
+
+          case 25:
+            _context.next = 28;
+            break;
+
+          case 27:
+            throw 'Unsupported type';
+
+          case 28:
+            _context.next = 58;
+            break;
+
+          case 30:
+            if (!(val.length != null)) {
+              _context.next = 42;
+              break;
+            }
+
+            _i5 = val.length - 1;
+
+          case 32:
+            if (!(_i5 >= 0)) {
+              _context.next = 40;
+              break;
+            }
+
+            _info2 = {
+              value: val[_i5],
+              index: _i5
+            };
+
+            if (!(!opt.exclude || !opt.exclude(_info2))) {
+              _context.next = 37;
+              break;
+            }
+
+            _context.next = 37;
+            return _info2;
+
+          case 37:
+            _i5--;
+            _context.next = 32;
+            break;
+
+          case 40:
+            _context.next = 58;
+            break;
+
+          case 42:
+            if (!isObject(val)) {
+              _context.next = 57;
+              break;
+            }
+
+            keys = Object.keys(val);
+            keys.reverse();
+            _i9 = 0, _keys2 = keys;
+
+          case 46:
+            if (!(_i9 < _keys2.length)) {
+              _context.next = 55;
+              break;
+            }
+
+            _key2 = _keys2[_i9];
+            _info3 = {
+              value: val[_key2],
+              key: _key2
+            };
+
+            if (!(!opt.exclude || !opt.exclude(_info3))) {
+              _context.next = 52;
+              break;
+            }
+
+            _context.next = 52;
+            return _info3;
+
+          case 52:
+            _i9++;
+            _context.next = 46;
+            break;
+
+          case 55:
+            _context.next = 58;
+            break;
+
+          case 57:
+            throw 'Unsupported type';
+
+          case 58:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _marked);
+  } // Deprecated in next version
+  // Depth-First-Search
+  // todo change args in next version
+
+
+  function depthFirstSearch(obj, handler) {
+    var childrenKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'children';
+    var reverse = arguments.length > 3 ? arguments[3] : undefined;
+    var rootChildren = isArray(obj) ? obj : [obj]; //
+
+    var StopException = function StopException() {
+      classCallCheck(this, StopException);
+    };
+
+    var func = function func(children, parent, parentPath) {
+      if (reverse) {
+        children = children.slice();
+        children.reverse();
+      }
+
+      var len = children.length;
+
+      for (var i = 0; i < len; i++) {
+        var item = children[i];
+        var index = reverse ? len - i - 1 : i;
+        var path = parentPath ? [].concat(toConsumableArray(parentPath), [index]) : []; // todo change args in next version
+
+        var r = handler(item, index, parent, path);
+
+        if (r === false) {
+          // stop
+          throw new StopException();
+        } else if (r === 'skip children') {
+          continue;
+        } else if (r === 'skip siblings') {
+          break;
+        }
+
+        if (item[childrenKey] != null) {
+          func(item[childrenKey], item, path);
+        }
+      }
+    };
+
+    try {
+      func(rootChildren, null, isArray(obj) ? [] : null);
+    } catch (e) {
+      if (e instanceof StopException) ;else {
+        throw e;
+      }
+    }
+  }
+
+  var walkTreeData = depthFirstSearch;
+
+  var TreeData =
+  /*#__PURE__*/
+  function () {
+    // data = null;
+    function TreeData(data) {
+      classCallCheck(this, TreeData);
+
+      this.childrenKey = 'children';
+      this.data = data;
+    }
+
+    createClass(TreeData, [{
+      key: "iteratePath",
+      value:
+      /*#__PURE__*/
+      regenerator.mark(function iteratePath(path) {
+        var opt,
+            childrenKey,
+            rootChildren,
+            prevPath,
+            prevChildren,
+            _iteratorNormalCompletion4,
+            _didIteratorError4,
+            _iteratorError4,
+            _iterator4,
+            _step4,
+            index,
+            currentPath,
+            currentNode,
+            list,
+            _iteratorNormalCompletion5,
+            _didIteratorError5,
+            _iteratorError5,
+            _iterator5,
+            _step5,
+            _step5$value,
+            _path,
+            node,
+            _args2 = arguments;
+
+        return regenerator.wrap(function iteratePath$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                opt = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : {};
+                childrenKey = this.childrenKey, rootChildren = this.rootChildren;
+
+                if (opt.reverse) {
+                  _context2.next = 37;
+                  break;
+                }
+
+                prevPath = [];
+                prevChildren = rootChildren;
+                _iteratorNormalCompletion4 = true;
+                _didIteratorError4 = false;
+                _iteratorError4 = undefined;
+                _context2.prev = 8;
+                _iterator4 = path[Symbol.iterator]();
+
+              case 10:
+                if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {
+                  _context2.next = 21;
+                  break;
+                }
+
+                index = _step4.value;
+                currentPath = [].concat(toConsumableArray(prevPath), [index]);
+                currentNode = prevChildren[index];
+                _context2.next = 16;
+                return {
+                  path: currentPath,
+                  node: currentNode
+                };
+
+              case 16:
+                prevPath = currentPath;
+                prevChildren = currentNode[childrenKey];
+
+              case 18:
+                _iteratorNormalCompletion4 = true;
+                _context2.next = 10;
+                break;
+
+              case 21:
+                _context2.next = 27;
+                break;
+
+              case 23:
+                _context2.prev = 23;
+                _context2.t0 = _context2["catch"](8);
+                _didIteratorError4 = true;
+                _iteratorError4 = _context2.t0;
+
+              case 27:
+                _context2.prev = 27;
+                _context2.prev = 28;
+
+                if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+                  _iterator4["return"]();
+                }
+
+              case 30:
+                _context2.prev = 30;
+
+                if (!_didIteratorError4) {
+                  _context2.next = 33;
+                  break;
+                }
+
+                throw _iteratorError4;
+
+              case 33:
+                return _context2.finish(30);
+
+              case 34:
+                return _context2.finish(27);
+
+              case 35:
+                _context2.next = 65;
+                break;
+
+              case 37:
+                list = toConsumableArray(this.iteratePath(path, _objectSpread({}, opt, {
+                  reverse: false
+                })));
+                list.reverse();
+                _iteratorNormalCompletion5 = true;
+                _didIteratorError5 = false;
+                _iteratorError5 = undefined;
+                _context2.prev = 42;
+                _iterator5 = list[Symbol.iterator]();
+
+              case 44:
+                if (_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done) {
+                  _context2.next = 51;
+                  break;
+                }
+
+                _step5$value = _step5.value, _path = _step5$value.path, node = _step5$value.node;
+                _context2.next = 48;
+                return {
+                  path: _path,
+                  node: node
+                };
+
+              case 48:
+                _iteratorNormalCompletion5 = true;
+                _context2.next = 44;
+                break;
+
+              case 51:
+                _context2.next = 57;
+                break;
+
+              case 53:
+                _context2.prev = 53;
+                _context2.t1 = _context2["catch"](42);
+                _didIteratorError5 = true;
+                _iteratorError5 = _context2.t1;
+
+              case 57:
+                _context2.prev = 57;
+                _context2.prev = 58;
+
+                if (!_iteratorNormalCompletion5 && _iterator5["return"] != null) {
+                  _iterator5["return"]();
+                }
+
+              case 60:
+                _context2.prev = 60;
+
+                if (!_didIteratorError5) {
+                  _context2.next = 63;
+                  break;
+                }
+
+                throw _iteratorError5;
+
+              case 63:
+                return _context2.finish(60);
+
+              case 64:
+                return _context2.finish(57);
+
+              case 65:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, iteratePath, this, [[8, 23, 27, 35], [28,, 30, 34], [42, 53, 57, 65], [58,, 60, 64]]);
+      })
+    }, {
+      key: "getAllNodes",
+      value: function getAllNodes(path) {
+        var all = [];
+        var _iteratorNormalCompletion6 = true;
+        var _didIteratorError6 = false;
+        var _iteratorError6 = undefined;
+
+        try {
+          for (var _iterator6 = this.iteratePath(path)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+            var node = _step6.value.node;
+            all.push(node);
+          }
+        } catch (err) {
+          _didIteratorError6 = true;
+          _iteratorError6 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion6 && _iterator6["return"] != null) {
+              _iterator6["return"]();
+            }
+          } finally {
+            if (_didIteratorError6) {
+              throw _iteratorError6;
+            }
+          }
+        }
+
+        return all;
+      }
+    }, {
+      key: "getNode",
+      value: function getNode(path) {
+        return arrayLast(this.getAllNodes(path));
+      }
+    }, {
+      key: "getNodeIndexAndParent",
+      value: function getNodeIndexAndParent(path) {
+        var parentPath = path.slice();
+        var index = parentPath.pop();
+        return {
+          parent: this.getNode(parentPath),
+          index: index,
+          parentPath: parentPath
+        };
+      }
+    }, {
+      key: "getNodeParent",
+      value: function getNodeParent(path) {
+        return this.getNodeIndexAndParent(path).parent;
+      }
+    }, {
+      key: "setPathNode",
+      value: function setPathNode(path, node) {
+        if (path == null || path.length === 0) {
+          this.data = node;
+        } else {
+          var childrenKey = this.childrenKey,
+              rootChildren = this.rootChildren;
+
+          var _this$getNodeIndexAnd = this.getNodeIndexAndParent(path),
+              parent = _this$getNodeIndexAnd.parent,
+              index = _this$getNodeIndexAnd.index;
+
+          var parentChildren = path.length === 1 ? rootChildren : parent[childrenKey];
+          parentChildren[index] = node;
+        }
+      }
+    }, {
+      key: "removeNode",
+      value: function removeNode(path) {
+        var childrenKey = this.childrenKey,
+            rootChildren = this.rootChildren;
+
+        var _this$getNodeIndexAnd2 = this.getNodeIndexAndParent(path),
+            parent = _this$getNodeIndexAnd2.parent,
+            index = _this$getNodeIndexAnd2.index;
+
+        var parentChildren = path.length === 1 ? rootChildren : parent[childrenKey];
+        var node = parentChildren[index];
+        parentChildren.splice(index, 1);
+        return node;
+      }
+    }, {
+      key: "walk",
+      value: function walk(handler) {
+        var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var childrenKey = this.childrenKey,
+            data = this.data; // todo change args in next version
+
+        return walkTreeData(data, handler, childrenKey, opt.reverse);
+      }
+    }, {
+      key: "clone",
+      value: function clone() {
+        var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {}; // opt.afterNodeCreated(newNode, {oldNode: node, index, parent, path})
+        // todo change args in next version
+
+        var childrenKey = this.childrenKey;
+        var td = new TreeData();
+        this.walk(function (node, index, parent, path) {
+          var newNode = Object.assign({}, node);
+
+          if (newNode[childrenKey]) {
+            newNode[childrenKey] = [];
+          }
+
+          if (opt.afterNodeCreated) {
+            opt.afterNodeCreated(newNode, {
+              oldNode: node,
+              index: index,
+              parent: parent,
+              path: path
+            });
+          }
+
+          td.setPathNode(path, newNode);
+        });
+        return td.data;
+      }
+    }, {
+      key: "rootChildren",
+      get: function get() {
+        var childrenKey = this.childrenKey;
+
+        if (!this.data) {
+          this.data = [];
+        }
+
+        var data = this.data;
+        return isArray(data) ? data : data[childrenKey];
+      }
+    }]);
+
+    return TreeData;
+  }(); // function helper | method helper ============================
+
+
+  function resolveValueOrGettter(valueOrGetter) {
+    var args = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+    if (isFunction(valueOrGetter)) {
+      return valueOrGetter.apply(void 0, toConsumableArray(args));
+    } else {
+      return valueOrGetter;
+    }
+  }
+
+
+  function joinFunctionsByNext(funcs) {
+    var next = function next() {};
+
+    var _iteratorNormalCompletion8 = true;
+    var _didIteratorError8 = false;
+    var _iteratorError8 = undefined;
+
+    try {
+      for (var _iterator8 = iterateAll(funcs, {
+        reverse: true
+      })[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+        var func = _step8.value.value;
+        var currentNext = next;
+        next = wrapFuncWithNext(func, currentNext);
+      }
+    } catch (err) {
+      _didIteratorError8 = true;
+      _iteratorError8 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion8 && _iterator8["return"] != null) {
+          _iterator8["return"]();
+        }
+      } finally {
+        if (_didIteratorError8) {
+          throw _iteratorError8;
+        }
+      }
+    }
+
+    return next;
+
+    function wrapFuncWithNext(func, next) {
+      return function () {
+        for (var _len5 = arguments.length, args = new Array(_len5), _key7 = 0; _key7 < _len5; _key7++) {
+          args[_key7] = arguments[_key7];
+        }
+
+        return func.apply(void 0, [next].concat(args));
+      };
+    }
+  } // promise
+  /* eslint-enable */
+  // dom =====================================================
+  // return NodeList if there are multiple top-level nodes
+
+
+  function createElementFromHTML(htmlString) {
+    var div = document.createElement('div');
+    div.innerHTML = htmlString.trim();
+
+    if (div.childNodes.length > 1) {
+      return div.childNodes;
+    } else {
+      return div.childNodes[0];
+    }
+  }
+
+  function isDescendantOf(el, parent) {
+    while (true) {
+      if (el.parentElement == null) {
+        return false;
+      } else if (el.parentElement === parent) {
+        return true;
+      } else {
+        el = el.parentElement;
+      }
+    }
+  }
+
+  function removeEl(el) {
+    if (el.parentNode !== null) {
+      return el.parentNode.removeChild(el);
+    }
+  } // refer: https://stackoverflow.com/questions/871399/cross-browser-method-for-detecting-the-scrolltop-of-the-browser-window
+
+
+  function getScroll() {
+    if (typeof pageYOffset != 'undefined') {
+      //most browsers except IE before #9
+      return {
+        top: pageYOffset,
+        left: pageXOffset
+      };
+    } else {
+      var B = document.body; //IE 'quirks'
+
+      var D = document.documentElement; //IE with doctype
+
+      D = D.clientHeight ? D : B;
+      return {
+        top: D.scrollTop,
+        left: D.scrollLeft
+      };
+    }
+  } // refer: https://gist.github.com/aderaaij/89547e34617b95ac29d1
+
+
+  function getOffset(el) {
+    var rect = getBoundingClientRect(el);
+    var scroll = getScroll();
+    return {
+      x: rect.left + scroll.left,
+      y: rect.top + scroll.top
+    };
+  } // there is some trap in el.offsetParent, so use this func to fix
+
 
   function getOffsetParent(el) {
     var offsetParent = el.offsetParent;
@@ -2098,6 +1671,7 @@
   } // get el current position. like jQuery.position
   // the position is relative to offsetParent viewport left top. it is for set absolute position, absolute position is relative to offsetParent viewport left top.
   // 相对于offsetParent可视区域左上角(el.offsetLeft或top包含父元素的滚动距离, 所以要减去). position一般用于设置绝对定位的情况, 而绝对定位就是以可视区域左上角为原点.
+
 
   function getPosition(el) {
     var offsetParent = getOffsetParent(el);
@@ -2120,7 +1694,8 @@
 
     return ps;
   } // get position of a el if its offset is given. like jQuery.offset.
-  function getBoundingClientRect$1(el) {
+
+  function getBoundingClientRect(el) {
     // refer: http://www.51xuediannao.com/javascript/getBoundingClientRect.html
     var xy = el.getBoundingClientRect();
     var top = xy.top - document.documentElement.clientTop,
@@ -2135,17 +1710,18 @@
     var x = left;
     var y = top;
     return {
-      top,
-      right,
-      bottom,
-      left,
-      width,
-      height,
-      x,
-      y
+      top: top,
+      right: right,
+      bottom: bottom,
+      left: left,
+      width: width,
+      height: height,
+      x: x,
+      y: y
     };
   }
-  function findParent$1(el, callback, opt) {
+
+  function findParent(el, callback, opt) {
     var cur = opt && opt.withSelf ? el : el.parentElement;
 
     while (cur) {
@@ -2160,16 +1736,19 @@
       }
     }
   }
+
   function backupAttr(el, name) {
     var key = "original_".concat(name);
     el[key] = el.getAttribute(name);
   }
+
   function restoreAttr(el, name) {
     var key = "original_".concat(name);
     el.setAttribute(name, el[key]);
   } // source: http://youmightnotneedjquery.com/
 
-  function hasClass$1(el, className) {
+
+  function hasClass(el, className) {
     if (el.classList) {
       return el.classList.contains(className);
     } else {
@@ -2177,8 +1756,9 @@
     }
   } // source: http://youmightnotneedjquery.com/
 
-  function addClass$1(el, className) {
-    if (!hasClass$1(el, className)) {
+
+  function addClass(el, className) {
+    if (!hasClass(el, className)) {
       if (el.classList) {
         el.classList.add(className);
       } else {
@@ -2187,6 +1767,7 @@
     }
   } // source: http://youmightnotneedjquery.com/
 
+
   function onDOM(el, name, handler) {
     for (var _len6 = arguments.length, args = new Array(_len6 > 3 ? _len6 - 3 : 0), _key8 = 3; _key8 < _len6; _key8++) {
       args[_key8 - 3] = arguments[_key8];
@@ -2194,12 +1775,13 @@
 
     if (el.addEventListener) {
       // 所有主流浏览器，除了 IE 8 及更早 IE版本
-      el.addEventListener(name, handler, ...args);
+      el.addEventListener.apply(el, [name, handler].concat(args));
     } else if (el.attachEvent) {
       // IE 8 及更早 IE 版本
-      el.attachEvent("on".concat(name), handler, ...args);
+      el.attachEvent.apply(el, ["on".concat(name), handler].concat(args));
     }
   }
+
   function offDOM(el, name, handler) {
     for (var _len7 = arguments.length, args = new Array(_len7 > 3 ? _len7 - 3 : 0), _key9 = 3; _key9 < _len7; _key9++) {
       args[_key9 - 3] = arguments[_key9];
@@ -2207,44 +1789,876 @@
 
     if (el.removeEventListener) {
       // 所有主流浏览器，除了 IE 8 及更早 IE版本
-      el.removeEventListener(name, handler, ...args);
+      el.removeEventListener.apply(el, [name, handler].concat(args));
     } else if (el.detachEvent) {
       // IE 8 及更早 IE 版本
-      el.detachEvent("on".concat(name), handler, ...args);
+      el.detachEvent.apply(el, ["on".concat(name), handler].concat(args));
     }
   }
 
-  /*!
-   * drag-event-service v1.0.2
-   * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
-   * Released under the MIT License.
+  function findNodeList(list, callback) {
+    var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var iterator = iterateAll(list, {
+      reverse: opt.reverse
+    });
+    var _iteratorNormalCompletion13 = true;
+    var _didIteratorError13 = false;
+    var _iteratorError13 = undefined;
+
+    try {
+      for (var _iterator13 = iterator[Symbol.iterator](), _step13; !(_iteratorNormalCompletion13 = (_step13 = _iterator13.next()).done); _iteratorNormalCompletion13 = true) {
+        var _step13$value = _step13.value,
+            value = _step13$value.value,
+            index = _step13$value.index;
+
+        if (callback(value, index)) {
+          return value;
+        }
+      }
+    } catch (err) {
+      _didIteratorError13 = true;
+      _iteratorError13 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion13 && _iterator13["return"] != null) {
+          _iterator13["return"]();
+        }
+      } finally {
+        if (_didIteratorError13) {
+          throw _iteratorError13;
+        }
+      }
+    }
+  }
+
+  function elementsFromPoint() {
+    var func = document.elementsFromPoint || document.msElementsFromPoint || elementsFromPoint;
+
+    for (var _len9 = arguments.length, args = new Array(_len9), _key11 = 0; _key11 < _len9; _key11++) {
+      args[_key11] = arguments[_key11];
+    }
+
+    return func.apply(document, args);
+
+    function elementsFromPoint(x, y) {
+      var parents = [];
+      var parent = void 0;
+
+      do {
+        if (parent !== document.elementFromPoint(x, y)) {
+          parent = document.elementFromPoint(x, y);
+          parents.push(parent);
+          parent.style.pointerEvents = 'none';
+        } else {
+          parent = false;
+        }
+      } while (parent);
+
+      parents.forEach(function (parent) {
+        return parent.style.pointerEvents = 'all';
+      });
+      return parents;
+    }
+  }
+
+
+  function insertBefore(el, target) {
+    target.parentElement.insertBefore(el, target);
+  }
+
+  function insertAfter(el, target) {
+    target.parentElement.insertBefore(el, target.nextSibling);
+  }
+
+  function prependTo(el, target) {
+    target.insertBefore(el, target.firstChild);
+  }
+
+  function appendTo(el, target) {
+    target.appendChild(el);
+  } // advance
+  // binarySearch 二分查找
+  // callback(mid, i) should return mid - your_value
+
+
+  function binarySearch(arr, callback, start, end, returnNearestIfNoHit) {
+    var max = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1000;
+    var midNum;
+    var mid;
+
+    if (start == null) {
+      start = 0;
+      end = arr.length - 1;
+    }
+
+    var i = 0;
+    var r;
+
+    while (start >= 0 && start <= end) {
+      if (i >= max) {
+        throw Error("binarySearch: loop times is over ".concat(max, ", you can increase the limit."));
+      }
+
+      midNum = Math.floor((end - start) / 2 + start);
+      mid = arr[midNum];
+      r = callback(mid, i);
+
+      if (r > 0) {
+        end = midNum - 1;
+      } else if (r < 0) {
+        start = midNum + 1;
+      } else {
+        return {
+          index: midNum,
+          value: mid,
+          count: i + 1,
+          hit: true
+        };
+      }
+
+      i++;
+    }
+
+    return returnNearestIfNoHit ? {
+      index: midNum,
+      value: mid,
+      count: i + 1,
+      hit: false,
+      bigger: r > 0
+    } : null;
+  } //
+
+  function waitTime(milliseconds, callback) {
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        callback && callback();
+        resolve();
+      }, milliseconds);
+    });
+  } // overload waitFor(condition, time = 100, maxCount = 1000))
+
+  var Cache =
+  /*#__PURE__*/
+  function () {
+    function Cache() {
+      classCallCheck(this, Cache);
+
+      this.store = {};
+    }
+
+    createClass(Cache, [{
+      key: "has",
+      value: function has(name) {
+        return this.store.hasOwnProperty(name);
+      }
+    }, {
+      key: "remember",
+      value: function remember(name, getter) {
+        if (!this.has(name)) {
+          this.store[name] = {
+            value: getter()
+          };
+        }
+
+        return this.store[name].value;
+      }
+    }, {
+      key: "forget",
+      value: function forget(name) {
+        if (name) {
+          if (this.has(name)) {
+            delete this.store[name];
+          }
+        } else {
+          this.store = {};
+        }
+      }
+    }]);
+
+    return Cache;
+  }(); // attach cached getters to an object; can attach to self
+
+
+  function attachCache(obj, toCache) {
+    var cache = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Cache();
+
+    var _loop4 = function _loop4(key) {
+      var getter = toCache[key];
+      Object.defineProperty(obj, key, {
+        get: function get() {
+          var _this9 = this;
+
+          return cache.remember(key, function () {
+            return getter.call(_this9);
+          });
+        }
+      });
+    };
+
+    for (var key in toCache) {
+      _loop4(key);
+    }
+  }
+
+  /**
+   * [updatablePropsEvenUnbound description]
+   * @param  {[type]} props [object or getter]
+   * @return {[type]}       [description]
+   * props eg: {
+      value: {$localName: 'current', $localSetter: (value, vm)},
+    }
+     default localName is `localProps_${name}`
    */
 
-  // support desktop and mobile
+  function updatablePropsEvenUnbound(props) {
+    if (isFunction(props)) {
+      props = props();
+    } else {
+      // object
+      props = Object.assign({}, props);
+    }
+
+    var standardProps = {}; // without key starts with `$`
+
+    var _loop = function _loop(name) {
+      var prop = props[name]; // complete 补全选项
+
+      if (!prop.$localName) {
+        prop.$localName = "localProps_".concat(name);
+      }
+
+      if (!prop.$localSetter) {
+        prop.$localSetter = function (value) {
+          return value;
+        };
+      } // make standardProp
+
+
+      var standardProp = {};
+      standardProps[name] = standardProp;
+      Object.keys(props[name]).forEach(function (key) {
+        if (key[0] !== '$') {
+          standardProp[key] = prop[key];
+        }
+      });
+    };
+
+    for (var name in props) {
+      _loop(name);
+    }
+
+    var component = {
+      props: standardProps,
+      computed: {},
+      watch: {}
+    };
+
+    component.data = function () {
+      var t = {
+        localValueOfUpdatableProps: {}
+      };
+
+      for (var _i = 0, _Object$keys = Object.keys(props); _i < _Object$keys.length; _i++) {
+        var _name = _Object$keys[_i];
+        t.localValueOfUpdatableProps[_name] = this[_name];
+      }
+
+      return t;
+    };
+
+    var _loop2 = function _loop2(_name2) {
+      var prop = props[_name2];
+
+      component.watch[_name2] = function (value) {
+        this.localValueOfUpdatableProps[_name2] = prop.$localSetter(value, this);
+      };
+
+      var localName = prop.$localName;
+      component.computed[localName] = {
+        get: function get() {
+          return this.localValueOfUpdatableProps[_name2];
+        },
+        set: function set(value) {
+          if (_name2 === 'value') {
+            this.$emit('input', value);
+          } else {
+            this.$emit("update:".concat(_name2), value);
+          }
+
+          this.localValueOfUpdatableProps[_name2] = prop.$localSetter(value, this);
+        }
+      };
+    };
+
+    for (var _i2 = 0, _Object$keys2 = Object.keys(props); _i2 < _Object$keys2.length; _i2++) {
+      var _name2 = _Object$keys2[_i2];
+
+      _loop2(_name2);
+    }
+
+    return component;
+  }
+
+  var hookHelper = {
+    methods: {
+      // todo extract hooks to vue-functions
+      // get hooks in this._hooks, without which in props
+      _getNonPropHooksByName: function _getNonPropHooksByName(name) {
+        if (this._hooks) {
+          return this._hooks[name];
+        }
+      },
+      addHook: function addHook(name, func) {
+        if (!this._getNonPropHooksByName(name)) {
+          if (!this._hooks) {
+            this._hooks = {};
+          }
+
+          if (!this._hooks[name]) {
+            this._hooks[name] = [];
+          }
+        }
+
+        this._hooks[name].push(func);
+      },
+      removeHook: function removeHook(name, func) {
+        var hooks = this._getNonPropHooksByName(name);
+
+        if (hooks) {
+          arrayRemove(hooks, func);
+        }
+      },
+      hasHook: function hasHook(name) {
+        return this._getNonPropHooksByName(name) || this[name];
+      },
+      executeHook: function executeHook(name, args) {
+        var hooks = this._getNonPropHooksByName(name).slice();
+
+        if (hooks) {
+          if (this[name] && isFunction(this[name])) {
+            hooks.push(function (next) {
+              for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                args[_key - 1] = arguments[_key];
+              }
+
+              return this[name].apply(this, args);
+            });
+          }
+
+          return joinFunctionsByNext(hooks).apply(void 0, toConsumableArray(args));
+        }
+      }
+    }
+  };
+
+  function cloneTreeData(treeData, opt) {
+    return new TreeData(treeData).clone(opt);
+  }
+  function walkTreeData$1(treeData, handler, opt) {
+    return new TreeData(treeData).walk(handler, opt);
+  }
+  function getPureTreeData(treeData) {
+    var opt = {
+      afterNodeCreated: function afterNodeCreated(newNode) {
+        Object.keys(newNode).forEach(function (key) {
+          if (key[0] === '$') {
+            delete newNode[key];
+          }
+        });
+      }
+    };
+    return cloneTreeData(treeData, opt);
+  }
+
+  function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  var template = function template(h) {
+    var _this = this;
+
+    // convert undefined to empty str
+    var noUndefined = function noUndefined(str) {
+      return str ? str : '';
+    }; // tree tpl, to render recursively
+
+
+    var childrenListTpl = function childrenListTpl(nodes, parent, parentPath) {
+      var indentStyle = {
+        paddingLeft: parentPath.length * _this.indent + 'px'
+      };
+
+      var branchTpl = function branchTpl(node, index) {
+        var path = [].concat(toConsumableArray(parentPath), [index]);
+        var transitionComponent = _this.foldingTransition || 'transition';
+
+        var slotDefault = function slotDefault() {
+          var original = function original() {
+            if (_this.$scopedSlots["default"]) {
+              return _this.$scopedSlots["default"]({
+                node: node,
+                index: index,
+                path: path,
+                tree: _this
+              });
+            } else if (_this.$slots["default"]) {
+              return _this.$slots["default"];
+            } else {
+              return node.text;
+            }
+          };
+
+          if (_this.overrideSlotDefault) {
+            return _this.overrideSlotDefault({
+              node: node,
+              index: index,
+              path: path,
+              tree: _this
+            }, original);
+          } else {
+            return original();
+          }
+        };
+
+        var nodebackStyle = indentStyle;
+
+        if (node.$nodeBackStyle) {
+          nodebackStyle = _objectSpread$1({}, nodebackStyle, {}, node.$nodeBackStyle);
+        }
+
+        return h("div", {
+          "class": "tree-branch ".concat(noUndefined(node.$branchClass), " ").concat(noUndefined(node.$hidden && 'he-tree--hidden')),
+          "style": node.$branchStyle || {},
+          "attrs": {
+            "data-tree-node-path": path.join(',')
+          }
+        }, [h("div", {
+          "class": "tree-node-back ".concat(noUndefined(node.$nodeBackClass)),
+          "style": nodebackStyle || {}
+        }, [h("div", {
+          "class": "tree-node ".concat(noUndefined(node.$nodeClass)),
+          "style": node.$nodeStyle || {}
+        }, [slotDefault()])]), (node.children && node.children.length) > 0 && h(transitionComponent, {
+          "attrs": {
+            "name": _this.$props.foldingTransitionName
+          }
+        }, [!node.$folded && childrenListTpl(node.children, node, path)])]);
+      };
+
+      return h("div", {
+        "class": "tree-children ".concat(noUndefined(parent === _this.rootNode && 'tree-root'), " ").concat(noUndefined(parent.$childrenClass)),
+        "style": parent.$childrenStyle || {}
+      }, [nodes.map(branchTpl)]);
+    };
+
+    return h("div", {
+      "class": "he-tree ".concat(this.treeClass),
+      "attrs": {
+        "data-tree-id": this._uid
+      }
+    }, [this.blockHeader && this.blockHeader(), childrenListTpl(this.rootNode.children, this.rootNode, []), this.blockFooter && this.blockFooter()]);
+  };
+
+  var trees = {};
+  var Tree = {
+    render: template,
+    mixins: [updatablePropsEvenUnbound({
+      value: {
+        $localName: 'treeData',
+        required: true
+      }
+    }), hookHelper],
+    props: {
+      indent: {
+        type: Number,
+        "default": 20
+      },
+      rootNode: {
+        "default": function _default(is) {
+          return {};
+        }
+      }
+    },
+    // components: {},
+    data: function data() {
+      return {
+        trees: trees,
+        treeClass: ''
+      };
+    },
+    // computed: {},
+    watch: {
+      treeData: {
+        immediate: true,
+        handler: function handler(treeData) {
+          this._TreeDataHelper = new TreeData(this.treeData);
+        }
+      }
+    },
+    methods: {
+      iteratePath: function iteratePath(path, opt) {
+        return this._TreeDataHelper.iteratePath(path, opt);
+      },
+      getTreeVmByTreeEl: function getTreeVmByTreeEl(treeEl) {
+        return this.trees[treeEl.getAttribute('data-tree-id')];
+      },
+      getAllNodesByPath: function getAllNodesByPath(path) {
+        return this._TreeDataHelper.getAllNodes(path);
+      },
+      getNodeByPath: function getNodeByPath(path) {
+        return this._TreeDataHelper.getNode(path);
+      },
+      getPathByBranchEl: function getPathByBranchEl(branchEl) {
+        return branchEl.getAttribute('data-tree-node-path').split(',').map(function (v) {
+          return parseInt(v);
+        });
+      },
+      getBranchElByPath: function getBranchElByPath(path) {
+        return this.$el.querySelector("[data-tree-node-path='".concat(path.join(','), "']"));
+      },
+      getNodeByBranchEl: function getNodeByBranchEl(branchEl) {
+        return this.getNodeByPath(this.getPathByBranchEl(branchEl));
+      },
+      getNodeParentByPath: function getNodeParentByPath(path) {
+        return this._TreeDataHelper.getNodeParent(path);
+      },
+      removeNodeByPath: function removeNodeByPath(path) {
+        return this._TreeDataHelper.removeNode(path);
+      },
+      walkTreeData: function walkTreeData(handler, opt) {
+        return walkTreeData$1(this.treeData, handler, opt);
+      },
+      cloneTreeData: function cloneTreeData$1(opt) {
+        return cloneTreeData(this.treeData, opt);
+      },
+      // return cloned new tree data without property witch starts with `$`
+      getPureTreeData: function getPureTreeData$1() {
+        return getPureTreeData(this.treeData);
+      }
+    },
+    created: function created() {
+      var _this2 = this;
+
+      //
+      var updateRootNode = function updateRootNode() {
+        _this2.$set(_this2.rootNode, 'children', _this2.treeData);
+      };
+
+      this.$watch('rootNode', updateRootNode, {
+        immediate: true
+      });
+      this.$watch('treeData', updateRootNode, {
+        immediate: true
+      }); //
+
+      this.$set(this.trees, this._uid, this);
+      this.$once('hook:beforeDestroy', function () {
+        _this2.$delete(_this2.trees, _this2._uid);
+      });
+    },
+    // mounted() {},
+    // beforeDestroy() {},
+    //
+    mixPlugins: function mixPlugins(plugins) {
+      var MixedTree = {
+        name: 'Tree',
+        "extends": Tree,
+        mixins: plugins,
+        mixPlugins: this.mixPlugins
+      };
+      return MixedTree;
+    }
+  };
+
+  function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
+  /* server only */
+  , shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
+    if (typeof shadowMode !== 'boolean') {
+      createInjectorSSR = createInjector;
+      createInjector = shadowMode;
+      shadowMode = false;
+    } // Vue.extend constructor export interop.
+
+
+    var options = typeof script === 'function' ? script.options : script; // render functions
+
+    if (template && template.render) {
+      options.render = template.render;
+      options.staticRenderFns = template.staticRenderFns;
+      options._compiled = true; // functional template
+
+      if (isFunctionalTemplate) {
+        options.functional = true;
+      }
+    } // scopedId
+
+
+    if (scopeId) {
+      options._scopeId = scopeId;
+    }
+
+    var hook;
+
+    if (moduleIdentifier) {
+      // server build
+      hook = function hook(context) {
+        // 2.3 injection
+        context = context || // cached call
+        this.$vnode && this.$vnode.ssrContext || // stateful
+        this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
+        // 2.2 with runInNewContext: true
+
+        if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+          context = __VUE_SSR_CONTEXT__;
+        } // inject component styles
+
+
+        if (style) {
+          style.call(this, createInjectorSSR(context));
+        } // register component module identifier for async chunk inference
+
+
+        if (context && context._registeredComponents) {
+          context._registeredComponents.add(moduleIdentifier);
+        }
+      }; // used by ssr in case component is cached and beforeCreate
+      // never gets called
+
+
+      options._ssrRegister = hook;
+    } else if (style) {
+      hook = shadowMode ? function (context) {
+        style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
+      } : function (context) {
+        style.call(this, createInjector(context));
+      };
+    }
+
+    if (hook) {
+      if (options.functional) {
+        // register for functional component in vue file
+        var originalRender = options.render;
+
+        options.render = function renderWithStyleInjection(h, context) {
+          hook.call(context);
+          return originalRender(h, context);
+        };
+      } else {
+        // inject component registration as beforeCreate hook
+        var existing = options.beforeCreate;
+        options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
+      }
+    }
+
+    return script;
+  }
+
+  /* script */
+  var __vue_script__ = Tree;
+  /* template */
+
+  /* style */
+
+  var __vue_inject_styles__ = undefined;
+  /* scoped */
+
+  var __vue_scope_id__ = undefined;
+  /* module identifier */
+
+  var __vue_module_identifier__ = undefined;
+  /* functional template */
+
+  var __vue_is_functional_template__ = undefined;
+  /* style inject */
+
+  /* style inject SSR */
+
+  /* style inject shadow dom */
+
+  var __vue_component__ = normalizeComponent({}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
+
+  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+  var fold = {
+    props: {
+      foldingTransitionName: {
+        type: String
+      },
+      foldingTransition: {},
+      foldAllAfterMounted: {
+        type: Boolean
+      }
+    },
+    methods: {
+      fold: function fold(node, path) {
+        if (!node.$folded) {
+          this.$set(node, '$folded', true);
+        }
+      },
+      unfold: function unfold(node, path) {
+        var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+        opt = _objectSpread$2({
+          foldOthers: false
+        }, opt);
+
+        if (opt.foldOthers) {
+          this.foldAll();
+        }
+
+        if (node.$folded) {
+          this.$set(node, '$folded', false);
+        }
+      },
+      toggleFold: function toggleFold(node, path, opt) {
+        if (node.$folded) {
+          this.unfold(node, path, opt);
+        } else {
+          this.fold(node, path, opt);
+        }
+      },
+      foldAll: function foldAll() {
+        var _this = this;
+
+        this.walkTreeData(function (childNode) {
+          _this.fold(childNode);
+        });
+      },
+      unfoldAll: function unfoldAll() {
+        var _this2 = this;
+
+        this.walkTreeData(function (childNode) {
+          _this2.unfold(childNode, {
+            unfoldParent: false
+          });
+        });
+      }
+    },
+    mounted: function mounted() {
+      if (this.foldAllAfterMounted) {
+        this.foldAll();
+      }
+    }
+  };
+
+  var check = {
+    props: {},
+    methods: {
+      afterCheckChanged: function afterCheckChanged(node, path) {
+        var _this = this;
+
+        // update parent
+        var nodes = this.getAllNodesByPath(path);
+        var reversedParents = nodes.slice(0, nodes.length - 1);
+        reversedParents.reverse();
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = reversedParents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var parent = _step.value;
+            this.$set(parent, '$checked', parent.children.every(function (child) {
+              return child.$checked;
+            }));
+          } // update children
+
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+              _iterator["return"]();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+
+        if (node.children && node.children.length > 0) {
+          walkTreeData$1(node.children, function (childNode) {
+            _this.$set(childNode, '$checked', node.$checked);
+          });
+        }
+      },
+      check: function check(node, path) {
+        this.$set(node, '$checked', true);
+        this.afterCheckChanged(node, path);
+      },
+      uncheck: function uncheck(node, path) {
+        this.$set(node, '$checked', false);
+        this.afterCheckChanged(node, path);
+      },
+      toggleCheck: function toggleCheck(node, path) {
+        this.$set(node, '$checked', !node.$checked);
+        this.afterCheckChanged(node, path);
+      }
+    }
+  };
+
+  function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+    try {
+      var info = gen[key](arg);
+      var value = info.value;
+    } catch (error) {
+      reject(error);
+      return;
+    }
+
+    if (info.done) {
+      resolve(value);
+    } else {
+      Promise.resolve(value).then(_next, _throw);
+    }
+  }
+
+  function _asyncToGenerator(fn) {
+    return function () {
+      var self = this,
+          args = arguments;
+      return new Promise(function (resolve, reject) {
+        var gen = fn.apply(self, args);
+
+        function _next(value) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+        }
+
+        function _throw(err) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+        }
+
+        _next(undefined);
+      });
+    };
+  }
+
+  var asyncToGenerator = _asyncToGenerator;
+
   var events = {
     start: ['mousedown', 'touchstart'],
     move: ['mousemove', 'touchmove'],
     end: ['mouseup', 'touchend']
   };
   var index = {
-    isTouch(e) {
+    isTouch: function isTouch(e) {
       return e.type && e.type.startsWith('touch');
     },
-
-    _getStore(el) {
+    _getStore: function _getStore(el) {
       if (!el._wrapperStore) {
         el._wrapperStore = [];
       }
 
       return el._wrapperStore;
     },
-
-    on(el, name, handler, options) {
-      var {
-        args,
-        mouseArgs,
-        touchArgs
-      } = resolveOptions(options);
+    on: function on(el, name, handler, options) {
+      var _resolveOptions = resolveOptions(options),
+          args = _resolveOptions.args,
+          mouseArgs = _resolveOptions.mouseArgs,
+          touchArgs = _resolveOptions.touchArgs;
 
       var store = this._getStore(el);
 
@@ -2277,39 +2691,34 @@
       };
 
       store.push({
-        handler,
-        wrapper
+        handler: handler,
+        wrapper: wrapper
       }); // follow format will cause big bundle size
       // 以下写法将会使打包工具认为hp是上下文, 导致打包整个hp
       // hp.onDOM(el, events[name][0], wrapper, ...args)
 
-      onDOM.call(null, el, events[name][0], wrapper, ...[...args, ...mouseArgs]);
-      onDOM.call(null, el, events[name][1], wrapper, ...[...args, ...touchArgs]);
+      onDOM.call.apply(onDOM, [null, el, events[name][0], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(mouseArgs))));
+      onDOM.call.apply(onDOM, [null, el, events[name][1], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(touchArgs))));
     },
-
-    off(el, name, handler, options) {
-      var {
-        args,
-        mouseArgs,
-        touchArgs
-      } = resolveOptions(options);
+    off: function off(el, name, handler, options) {
+      var _resolveOptions2 = resolveOptions(options),
+          args = _resolveOptions2.args,
+          mouseArgs = _resolveOptions2.mouseArgs;
 
       var store = this._getStore(el);
 
       for (var i = store.length - 1; i >= 0; i--) {
-        var {
-          handler: handler2,
-          wrapper
-        } = store[i];
+        var _store$i = store[i],
+            handler2 = _store$i.handler,
+            wrapper = _store$i.wrapper;
 
         if (handler === handler2) {
-          offDOM.call(null, el, events[name][0], wrapper, ...[...args, ...mouseArgs]);
-          offDOM.call(null, el, events[name][1], wrapper, ...[...args, ...mouseArgs]);
+          offDOM.call.apply(offDOM, [null, el, events[name][0], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(mouseArgs))));
+          offDOM.call.apply(offDOM, [null, el, events[name][1], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(mouseArgs))));
           store.splice(i, 1);
         }
       }
     }
-
   };
 
   function resolveOptions(options) {
@@ -2321,21 +2730,51 @@
     var mouseArgs = options.mouseArgs || [];
     var touchArgs = options.touchArgs || [];
     return {
-      args,
-      mouseArgs,
-      touchArgs
+      args: args,
+      mouseArgs: mouseArgs,
+      touchArgs: touchArgs
     };
   }
 
   /*!
-   * draggable-helper v4.0.0
+   * draggable-helper v4.0.1
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Released under the MIT License.
    */
 
-  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$3(object, enumerableOnly) {
+    var keys = Object.keys(object);
 
-  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      if (enumerableOnly) symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+      keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread$3(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i] != null ? arguments[i] : {};
+
+      if (i % 2) {
+        ownKeys$3(Object(source), true).forEach(function (key) {
+          defineProperty(target, key, source[key]);
+        });
+      } else if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+      } else {
+        ownKeys$3(Object(source)).forEach(function (key) {
+          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+      }
+    }
+
+    return target;
+  }
   /***
   const destroy = draggableHelper(HTMLElement dragHandlerEl, Object opt = {})
   opt.beforeDrag(startEvent, moveEvent, store, opt) return false to prevent drag
@@ -2380,17 +2819,19 @@
   })
   ***/
 
+
   var IGNORE_TRIGGERS = ['INPUT', 'TEXTAREA', 'SELECT', 'OPTGROUP', 'OPTION'];
   var UNDRAGGABLE_CLASS = 'undraggable';
-  function index$1 (dragHandlerEl) {
+
+  function index$1(dragHandlerEl) {
     var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    opt = _objectSpread$1({
+    opt = _objectSpread$3({
       minTranslate: 10,
       draggingClass: 'dragging'
     }, opt);
     var store = getPureStore();
 
-    var destroy = () => {
+    var destroy = function destroy() {
       index.off(dragHandlerEl, 'start', dragHandlerEl._draggbleEventHandler);
       delete dragHandlerEl._draggbleEventHandler;
     };
@@ -2402,7 +2843,7 @@
     dragHandlerEl._draggbleEventHandler = start;
     index.on(dragHandlerEl, 'start', start);
     return {
-      destroy,
+      destroy: destroy,
       options: opt
     };
 
@@ -2416,12 +2857,12 @@
         return;
       }
 
-      if (hasClass$1(e.target, UNDRAGGABLE_CLASS)) {
+      if (hasClass(e.target, UNDRAGGABLE_CLASS)) {
         return;
       }
 
-      var isParentUndraggable = findParent$1(e.target, el => {
-        if (hasClass$1(el, UNDRAGGABLE_CLASS)) {
+      var isParentUndraggable = findParent(e.target, function (el) {
+        if (hasClass(el, UNDRAGGABLE_CLASS)) {
           return true;
         }
 
@@ -2441,7 +2882,7 @@
         y: mouse.y
       };
       store.startEvent = e;
-      store.initialMouse = _objectSpread$1({}, store.mouse);
+      store.initialMouse = _objectSpread$3({}, store.mouse);
       /*
       must set passive false for touch, else the follow error occurs in Chrome:
       Unable to preventDefault inside passive event listener due to target being treated as passive. See https://www.chromestatus.com/features/5093566007214080
@@ -2462,12 +2903,12 @@
         return false;
       }
 
-      var {
-        el,
-        position
-      } = resolveDragedElAndInitialPosition();
+      var _resolveDragedElAndIn = resolveDragedElAndInitialPosition(),
+          el = _resolveDragedElAndIn.el,
+          position = _resolveDragedElAndIn.position;
+
       store.el = el;
-      store.initialPosition = _objectSpread$1({}, position);
+      store.initialPosition = _objectSpread$3({}, position);
       canDrag = opt.drag && opt.drag(store.startEvent, e, store, opt);
 
       if (canDrag === false) {
@@ -2475,9 +2916,9 @@
       } // dom actions
 
 
-      var size = getBoundingClientRect$1(el);
+      var size = getBoundingClientRect(el);
 
-      var style = _objectSpread$1({
+      var style = _objectSpread$3({
         width: "".concat(Math.ceil(size.width), "px"),
         height: "".concat(Math.ceil(size.height), "px"),
         zIndex: 9999,
@@ -2495,7 +2936,7 @@
 
 
       backupAttr(el, 'class');
-      addClass$1(el, opt.draggingClass);
+      addClass(el, opt.draggingClass);
     }
 
     function moving(e, mouse) {
@@ -2558,11 +2999,10 @@
       if (store.movedCount > 0) {
         store.movedCount = 0;
         store.endEvent = e;
-        var {
-          el
-        } = store;
+        var _store = store,
+            el = _store.el;
 
-        var restoreDOM = () => {
+        var restoreDOM = function restoreDOM() {
           if (opt.clone) {
             el.parentElement.removeChild(el);
           } else {
@@ -2595,7 +3035,7 @@
 
       return {
         position: getPosition(el0),
-        el
+        el: el
       };
     }
 
@@ -2759,9 +3199,13 @@
 
   }
 
+  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
   function makeTreeDraggable(treeEl) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    options = _objectSpread2({}, options, {
+    options = _objectSpread$4({}, options, {
       treeEl: treeEl
     });
 
@@ -3143,7 +3587,7 @@
           var queue = store._doActionQueue;
           store._doActionQueue = queue.then(
           /*#__PURE__*/
-          _asyncToGenerator(
+          asyncToGenerator(
           /*#__PURE__*/
           regenerator.mark(function _callee() {
             var actionRecords, action, r, placeholderPath, placeholderNodeBack;
@@ -3185,7 +3629,7 @@
 
         var actions = {
           'nothing': function () {
-            var _nothing = _asyncToGenerator(
+            var _nothing = asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee2() {
               return regenerator.wrap(function _callee2$(_context2) {
@@ -3207,7 +3651,7 @@
           }(),
           // do nothing
           'append to root': function () {
-            var _appendToRoot = _asyncToGenerator(
+            var _appendToRoot = asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee3() {
               return regenerator.wrap(function _callee3$(_context3) {
@@ -3234,7 +3678,7 @@
             return appendToRoot;
           }(),
           'insert before': function () {
-            var _insertBefore = _asyncToGenerator(
+            var _insertBefore = asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee4() {
               return regenerator.wrap(function _callee4$(_context4) {
@@ -3268,7 +3712,7 @@
             return insertBefore$1;
           }(),
           'insert after': function () {
-            var _insertAfter = _asyncToGenerator(
+            var _insertAfter = asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee5() {
               var branch,
@@ -3320,7 +3764,7 @@
             return insertAfter$1;
           }(),
           prepend: function () {
-            var _prepend = _asyncToGenerator(
+            var _prepend = asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee6() {
               var childrenEl;
@@ -3376,7 +3820,7 @@
             return prepend;
           }(),
           'after above': function () {
-            var _afterAbove = _asyncToGenerator(
+            var _afterAbove = asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee7() {
               return regenerator.wrap(function _callee7$(_context7) {
@@ -3410,7 +3854,7 @@
             return afterAbove;
           }(),
           'append to prev': function () {
-            var _appendToPrev = _asyncToGenerator(
+            var _appendToPrev = asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee8() {
               var childrenEl;
@@ -3471,7 +3915,7 @@
         var secondCase =
         /*#__PURE__*/
         function () {
-          var _ref2 = _asyncToGenerator(
+          var _ref2 = asyncToGenerator(
           /*#__PURE__*/
           regenerator.mark(function _callee9(branchEl) {
             var targetEl;
@@ -3512,7 +3956,7 @@
         var thirdCase =
         /*#__PURE__*/
         function () {
-          var _ref3 = _asyncToGenerator(
+          var _ref3 = asyncToGenerator(
           /*#__PURE__*/
           regenerator.mark(function _callee10(branchEl) {
             var childrenEl;
@@ -3548,7 +3992,7 @@
         var unfoldAndGetChildrenEl =
         /*#__PURE__*/
         function () {
-          var _ref4 = _asyncToGenerator(
+          var _ref4 = asyncToGenerator(
           /*#__PURE__*/
           regenerator.mark(function _callee11(branch) {
             var childrenEl;
@@ -3611,7 +4055,7 @@
         });
       },
       drop: function () {
-        var _drop = _asyncToGenerator(
+        var _drop = asyncToGenerator(
         /*#__PURE__*/
         regenerator.mark(function _callee12(endEvent, store, opt) {
           var movingEl, placeholder, tempChildren, maskTree, pathChanged, isPathChanged;
@@ -3938,7 +4382,7 @@
           }
         }
 
-        return [].concat(_toConsumableArray(parentPath), [index]);
+        return [].concat(toConsumableArray(parentPath), [index]);
       }
     },
     // created() {},
