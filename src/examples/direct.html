@@ -10,6 +10,8 @@
           <!-- <div slot-scope="{node, index, path, tree}"><b v-if="node.children &amp;&amp; node.children.length &gt; 0" @click="tree.toggleFold(node, path)">{{node.$folded ? '+' : '-'}}&nbsp;</b><input type="checkbox" v-model="node.$checked" @change="tree.toggleCheck(node, path)" />&nbsp;<span>{{node.text}}</span></div> -->
       </he-tree>
     </div>
+    <!-- work in ie 10 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.7.0/polyfill.js" integrity="sha256-r4X23labmq3Mavd5v/ACFEuT++qZR2MSgqGmXQoclVE=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
     <link rel="stylesheet" href="../../dist/he-tree-vue.css">
     <script src="../../dist/he-tree-vue.js" charset="utf-8"></script>
