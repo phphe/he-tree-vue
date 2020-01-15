@@ -7,7 +7,11 @@
   <body>
     <div id="app">
       <he-tree :value="treeData" ref="tree">
-          <!-- <div slot-scope="{node, index, path, tree}"><b v-if="node.children &amp;&amp; node.children.length &gt; 0" @click="tree.toggleFold(node, path)">{{node.$folded ? '+' : '-'}}&nbsp;</b><input type="checkbox" v-model="node.$checked" @change="tree.toggleCheck(node, path)" />&nbsp;<span>{{node.text}}</span></div> -->
+          <div slot-scope="props">
+            <b v-if="props.node.children &amp;&amp; props.node.children.length &gt; 0" @click="props.tree.toggleFold(props.node, props.path)">{{props.node.$folded ? '+' : '-'}}&nbsp;</b>
+            <input type="checkbox" :checked="props.node.$checked" @change="props.tree.toggleCheck(props.node, props.path)" />&nbsp;
+            <span>{{props.node.text}}</span>
+          </div>
       </he-tree>
     </div>
     <!-- work in ie 10 -->

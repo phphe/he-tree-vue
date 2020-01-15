@@ -4,7 +4,7 @@ A draggable sortable nested vue tree component. [Demo](https://he-tree-vue.phphe
 可拖拽可排序vue树组件. [演示](https://he-tree-vue.phphe.com/zh), [文档](https://he-tree-vue.phphe.com/zh)
 
 * [Vue cli demo](https://codesandbox.io/s/vue-cli-and-he-tree-vue-example-k2d11)
-* [UMD demo(import by script tag, support IE10)](https://jsfiddle.net/phphe/7zy4wvg6/1/)
+* [UMD demo(import by script tag, support IE10)](https://jsfiddle.net/phphe/7zy4wvg6/12/)
 
 ## Bundle Size
 ```
