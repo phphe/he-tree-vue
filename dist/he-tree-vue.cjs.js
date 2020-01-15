@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.0.0
+ * he-tree-vue v1.0.1
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
@@ -12,7 +12,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var _defineProperty = _interopDefault(require('@babel/runtime/helpers/defineProperty'));
 var hp = require('helper-js');
 var vf = require('vue-functions');
-var __vue_normalize__ = _interopDefault(require('vue-runtime-helpers/dist/normalize-component.mjs'));
+var __vue_normalize__ = _interopDefault(require('vue-runtime-helpers/dist/normalize-component.js'));
 var _asyncToGenerator = _interopDefault(require('@babel/runtime/helpers/asyncToGenerator'));
 var draggableHelper = _interopDefault(require('draggable-helper'));
 

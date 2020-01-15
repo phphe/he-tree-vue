@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.0.0
+ * he-tree-vue v1.0.1
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
@@ -2132,21 +2132,23 @@
         return this._getNonPropHooksByName(name) || this[name];
       },
       executeHook: function executeHook(name, args) {
-        var hooks = this._getNonPropHooksByName(name).slice();
+        var _this = this;
 
-        if (hooks) {
-          if (this[name] && isFunction(this[name])) {
-            hooks.push(function (next) {
-              for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                args[_key - 1] = arguments[_key];
-              }
+        var hooks = this._getNonPropHooksByName(name);
 
-              return this[name].apply(this, args);
-            });
-          }
+        hooks = hooks ? hooks.slice() : [];
 
-          return joinFunctionsByNext(hooks).apply(void 0, toConsumableArray(args));
+        if (this[name] && isFunction(this[name])) {
+          hooks.push(function (next) {
+            for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+              args[_key - 1] = arguments[_key];
+            }
+
+            return _this[name].apply(_this, args);
+          });
         }
+
+        return joinFunctionsByNext(hooks).apply(void 0, toConsumableArray(args));
       }
     }
   };
