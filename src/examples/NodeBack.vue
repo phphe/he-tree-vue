@@ -2,12 +2,14 @@
 <template lang="pug">
 div
   h2 Node Back
-  Tree.tree-with-nodeba-back(:value="treeData" idMode ref="tree")
+  Tree.tree-with-nodeba-back(:value="treeData" ref="tree")
     div(slot-scope="{node, index, path, tree}")
       b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
       input(type="checkbox" :checked="node.$checked" @change="tree.toggleCheck(node, path)")
       | &nbsp;
       span {{node.text}}
+  hr
+  Tree.tree-with-nodeba-back(:value="treeData2" ref="tree2")
 </template>
 
 <script>
@@ -24,6 +26,20 @@ export default {
   data() {
     return {
       treeData: [
+        {text: 'node 1', children: [
+          {text: 'node 1-0'},
+          {text: 'node 1-1'},
+          {text: 'node 1-2'},
+          {text: 'node 1-3'},
+          {text: 'node 1-4'},
+          {text: 'node 1-5'},
+          {text: 'node 1-6'},
+          {text: 'node 1-7'},
+          {text: 'node 1-8'},
+          {text: 'node 1-9'},
+        ]},
+      ],
+      treeData2: [
         {text: 'node 1', children: [
           {text: 'node 1-0'},
           {text: 'node 1-1'},

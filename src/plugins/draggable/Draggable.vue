@@ -162,7 +162,7 @@ export default {
         const path = tree.getPathByBranchEl(branchEl)
         const findPath = hp.arrayWithoutEnd(path, 1)
         let cur = path
-        for (const {node, path} of this.iteratePath(findPath, {reverse: true})) {
+        for (const {node, path} of tree.iteratePath(findPath, {reverse: true})) {
           if (tree.isNodeDroppable(node, path)) {
             return tree.getBranchElByPath(cur)
           } else {
