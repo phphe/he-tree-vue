@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.0.1
+ * he-tree-vue v1.0.2
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
@@ -4450,7 +4450,7 @@
           var _iteratorError4 = undefined;
 
           try {
-            for (var _iterator4 = _this.iteratePath(findPath, {
+            for (var _iterator4 = tree.iteratePath(findPath, {
               reverse: true
             })[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
               var _step4$value = _step4.value,

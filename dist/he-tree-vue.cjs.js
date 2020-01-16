@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.0.1
+ * he-tree-vue v1.0.2
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
@@ -1383,7 +1383,7 @@ var script = {
         for (var {
           node,
           path: _path
-        } of this.iteratePath(findPath, {
+        } of tree.iteratePath(findPath, {
           reverse: true
         })) {
           if (tree.isNodeDroppable(node, _path)) {
