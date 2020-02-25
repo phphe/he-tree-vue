@@ -1,11 +1,13 @@
 {
   "name": "he-tree-vue",
-  "version": "1.0.2",
+  "version": "1.1.0-beta",
   "description": "A draggable sortable nested vue tree component.",
   "main": "dist/he-tree-vue.cjs.js",
   "module": "dist/he-tree-vue.esm.js",
+  "types": "types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "unpkg": "dist/he-tree-vue.js",
   "author": "phphe <phphe@outlook.com> (https://github.com/phphe)",
@@ -40,6 +42,7 @@
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
     "vue": "^2.6.10",
+    "vue-property-decorator": "^8.4.0",
     "vue-template-compiler": "^2.6.10"
   },
   "license": "MIT"
