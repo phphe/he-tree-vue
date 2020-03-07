@@ -88,6 +88,13 @@ export class Fold extends Vue{
   unfoldAll(): void
 }
 
+export interface foldAll {
+  (treeData: TreeData): void
+}
+
+export interface unfoldAll {
+  (treeData: TreeData): void
+}
 
 export class Check extends Vue{
   // methods

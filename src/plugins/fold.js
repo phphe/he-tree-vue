@@ -1,3 +1,17 @@
+import Vue from 'vue'
+import { walkTreeData } from "../utils";
+
+export function foldAll(treeData) {
+  walkTreeData(treeData, childNode => {
+    Vue.set(childNode, '$folded', true)
+  })
+}
+export function unfoldAll(treeData) {
+  walkTreeData(treeData, childNode => {
+    Vue.set(childNode, '$folded', false)
+  })
+}
+
 export default {
   props: {
     foldingTransitionName: {type: String},

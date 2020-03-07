@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.0.2
+ * he-tree-vue v1.1.0
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
@@ -7,6 +7,7 @@ import _defineProperty from '@babel/runtime/helpers/defineProperty';
 import { TreeData, findParent, hasClass, getOffset, getBoundingClientRect, elementsFromPoint, isDescendantOf, attachCache, insertAfter, removeEl, waitTime, binarySearch, findNodeList, appendTo, insertBefore, prependTo, createElementFromHTML, addClass, iterateAll, resolveValueOrGettter, arrayWithoutEnd, arrayLast } from 'helper-js';
 import { updatablePropsEvenUnbound, hookHelper } from 'vue-functions';
 import __vue_normalize__ from 'vue-runtime-helpers/dist/normalize-component.mjs';
+import Vue from 'vue';
 import _asyncToGenerator from '@babel/runtime/helpers/asyncToGenerator';
 import draggableHelper from 'draggable-helper';
 
@@ -265,7 +266,16 @@ var __vue_component__ = __vue_normalize__({}, __vue_inject_styles__, __vue_scrip
 function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
+function foldAll(treeData) {
+  walkTreeData(treeData, childNode => {
+    Vue.set(childNode, '$folded', true);
+  });
+}
+function unfoldAll(treeData) {
+  walkTreeData(treeData, childNode => {
+    Vue.set(childNode, '$folded', false);
+  });
+}
 var fold = {
   props: {
     foldingTransitionName: {
@@ -893,10 +903,8 @@ function makeTreeDraggable(treeEl) {
         },
 
         'insert after'() {
-          var _arguments = arguments;
+          var branch = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : info.closestBranch;
           return _asyncToGenerator(function* () {
-            var branch = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : info.closestBranch;
-
             if (options.isNodeParentDroppable(branch, store.targetTreeEl)) {
               insertAfter(store.placeholder, branch);
             } else {
@@ -1585,4 +1593,4 @@ var __vue_is_functional_template__$1 = undefined;
 
 var __vue_component__$1 = __vue_normalize__({}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
 
-export { check as Check, __vue_component__$1 as Draggable, fold as Fold, __vue_component__ as Tree, cloneTreeData, getPureTreeData, walkTreeData };
+export { check as Check, __vue_component__$1 as Draggable, fold as Fold, __vue_component__ as Tree, cloneTreeData, foldAll, getPureTreeData, unfoldAll, walkTreeData };

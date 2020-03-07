@@ -1,6 +1,6 @@
 {
   "name": "he-tree-vue",
-  "version": "1.1.0-beta",
+  "version": "1.1.0",
   "description": "A draggable sortable nested vue tree component.",
   "main": "dist/he-tree-vue.cjs.js",
   "module": "dist/he-tree-vue.esm.js",
@@ -33,15 +33,15 @@
     "vue-runtime-helpers": "^1.1.2"
   },
   "devDependencies": {
+    "vue": "^2.6.10",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
-    "rogo": "^1.0.3",
+    "rogo": "^1.0.5-beta",
     "rollup-plugin-vue": "^5.1.1",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
-    "vue": "^2.6.10",
     "vue-property-decorator": "^8.4.0",
     "vue-template-compiler": "^2.6.10"
   },

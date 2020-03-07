@@ -1,13 +1,15 @@
 /*!
- * he-tree-vue v1.0.2
+ * he-tree-vue v1.1.0
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = global || self, factory(global.heTreeVue = {}));
-}(this, (function (exports) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'vue'], factory) :
+  (global = global || self, factory(global.heTreeVue = {}, global.Vue));
+}(this, (function (exports, Vue) { 'use strict';
+
+  Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
 
   function _defineProperty(obj, key, value) {
     if (key in obj) {
@@ -62,6 +64,8 @@
 
   var _typeof_1 = createCommonjsModule(function (module) {
   function _typeof(obj) {
+    "@babel/helpers - typeof";
+
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
       module.exports = _typeof = function _typeof(obj) {
         return typeof obj;
@@ -969,14 +973,14 @@
     var opt,
         i,
         info,
-        _i8,
+        _i10,
         _Object$keys2,
         key,
         _info,
         _i5,
         _info2,
         keys,
-        _i9,
+        _i11,
         _keys2,
         _key2,
         _info3,
@@ -1034,15 +1038,15 @@
               break;
             }
 
-            _i8 = 0, _Object$keys2 = Object.keys(val);
+            _i10 = 0, _Object$keys2 = Object.keys(val);
 
           case 16:
-            if (!(_i8 < _Object$keys2.length)) {
+            if (!(_i10 < _Object$keys2.length)) {
               _context.next = 25;
               break;
             }
 
-            key = _Object$keys2[_i8];
+            key = _Object$keys2[_i10];
             _info = {
               value: val[key],
               key: key
@@ -1057,7 +1061,7 @@
             return _info;
 
           case 22:
-            _i8++;
+            _i10++;
             _context.next = 16;
             break;
 
@@ -1116,15 +1120,15 @@
 
             keys = Object.keys(val);
             keys.reverse();
-            _i9 = 0, _keys2 = keys;
+            _i11 = 0, _keys2 = keys;
 
           case 46:
-            if (!(_i9 < _keys2.length)) {
+            if (!(_i11 < _keys2.length)) {
               _context.next = 55;
               break;
             }
 
-            _key2 = _keys2[_i9];
+            _key2 = _keys2[_i11];
             _info3 = {
               value: val[_key2],
               key: _key2
@@ -1139,7 +1143,7 @@
             return _info3;
 
           case 52:
-            _i9++;
+            _i11++;
             _context.next = 46;
             break;
 
@@ -1876,7 +1880,7 @@
 
   function appendTo(el, target) {
     target.appendChild(el);
-  } // advance
+  } // Date ===================================
   // binarySearch 二分查找
   // callback(mid, i) should return mid - your_value
 
@@ -2482,7 +2486,16 @@
   function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
+  function foldAll(treeData) {
+    walkTreeData$1(treeData, function (childNode) {
+      Vue.set(childNode, '$folded', true);
+    });
+  }
+  function unfoldAll(treeData) {
+    walkTreeData$1(treeData, function (childNode) {
+      Vue.set(childNode, '$folded', false);
+    });
+  }
   var fold = {
     props: {
       foldingTransitionName: {
@@ -3630,8 +3643,8 @@
         };
 
         var actions = {
-          'nothing': function () {
-            var _nothing = asyncToGenerator(
+          'nothing': function nothing() {
+            return asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee2() {
               return regenerator.wrap(function _callee2$(_context2) {
@@ -3643,17 +3656,11 @@
                   }
                 }
               }, _callee2);
-            }));
-
-            function nothing() {
-              return _nothing.apply(this, arguments);
-            }
-
-            return nothing;
-          }(),
+            }))();
+          },
           // do nothing
-          'append to root': function () {
-            var _appendToRoot = asyncToGenerator(
+          'append to root': function appendToRoot() {
+            return asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee3() {
               return regenerator.wrap(function _callee3$(_context3) {
@@ -3671,16 +3678,10 @@
                   }
                 }
               }, _callee3);
-            }));
-
-            function appendToRoot() {
-              return _appendToRoot.apply(this, arguments);
-            }
-
-            return appendToRoot;
-          }(),
-          'insert before': function () {
-            var _insertBefore = asyncToGenerator(
+            }))();
+          },
+          'insert before': function insertBefore$1() {
+            return asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee4() {
               return regenerator.wrap(function _callee4$(_context4) {
@@ -3705,68 +3706,52 @@
                   }
                 }
               }, _callee4);
-            }));
-
-            function insertBefore$1() {
-              return _insertBefore.apply(this, arguments);
-            }
-
-            return insertBefore$1;
-          }(),
-          'insert after': function () {
-            var _insertAfter = asyncToGenerator(
+            }))();
+          },
+          'insert after': function insertAfter$1() {
+            var branch = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : info.closestBranch;
+            return asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee5() {
-              var branch,
-                  moved,
-                  isFirstTriedAction,
-                  _args5 = arguments;
+              var moved, isFirstTriedAction;
               return regenerator.wrap(function _callee5$(_context5) {
                 while (1) {
                   switch (_context5.prev = _context5.next) {
                     case 0:
-                      branch = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : info.closestBranch;
-
                       if (!options.isNodeParentDroppable(branch, store.targetTreeEl)) {
-                        _context5.next = 5;
+                        _context5.next = 4;
                         break;
                       }
 
                       insertAfter(store.placeholder, branch);
-                      _context5.next = 11;
+                      _context5.next = 10;
                       break;
 
-                    case 5:
-                      _context5.next = 7;
+                    case 4:
+                      _context5.next = 6;
                       return secondCase(getParentBranchByEl(branch));
 
-                    case 7:
+                    case 6:
                       moved = _context5.sent;
                       isFirstTriedAction = !store.oneMoveStore.actionRecords || store.oneMoveStore.actionRecords.length === 1;
 
                       if (!(!moved && isFirstTriedAction)) {
-                        _context5.next = 11;
+                        _context5.next = 10;
                         break;
                       }
 
                       return _context5.abrupt("return", thirdCase(branch));
 
-                    case 11:
+                    case 10:
                     case "end":
                       return _context5.stop();
                   }
                 }
               }, _callee5);
-            }));
-
-            function insertAfter$1() {
-              return _insertAfter.apply(this, arguments);
-            }
-
-            return insertAfter$1;
-          }(),
-          prepend: function () {
-            var _prepend = asyncToGenerator(
+            }))();
+          },
+          prepend: function prepend() {
+            return asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee6() {
               var childrenEl;
@@ -3813,16 +3798,10 @@
                   }
                 }
               }, _callee6);
-            }));
-
-            function prepend() {
-              return _prepend.apply(this, arguments);
-            }
-
-            return prepend;
-          }(),
-          'after above': function () {
-            var _afterAbove = asyncToGenerator(
+            }))();
+          },
+          'after above': function afterAbove() {
+            return asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee7() {
               return regenerator.wrap(function _callee7$(_context7) {
@@ -3847,16 +3826,10 @@
                   }
                 }
               }, _callee7);
-            }));
-
-            function afterAbove() {
-              return _afterAbove.apply(this, arguments);
-            }
-
-            return afterAbove;
-          }(),
-          'append to prev': function () {
-            var _appendToPrev = asyncToGenerator(
+            }))();
+          },
+          'append to prev': function appendToPrev() {
+            return asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee8() {
               var childrenEl;
@@ -3903,14 +3876,8 @@
                   }
                 }
               }, _callee8);
-            }));
-
-            function appendToPrev() {
-              return _appendToPrev.apply(this, arguments);
-            }
-
-            return appendToPrev;
-          }()
+            }))();
+          }
         }; // second case for actions, when target position not droppable
         // return true if moved
 
@@ -4677,7 +4644,9 @@
   exports.Fold = fold;
   exports.Tree = __vue_component__;
   exports.cloneTreeData = cloneTreeData;
+  exports.foldAll = foldAll;
   exports.getPureTreeData = getPureTreeData;
+  exports.unfoldAll = unfoldAll;
   exports.walkTreeData = walkTreeData$1;
 
   Object.defineProperty(exports, '__esModule', { value: true });

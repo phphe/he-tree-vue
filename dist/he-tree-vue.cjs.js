@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.0.2
+ * he-tree-vue v1.1.0
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
@@ -13,6 +13,7 @@ var _defineProperty = _interopDefault(require('@babel/runtime/helpers/defineProp
 var hp = require('helper-js');
 var vf = require('vue-functions');
 var __vue_normalize__ = _interopDefault(require('vue-runtime-helpers/dist/normalize-component.js'));
+var Vue = _interopDefault(require('vue'));
 var _asyncToGenerator = _interopDefault(require('@babel/runtime/helpers/asyncToGenerator'));
 var draggableHelper = _interopDefault(require('draggable-helper'));
 
@@ -271,7 +272,16 @@ var __vue_component__ = __vue_normalize__({}, __vue_inject_styles__, __vue_scrip
 function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
+function foldAll(treeData) {
+  walkTreeData(treeData, childNode => {
+    Vue.set(childNode, '$folded', true);
+  });
+}
+function unfoldAll(treeData) {
+  walkTreeData(treeData, childNode => {
+    Vue.set(childNode, '$folded', false);
+  });
+}
 var fold = {
   props: {
     foldingTransitionName: {
@@ -899,10 +909,8 @@ function makeTreeDraggable(treeEl) {
         },
 
         'insert after'() {
-          var _arguments = arguments;
+          var branch = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : info.closestBranch;
           return _asyncToGenerator(function* () {
-            var branch = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : info.closestBranch;
-
             if (options.isNodeParentDroppable(branch, store.targetTreeEl)) {
               hp.insertAfter(store.placeholder, branch);
             } else {
@@ -1596,5 +1604,7 @@ exports.Draggable = __vue_component__$1;
 exports.Fold = fold;
 exports.Tree = __vue_component__;
 exports.cloneTreeData = cloneTreeData;
+exports.foldAll = foldAll;
 exports.getPureTreeData = getPureTreeData;
+exports.unfoldAll = unfoldAll;
 exports.walkTreeData = walkTreeData;
