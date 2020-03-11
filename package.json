@@ -1,6 +1,6 @@
 {
   "name": "he-tree-vue",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A draggable sortable nested vue tree component.",
   "main": "dist/he-tree-vue.cjs.js",
   "module": "dist/he-tree-vue.esm.js",
@@ -23,7 +23,8 @@
     "dev": "vue-cli-service serve",
     "build:web": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "build": "rogo"
+    "compile-scripts": "tsc --target ES6 --module CommonJS scripts/build.ts",
+    "build": "rollup -c scripts/build.js & node scripts/build.js --report"
   },
   "dependencies": {
     "@babel/runtime": "^7.7.7",
@@ -33,17 +34,21 @@
     "vue-runtime-helpers": "^1.1.2"
   },
   "devDependencies": {
-    "vue": "^2.6.10",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
-    "rogo": "^1.0.5-beta",
+    "rogo": "^2.0.1",
+    "rollup-plugin-postcss": "^2.4.1",
     "rollup-plugin-vue": "^5.1.1",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
+    "vue": "^2.6.10",
     "vue-property-decorator": "^8.4.0",
     "vue-template-compiler": "^2.6.10"
+  },
+  "peerDependencies": {
+    "vue": "^2.6.10"
   },
   "license": "MIT"
 }

@@ -1,6 +1,7 @@
 /*!
- * he-tree-vue v1.1.1
- * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
+ * he-tree-vue v1.1.2
+ * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
+ * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
 'use strict';
@@ -24,7 +25,7 @@ function walkTreeData(treeData, handler, opt) {
   return new hp.TreeData(treeData).walk(handler, opt);
 }
 function getPureTreeData(treeData) {
-  var opt = {
+  const opt = {
     afterNodeCreated: newNode => {
       Object.keys(newNode).forEach(key => {
         if (key[0] === '$') {
@@ -40,22 +41,22 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-var template = function template(h) {
+const template = function template(h) {
   // convert undefined to empty str
-  var noUndefined = str => str ? str : ''; // tree tpl, to render recursively
+  const noUndefined = str => str ? str : ''; // tree tpl, to render recursively
 
 
-  var childrenListTpl = (nodes, parent, parentPath) => {
-    var indentStyle = {
+  const childrenListTpl = (nodes, parent, parentPath) => {
+    const indentStyle = {
       paddingLeft: parentPath.length * this.indent + 'px'
     };
 
-    var branchTpl = (node, index) => {
-      var path = [...parentPath, index];
-      var transitionComponent = this.foldingTransition || 'transition';
+    const branchTpl = (node, index) => {
+      const path = [...parentPath, index];
+      const transitionComponent = this.foldingTransition || 'transition';
 
-      var slotDefault = () => {
-        var original = () => {
+      const slotDefault = () => {
+        const original = () => {
           if (this.$scopedSlots.default) {
             return this.$scopedSlots.default({
               node,
@@ -82,23 +83,23 @@ var template = function template(h) {
         }
       };
 
-      var nodebackStyle = indentStyle;
+      let nodebackStyle = indentStyle;
 
       if (node.$nodeBackStyle) {
         nodebackStyle = _objectSpread({}, nodebackStyle, {}, node.$nodeBackStyle);
       }
 
       return h("div", {
-        "class": "tree-branch ".concat(noUndefined(node.$branchClass), " ").concat(noUndefined(node.$hidden && 'he-tree--hidden')),
+        "class": `tree-branch ${noUndefined(node.$branchClass)} ${noUndefined(node.$hidden && 'he-tree--hidden')}`,
         "style": node.$branchStyle || {},
         "attrs": {
           "data-tree-node-path": path.join(',')
         }
       }, [h("div", {
-        "class": "tree-node-back ".concat(noUndefined(node.$nodeBackClass)),
+        "class": `tree-node-back ${noUndefined(node.$nodeBackClass)}`,
         "style": nodebackStyle || {}
       }, [h("div", {
-        "class": "tree-node ".concat(noUndefined(node.$nodeClass)),
+        "class": `tree-node ${noUndefined(node.$nodeClass)}`,
         "style": node.$nodeStyle || {}
       }, [slotDefault()])]), (node.children && node.children.length) > 0 && h(transitionComponent, {
         "attrs": {
@@ -108,21 +109,21 @@ var template = function template(h) {
     };
 
     return h("div", {
-      "class": "tree-children ".concat(noUndefined(parent === this.rootNode && 'tree-root'), " ").concat(noUndefined(parent.$childrenClass)),
+      "class": `tree-children ${noUndefined(parent === this.rootNode && 'tree-root')} ${noUndefined(parent.$childrenClass)}`,
       "style": parent.$childrenStyle || {}
     }, [nodes.map(branchTpl)]);
   };
 
   return h("div", {
-    "class": "he-tree ".concat(this.treeClass),
+    "class": `he-tree ${this.treeClass}`,
     "attrs": {
       "data-tree-id": this._uid
     }
   }, [this.blockHeader && this.blockHeader(), childrenListTpl(this.rootNode.children, this.rootNode, []), this.blockFooter && this.blockFooter()]);
 };
 
-var trees = {};
-var Tree = {
+const trees = {};
+const Tree = {
   render: template,
   mixins: [vf.updatablePropsEvenUnbound({
     value: {
@@ -181,7 +182,7 @@ var Tree = {
     },
 
     getBranchElByPath(path) {
-      return this.$el.querySelector("[data-tree-node-path='".concat(path.join(','), "']"));
+      return this.$el.querySelector(`[data-tree-node-path='${path.join(',')}']`);
     },
 
     getNodeByBranchEl(branchEl) {
@@ -213,7 +214,7 @@ var Tree = {
 
   created() {
     //
-    var updateRootNode = () => {
+    const updateRootNode = () => {
       this.$set(this.rootNode, 'children', this.treeData);
     };
 
@@ -234,7 +235,7 @@ var Tree = {
   // beforeDestroy() {},
   //
   mixPlugins(plugins) {
-    var MixedTree = {
+    const MixedTree = {
       name: 'Tree',
       extends: Tree,
       mixins: plugins,
@@ -246,28 +247,28 @@ var Tree = {
 };
 
 /* script */
-var __vue_script__ = Tree;
+const __vue_script__ = Tree;
 /* template */
 
 /* style */
 
-var __vue_inject_styles__ = undefined;
+const __vue_inject_styles__ = undefined;
 /* scoped */
 
-var __vue_scope_id__ = undefined;
+const __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = undefined;
+const __vue_module_identifier__ = undefined;
 /* functional template */
 
-var __vue_is_functional_template__ = undefined;
+const __vue_is_functional_template__ = undefined;
 /* style inject */
 
 /* style inject SSR */
 
 /* style inject shadow dom */
 
-var __vue_component__ = __vue_normalize__({}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
+const __vue_component__ = __vue_normalize__({}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
 
 function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -299,8 +300,7 @@ var fold = {
       }
     },
 
-    unfold(node, path) {
-      var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    unfold(node, path, opt = {}) {
       opt = _objectSpread$1({
         foldOthers: false
       }, opt);
@@ -351,14 +351,33 @@ var check = {
   methods: {
     afterCheckChanged(node, path) {
       // update parent
-      var nodes = this.getAllNodesByPath(path);
-      var reversedParents = nodes.slice(0, nodes.length - 1);
+      const nodes = this.getAllNodesByPath(path);
+      const reversedParents = nodes.slice(0, nodes.length - 1);
       reversedParents.reverse();
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-      for (var parent of reversedParents) {
-        this.$set(parent, '$checked', parent.children.every(child => child.$checked));
-      } // update children
+      try {
+        for (var _iterator = reversedParents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          const parent = _step.value;
+          this.$set(parent, '$checked', parent.children.every(child => child.$checked));
+        } // update children
 
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
 
       if (node.children && node.children.length > 0) {
         walkTreeData(node.children, childNode => {
@@ -385,12 +404,10 @@ var check = {
   }
 };
 
-function doDraggableDecision (_ref) {
-  var {
-    conditions,
-    doAction
-  } = _ref;
-
+function doDraggableDecision ({
+  conditions,
+  doAction
+}) {
   // decision start =================================
   if (conditions['no closest'] === true) {
     doAction('append to root');
@@ -544,15 +561,12 @@ function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if 
 
 function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-function makeTreeDraggable(treeEl) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+function makeTreeDraggable(treeEl, options = {}) {
   options = _objectSpread$2({}, options, {
     treeEl
   });
-  var {
-    destroy,
-    draggableHelperOptions
-  } = draggableHelper(treeEl, {
+
+  const _draggableHelper = draggableHelper(treeEl, {
     draggingClass: options.draggingClass,
     restoreDOMManuallyOndrop: true,
     clone: options.cloneWhenDrag,
@@ -565,7 +579,7 @@ function makeTreeDraggable(treeEl) {
       } // if the event target is a trigger
 
 
-      var isTrigger = hp.findParent(startEvent.target, el => {
+      const isTrigger = hp.findParent(startEvent.target, el => {
         if (hp.hasClass(el, options.triggerClass)) {
           return true;
         }
@@ -591,14 +605,14 @@ function makeTreeDraggable(treeEl) {
 
     // get the element which will be moved
     getEl: (dragHandlerEl, store, opt) => {
-      var el = hp.findParent(store.startEvent.target, el => hp.hasClass(el, options.branchClass), {
+      const el = hp.findParent(store.startEvent.target, el => hp.hasClass(el, options.branchClass), {
         withSelf: true
       });
       return el;
     },
     drag: (startEvent, moveEvent, store, opt) => {
       store.dragBranchEl = store.el;
-      var movingEl = store.el; // branch
+      const movingEl = store.el; // branch
 
       store.startPath = options.getPathByBranchEl(movingEl);
 
@@ -610,51 +624,71 @@ function makeTreeDraggable(treeEl) {
       // return false in moving will prevent move animation; return undefined just prevent doAction
       store.oneMoveStore = {}; // life cycle: one move
 
-      var movingEl = store.el; // branch
+      const movingEl = store.el; // branch
       // find closest branch and hovering tree
 
-      var _tree;
+      let tree;
+      const movingNode = movingEl.querySelector(`.${options.nodeClass}`);
+      const movingNodeOf = hp.getOffset(movingNode);
+      const movingNodeRect = hp.getBoundingClientRect(movingNode);
+      const elsBetweenMovingElAndTree = []; // including tree
 
-      var movingNode = movingEl.querySelector(".".concat(options.nodeClass));
-      var movingNodeOf = hp.getOffset(movingNode);
-      var movingNodeRect = hp.getBoundingClientRect(movingNode);
-      var elsBetweenMovingElAndTree = []; // including tree
-
-      var elsToTree = []; // start from top, including tree
+      const elsToTree = []; // start from top, including tree
       // loop to find put els between movingEl and tree
 
-      var movingElLooped; // 已循环到了movingEl
+      let movingElLooped; // 已循环到了movingEl
 
-      for (var itemEl of hp.elementsFromPoint(movingNodeRect.x, movingNodeRect.y)) {
-        if (movingElLooped) {
-          elsBetweenMovingElAndTree.push(itemEl);
-        } else if (itemEl === movingEl) {
-          movingElLooped = true;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = hp.elementsFromPoint(movingNodeRect.x, movingNodeRect.y)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          const itemEl = _step.value;
+
+          if (movingElLooped) {
+            elsBetweenMovingElAndTree.push(itemEl);
+          } else if (itemEl === movingEl) {
+            movingElLooped = true;
+          }
+
+          elsToTree.push(itemEl);
+
+          if (hp.hasClass(itemEl, options.treeClass)) {
+            tree = itemEl;
+            break;
+          }
+        } // this is an issue, sometimes, the movingEl is not in elementsFromPoint result
+
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
         }
-
-        elsToTree.push(itemEl);
-
-        if (hp.hasClass(itemEl, options.treeClass)) {
-          _tree = itemEl;
-          break;
-        }
-      } // this is an issue, sometimes, the movingEl is not in elementsFromPoint result
-
+      }
 
       if (!movingElLooped) {
         elsBetweenMovingElAndTree.push(...elsToTree);
       }
 
-      if (!_tree) {
+      if (!tree) {
         // out of tree
         return;
       } // check tree if is covered, like modal
 
 
-      var treeBeCoved;
+      let treeBeCoved;
 
       if (elsBetweenMovingElAndTree && elsBetweenMovingElAndTree[0]) {
-        if (elsBetweenMovingElAndTree[0] !== _tree && !hp.isDescendantOf(elsBetweenMovingElAndTree[0], _tree)) {
+        if (elsBetweenMovingElAndTree[0] !== tree && !hp.isDescendantOf(elsBetweenMovingElAndTree[0], tree)) {
           treeBeCoved = true;
         }
       }
@@ -664,23 +698,33 @@ function makeTreeDraggable(treeEl) {
       } // check if target tree right
 
 
-      if (options.filterTargetTree(_tree, store, opt) === false) {
+      if (options.filterTargetTree(tree, store, opt) === false) {
         return;
       }
 
-      store.targetTreeEl = _tree; // info ========================================
+      store.targetTreeEl = tree; // info ========================================
       // life cycle: one move
 
-      var info = {
-        tree: () => _tree,
-        root: () => info.tree.querySelector(".".concat(options.childrenClass)),
-        closestNode: () => {
-          var nodes = []; // all visible nodes sort by y
+      const info = {
+        tree: function (_tree) {
+          function tree() {
+            return _tree.apply(this, arguments);
+          }
 
-          var walkToGetNodes = branch => {
+          tree.toString = function () {
+            return _tree.toString();
+          };
+
+          return tree;
+        }(() => tree),
+        root: () => info.tree.querySelector(`.${options.childrenClass}`),
+        closestNode: () => {
+          const nodes = []; // all visible nodes sort by y
+
+          const walkToGetNodes = branch => {
             //
             if (branch !== info.tree) {
-              var node = branch.querySelector(".".concat(options.nodeClass));
+              const node = branch.querySelector(`.${options.nodeClass}`);
 
               if (node && !isElementHidden(node)) {
                 nodes.push(node);
@@ -688,11 +732,11 @@ function makeTreeDraggable(treeEl) {
             } //
 
 
-            var childrenEl = branch.querySelector(".".concat(options.childrenClass));
+            const childrenEl = branch.querySelector(`.${options.childrenClass}`);
 
             if (childrenEl) {
-              for (var i = 0; i < childrenEl.children.length; i++) {
-                var child = childrenEl.children[i];
+              for (let i = 0; i < childrenEl.children.length; i++) {
+                const child = childrenEl.children[i];
 
                 if (child !== movingEl && hp.hasClass(child, options.branchClass)) {
                   walkToGetNodes(child);
@@ -708,8 +752,8 @@ function makeTreeDraggable(treeEl) {
           } //
 
 
-          var found;
-          var t = hp.binarySearch(nodes, node => hp.getOffset(node).y - movingNodeOf.y, null, null, true);
+          let found;
+          const t = hp.binarySearch(nodes, node => hp.getOffset(node).y - movingNodeOf.y, null, null, true);
 
           if (t.hit) {
             found = t.value;
@@ -726,7 +770,7 @@ function makeTreeDraggable(treeEl) {
         closestNodeOffset: () => hp.getOffset(info.closestNode),
         closestBranch: () => hp.findParent(info.closestNode, el => hp.hasClass(el, options.branchClass)),
         closestNext: () => {
-          var next = info.closestBranch.nextSibling;
+          let next = info.closestBranch.nextSibling;
 
           while (next) {
             if (next !== movingEl && hp.hasClass(next, options.branchClass) && !isElementHidden(next)) {
@@ -737,7 +781,7 @@ function makeTreeDraggable(treeEl) {
           }
         },
         closestPrev: () => {
-          var prev = info.closestBranch.previousSibling;
+          let prev = info.closestBranch.previousSibling;
 
           while (prev) {
             if (prev !== movingEl && hp.hasClass(prev, options.branchClass) && !isElementHidden(prev)) {
@@ -759,9 +803,9 @@ function makeTreeDraggable(treeEl) {
           } // find placeholder prev or parent
 
 
-          var cur = info.closestBranch;
-          var prev = cur.previousSibling;
-          var found;
+          let cur = info.closestBranch;
+          let prev = cur.previousSibling;
+          let found;
 
           while (prev) {
             if (prev !== movingEl && hp.hasClass(prev, options.branchClass) && !isElementHidden(prev)) {
@@ -779,14 +823,14 @@ function makeTreeDraggable(treeEl) {
 
 
           while (cur) {
-            var curNode = cur.querySelector(".".concat(options.nodeClass));
+            const curNode = cur.querySelector(`.${options.nodeClass}`);
 
             if (hp.getOffset(curNode).x <= movingNodeOf.x) {
               break;
             }
 
-            var hasNextBranch = void 0;
-            var t = cur.nextSibling;
+            let hasNextBranch;
+            let t = cur.nextSibling;
 
             while (t) {
               if (t !== movingEl && t !== store.placeholder && hp.hasClass(t, options.branchClass) && !isElementHidden(t)) {
@@ -801,7 +845,7 @@ function makeTreeDraggable(treeEl) {
               break;
             }
 
-            var parent = hp.findParent(cur, el => hp.hasClass(el, options.branchClass));
+            const parent = hp.findParent(cur, el => hp.hasClass(el, options.branchClass));
 
             if (!parent) {
               break;
@@ -815,7 +859,7 @@ function makeTreeDraggable(treeEl) {
       }; // conditions ========================================
       // life cycle: one move
 
-      var conditions = {
+      const conditions = {
         'no closest': () => !info.closestNode,
         'closest is top': () => info.closestBranch === hp.findNodeList(info.root.children, el => el !== movingEl && !isElementHidden(el)),
         'closest is top excluding placeholder': () => info.closestBranch === hp.findNodeList(info.root.children, el => el !== movingEl && el !== store.placeholder && !isElementHidden(el)),
@@ -827,7 +871,7 @@ function makeTreeDraggable(treeEl) {
         'closest has next': () => info.closestNext,
         'closest has prev': () => info.closestPrev,
         'closest has children excluding placeholder movingEl': () => {
-          var childrenEl = info.closestBranch.querySelector(".".concat(options.childrenClass));
+          const childrenEl = info.closestBranch.querySelector(`.${options.childrenClass}`);
 
           if (childrenEl) {
             return hp.findNodeList(childrenEl.children, el => el !== movingEl && el !== store.placeholder && !isElementHidden(el));
@@ -836,7 +880,7 @@ function makeTreeDraggable(treeEl) {
       }; // convert conditions result to Boolean
 
       Object.keys(conditions).forEach(key => {
-        var old = conditions[key];
+        const old = conditions[key];
 
         conditions[key] = function () {
           return Boolean(old.call(this));
@@ -846,16 +890,12 @@ function makeTreeDraggable(treeEl) {
       hp.attachCache(info, info);
       hp.attachCache(conditions, conditions); // actions start ========================================
 
-      var doAction = function doAction(name) {
-        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-          args[_key - 1] = arguments[_key];
-        }
-
+      const doAction = (name, ...args) => {
         if (!store._doActionQueue) {
           store._doActionQueue = Promise.resolve();
         }
 
-        var queue = store._doActionQueue;
+        const queue = store._doActionQueue;
         store._doActionQueue = queue.then(
         /*#__PURE__*/
         _asyncToGenerator(function* () {
@@ -864,17 +904,15 @@ function makeTreeDraggable(treeEl) {
             store.oneMoveStore.actionRecords = [];
           }
 
-          var {
-            actionRecords
-          } = store.oneMoveStore; //
+          const actionRecords = store.oneMoveStore.actionRecords; //
 
-          var action = actions[name];
-          var r = action(...args);
+          const action = actions[name];
+          const r = action(...args);
           actionRecords.push(name);
           yield r; // set indent of placeholder
 
-          var placeholderPath = options.getPathByBranchEl(store.placeholder);
-          var placeholderNodeBack = store.placeholder.querySelector(".".concat(options.nodeBackClass));
+          const placeholderPath = options.getPathByBranchEl(store.placeholder);
+          const placeholderNodeBack = store.placeholder.querySelector(`.${options.nodeBackClass}`);
           placeholderNodeBack.style.paddingLeft = (placeholderPath.length - 1) * options.indent + 'px'; // remove tempChildren if empty
 
           if (store.tempChildren.children.length === 0) {
@@ -883,7 +921,7 @@ function makeTreeDraggable(treeEl) {
         }));
       };
 
-      var actions = {
+      const actions = {
         'nothing'() {
           return _asyncToGenerator(function* () {})();
         },
@@ -908,14 +946,13 @@ function makeTreeDraggable(treeEl) {
           })();
         },
 
-        'insert after'() {
-          var branch = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : info.closestBranch;
+        'insert after'(branch = info.closestBranch) {
           return _asyncToGenerator(function* () {
             if (options.isNodeParentDroppable(branch, store.targetTreeEl)) {
               hp.insertAfter(store.placeholder, branch);
             } else {
-              var moved = yield secondCase(getParentBranchByEl(branch));
-              var isFirstTriedAction = !store.oneMoveStore.actionRecords || store.oneMoveStore.actionRecords.length === 1;
+              const moved = yield secondCase(getParentBranchByEl(branch));
+              const isFirstTriedAction = !store.oneMoveStore.actionRecords || store.oneMoveStore.actionRecords.length === 1;
 
               if (!moved && isFirstTriedAction) {
                 return thirdCase(branch);
@@ -934,7 +971,7 @@ function makeTreeDraggable(treeEl) {
               return doAction('insert after', info.closestBranch);
             } else {
               if (options.isNodeDroppable(info.closestBranch, store.targetTreeEl)) {
-                var childrenEl = yield unfoldAndGetChildrenEl(info.closestBranch);
+                const childrenEl = yield unfoldAndGetChildrenEl(info.closestBranch);
                 hp.prependTo(store.placeholder, childrenEl);
               } else {
                 return secondCase(info.closestBranch);
@@ -963,7 +1000,7 @@ function makeTreeDraggable(treeEl) {
               return doAction('insert after', info.closestPrev);
             } else {
               if (options.isNodeDroppable(info.closestPrev, store.targetTreeEl)) {
-                var childrenEl = yield unfoldAndGetChildrenEl(info.closestPrev);
+                const childrenEl = yield unfoldAndGetChildrenEl(info.closestPrev);
                 hp.appendTo(store.placeholder, childrenEl);
               } else {
                 return secondCase(info.closestPrev);
@@ -975,12 +1012,12 @@ function makeTreeDraggable(treeEl) {
       }; // second case for actions, when target position not droppable
       // return true if moved
 
-      var secondCase =
+      const secondCase =
       /*#__PURE__*/
       function () {
         var _ref2 = _asyncToGenerator(function* (branchEl) {
           if (branchEl) {
-            var targetEl = options._findClosestDroppablePosition(branchEl, store.targetTreeEl);
+            const targetEl = options._findClosestDroppablePosition(branchEl, store.targetTreeEl);
 
             if (targetEl) {
               hp.insertAfter(store.placeholder, targetEl);
@@ -996,13 +1033,13 @@ function makeTreeDraggable(treeEl) {
       // 当操作是'after', 第一种第二种情况无效时, 尝试prepend
 
 
-      var thirdCase =
+      const thirdCase =
       /*#__PURE__*/
       function () {
         var _ref3 = _asyncToGenerator(function* (branchEl) {
           // the third case
           if (options.isNodeDroppable(branchEl, store.targetTreeEl)) {
-            var childrenEl = yield unfoldAndGetChildrenEl(branchEl);
+            const childrenEl = yield unfoldAndGetChildrenEl(branchEl);
             hp.prependTo(store.placeholder, childrenEl);
           }
         });
@@ -1012,12 +1049,12 @@ function makeTreeDraggable(treeEl) {
         };
       }();
 
-      var unfoldAndGetChildrenEl =
+      const unfoldAndGetChildrenEl =
       /*#__PURE__*/
       function () {
         var _ref4 = _asyncToGenerator(function* (branch) {
           yield options.unfoldTargetNodeByEl(branch, store);
-          var childrenEl = branch.querySelector(".".concat(options.childrenClass));
+          let childrenEl = branch.querySelector(`.${options.childrenClass}`);
 
           if (!childrenEl) {
             childrenEl = store.tempChildren;
@@ -1034,14 +1071,21 @@ function makeTreeDraggable(treeEl) {
       //
 
 
-      var checkPlaceholder = () => {
+      const checkPlaceholder = () => {
         if (!store.placeholder) {
-          var placeholder = hp.createElementFromHTML("\n            <div id=\"".concat(options.placeholderId, "\" class=\"").concat(options.branchClass, " ").concat(options.placeholderClass, "\">\n              <div class=\"").concat(options.nodeBackClass, " ").concat(options.placeholderNodeBackClass, "\">\n                <div class=\"").concat(options.nodeClass, " ").concat(options.placeholderNodeClass, "\">\n                </div>\n              </div>\n            </div>\n          "));
+          const placeholder = hp.createElementFromHTML(`
+            <div id="${options.placeholderId}" class="${options.branchClass} ${options.placeholderClass}">
+              <div class="${options.nodeBackClass} ${options.placeholderNodeBackClass}">
+                <div class="${options.nodeClass} ${options.placeholderNodeClass}">
+                </div>
+              </div>
+            </div>
+          `);
           hp.insertAfter(placeholder, movingEl);
           store.placeholder = placeholder;
           options.afterPlaceholderCreated(store); // create a tree children el to use when can't get childrenEl
 
-          var tempChildren = document.createElement('DIV');
+          const tempChildren = document.createElement('DIV');
           hp.addClass(tempChildren, options.childrenClass);
           store.tempChildren = tempChildren;
         }
@@ -1062,15 +1106,13 @@ function makeTreeDraggable(treeEl) {
     },
     drop: function () {
       var _drop = _asyncToGenerator(function* (endEvent, store, opt) {
-        var movingEl = store.el; // branch
+        const movingEl = store.el; // branch
 
-        var {
-          placeholder,
-          tempChildren
-        } = store; // use mask tree to avoid flick caused by DOM update in short time
+        const placeholder = store.placeholder,
+              tempChildren = store.tempChildren; // use mask tree to avoid flick caused by DOM update in short time
         // 复制 targetTreeEl 作为遮罩, 避免短时间内更新DOM引起的闪烁
 
-        var maskTree;
+        let maskTree;
 
         if (placeholder) {
           // placeholder not mounted is rarely
@@ -1080,7 +1122,7 @@ function makeTreeDraggable(treeEl) {
           hp.insertAfter(maskTree, store.targetTreeEl); //
 
           store.targetPath = options.getPathByBranchEl(placeholder);
-          var pathChanged = isPathChanged();
+          let pathChanged = isPathChanged();
           store.targetPathNotEqualToStartPath = pathChanged;
           store.pathChangePrevented = false;
 
@@ -1108,12 +1150,10 @@ function makeTreeDraggable(treeEl) {
 
 
         function isPathChanged() {
-          var {
-            startTree,
-            targetTree,
-            startPath,
-            targetPath
-          } = store;
+          const startTree = store.startTree,
+                targetTree = store.targetTree,
+                startPath = store.startPath,
+                targetPath = store.targetPath;
           return startTree !== targetTree || startPath.toString() !== targetPath.toString();
         }
       });
@@ -1124,7 +1164,10 @@ function makeTreeDraggable(treeEl) {
 
       return drop;
     }()
-  });
+  }),
+        destroy = _draggableHelper.destroy,
+        draggableHelperOptions = _draggableHelper.draggableHelperOptions;
+
   return {
     destroy,
     options,
@@ -1152,7 +1195,7 @@ function isElementHidden(el) {
   return el.offsetWidth === 0 && el.offsetHeight === 0;
 }
 
-var treesStore = {};
+const treesStore = {};
 var script = {
   props: {
     triggerClass: {
@@ -1198,11 +1241,9 @@ var script = {
   // watch: {},
   methods: {
     _Draggable_unfoldTargetNodeByEl(branchEl, store) {
-      var {
-        targetTree
-      } = store;
-      var path = targetTree.getPathByBranchEl(branchEl);
-      var node = targetTree.getNodeByPath(path);
+      const targetTree = store.targetTree;
+      const path = targetTree.getPathByBranchEl(branchEl);
+      const node = targetTree.getNodeByPath(path);
       targetTree.unfold && targetTree.unfold(node, path);
       return new Promise((resolve, reject) => {
         targetTree.$nextTick(() => {
@@ -1212,26 +1253,42 @@ var script = {
     },
 
     isNodeDraggable(node, path) {
-      var {
-        store
-      } = this.treesStore;
-      var allNodes = this.getAllNodesByPath(path);
+      const store = this.treesStore.store;
+      const allNodes = this.getAllNodesByPath(path);
       allNodes.unshift(this.rootNode);
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-      for (var {
-        value: _node,
-        index
-      } of hp.iterateAll(allNodes, {
-        reverse: true
-      })) {
-        var currentPath = path.slice(0, index + 1);
-        var draggableOpt = _node.$draggable !== undefined ? _node.$draggable : this.eachDraggable;
-        var draggable = hp.resolveValueOrGettter(draggableOpt, [currentPath, this, store]);
+      try {
+        for (var _iterator = hp.iterateAll(allNodes, {
+          reverse: true
+        })[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          const _step$value = _step.value,
+                node = _step$value.value,
+                index = _step$value.index;
+          const currentPath = path.slice(0, index + 1);
+          const draggableOpt = node.$draggable !== undefined ? node.$draggable : this.eachDraggable;
+          const draggable = hp.resolveValueOrGettter(draggableOpt, [currentPath, this, store]);
 
-        if (draggable === undefined) {
-          continue;
-        } else {
-          return draggable;
+          if (draggable === undefined) {
+            continue;
+          } else {
+            return draggable;
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
         }
       }
 
@@ -1239,29 +1296,45 @@ var script = {
     },
 
     isNodeDroppable(node, path) {
-      var {
-        store
-      } = this.treesStore;
-      var allNodes = this.getAllNodesByPath(path);
+      const store = this.treesStore.store;
+      const allNodes = this.getAllNodesByPath(path);
       allNodes.unshift(this.rootNode);
-      var droppableFinal, resolved;
+      let droppableFinal, resolved;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
-      for (var {
-        value: _node2,
-        index
-      } of hp.iterateAll(allNodes, {
-        reverse: true
-      })) {
-        var currentPath = path.slice(0, index + 1);
-        var droppableOpt = _node2.$droppable !== undefined ? _node2.$droppable : this.eachDroppable;
-        var droppable = hp.resolveValueOrGettter(droppableOpt, [currentPath, this, store]);
+      try {
+        for (var _iterator2 = hp.iterateAll(allNodes, {
+          reverse: true
+        })[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          const _step2$value = _step2.value,
+                node = _step2$value.value,
+                index = _step2$value.index;
+          const currentPath = path.slice(0, index + 1);
+          const droppableOpt = node.$droppable !== undefined ? node.$droppable : this.eachDroppable;
+          const droppable = hp.resolveValueOrGettter(droppableOpt, [currentPath, this, store]);
 
-        if (droppable === undefined) {
-          continue;
-        } else {
-          droppableFinal = droppable;
-          resolved = true;
-          break;
+          if (droppable === undefined) {
+            continue;
+          } else {
+            droppableFinal = droppable;
+            resolved = true;
+            break;
+          }
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
         }
       }
 
@@ -1283,22 +1356,22 @@ var script = {
 
     // override
     getPathByBranchEl(branchEl) {
-      var getAttrPath = el => {
-        var pathStr = el.getAttribute('data-tree-node-path');
+      const getAttrPath = el => {
+        const pathStr = el.getAttribute('data-tree-node-path');
 
         if (pathStr) {
           return pathStr.split(',').map(v => parseInt(v));
         }
       };
 
-      var path = getAttrPath(branchEl);
+      const path = getAttrPath(branchEl);
 
       if (path) {
         return path;
       } // placeholder path
 
 
-      var parentPath;
+      let parentPath;
       hp.findParent(branchEl, el => {
         if (hp.hasClass(el, 'tree-root')) {
           parentPath = [];
@@ -1310,18 +1383,37 @@ var script = {
           return true;
         }
       });
-      var index = 0;
+      let index = 0;
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
 
-      for (var {
-        value: el,
-        index: index2
-      } of hp.iterateAll(branchEl.parentElement.children)) {
-        if (hp.hasClass(el, 'tree-branch') || hp.hasClass(el, 'tree-placeholder')) {
-          if (el === branchEl) {
-            break;
+      try {
+        for (var _iterator3 = hp.iterateAll(branchEl.parentElement.children)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          const _step3$value = _step3.value,
+                el = _step3$value.value,
+                index2 = _step3$value.index;
+
+          if (hp.hasClass(el, 'tree-branch') || hp.hasClass(el, 'tree-placeholder')) {
+            if (el === branchEl) {
+              break;
+            }
+
+            index++;
           }
-
-          index++;
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
         }
       }
 
@@ -1332,9 +1424,7 @@ var script = {
 
   // created() {},
   mounted() {
-    var _this = this;
-
-    var options = this._draggableOptions = {
+    const options = this._draggableOptions = {
       indent: this.indent,
       triggerClass: this.triggerClass,
       unfoldWhenDragover: this.unfoldWhenDragover,
@@ -1349,16 +1439,14 @@ var script = {
       placeholderNodeBackClass: 'tree-placeholder-node-back',
       placeholderNodeClass: 'tree-placeholder-node',
       draggingClass: 'dragging',
-      placeholderId: "he_tree_drag_placeholder",
+      placeholderId: `he_tree_drag_placeholder`,
       ifNodeFolded: (branchEl, store) => {
-        var {
-          targetTree
-        } = store;
-        var node = targetTree.getNodeByBranchEl(branchEl);
+        const targetTree = store.targetTree;
+        const node = targetTree.getNodeByBranchEl(branchEl);
         return node.$folded;
       },
       isTargetTreeRootDroppable: store => {
-        var droppable = hp.resolveValueOrGettter(store.targetTree.rootNode.$droppable, [store.targetTree, store]);
+        const droppable = hp.resolveValueOrGettter(store.targetTree.rootNode.$droppable, [store.targetTree, store]);
 
         if (droppable !== undefined) {
           return droppable;
@@ -1366,38 +1454,55 @@ var script = {
 
         return true;
       },
-      unfoldTargetNodeByEl: function unfoldTargetNodeByEl() {
-        return _this._Draggable_unfoldTargetNodeByEl(...arguments);
-      },
+      unfoldTargetNodeByEl: (...args) => this._Draggable_unfoldTargetNodeByEl(...args),
       isNodeParentDroppable: (branchEl, treeEl) => {
-        var tree = this.getTreeVmByTreeEl(treeEl);
-        var path = tree.getPathByBranchEl(branchEl);
-        var parentPath = hp.arrayWithoutEnd(path, 1);
-        var parent = tree.getNodeByPath(parentPath);
+        const tree = this.getTreeVmByTreeEl(treeEl);
+        const path = tree.getPathByBranchEl(branchEl);
+        const parentPath = hp.arrayWithoutEnd(path, 1);
+        const parent = tree.getNodeByPath(parentPath);
         return tree.isNodeDroppable(parent, parentPath);
       },
       isNodeDroppable: (branchEl, treeEl) => {
-        var tree = this.getTreeVmByTreeEl(treeEl);
-        var path = tree.getPathByBranchEl(branchEl);
-        var node = tree.getNodeByPath(path);
+        const tree = this.getTreeVmByTreeEl(treeEl);
+        const path = tree.getPathByBranchEl(branchEl);
+        const node = tree.getNodeByPath(path);
         return tree.isNodeDroppable(node, path);
       },
       _findClosestDroppablePosition: (branchEl, treeEl) => {
-        var tree = this.getTreeVmByTreeEl(treeEl);
-        var path = tree.getPathByBranchEl(branchEl);
-        var findPath = hp.arrayWithoutEnd(path, 1);
-        var cur = path;
+        const tree = this.getTreeVmByTreeEl(treeEl);
+        const path = tree.getPathByBranchEl(branchEl);
+        const findPath = hp.arrayWithoutEnd(path, 1);
+        let cur = path;
+        var _iteratorNormalCompletion4 = true;
+        var _didIteratorError4 = false;
+        var _iteratorError4 = undefined;
 
-        for (var {
-          node,
-          path: _path
-        } of tree.iteratePath(findPath, {
-          reverse: true
-        })) {
-          if (tree.isNodeDroppable(node, _path)) {
-            return tree.getBranchElByPath(cur);
-          } else {
-            cur = _path;
+        try {
+          for (var _iterator4 = tree.iteratePath(findPath, {
+            reverse: true
+          })[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+            const _step4$value = _step4.value,
+                  node = _step4$value.node,
+                  path = _step4$value.path;
+
+            if (tree.isNodeDroppable(node, path)) {
+              return tree.getBranchElByPath(cur);
+            } else {
+              cur = path;
+            }
+          }
+        } catch (err) {
+          _didIteratorError4 = true;
+          _iteratorError4 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+              _iterator4.return();
+            }
+          } finally {
+            if (_didIteratorError4) {
+              throw _iteratorError4;
+            }
           }
         }
 
@@ -1412,19 +1517,17 @@ var script = {
       beforeDrag: store => {
         this.treesStore.store = store;
         store.startTree = this.getTreeVmByTreeEl(store.startTreeEl);
-        var draggable = hp.resolveValueOrGettter(store.startTree.draggable, [store.startTree, store]);
+        const draggable = hp.resolveValueOrGettter(store.startTree.draggable, [store.startTree, store]);
 
         if (!draggable) {
           return false;
         }
       },
       ondrag: store => {
-        var {
-          startTree,
-          dragBranchEl,
-          startPath
-        } = store;
-        var path = startTree.getPathByBranchEl(dragBranchEl);
+        const startTree = store.startTree,
+              dragBranchEl = store.dragBranchEl,
+              startPath = store.startPath;
+        const path = startTree.getPathByBranchEl(dragBranchEl);
         store.dragNode = startTree.getNodeByPath(path);
 
         if (this.cloneWhenDrag) {
@@ -1443,10 +1546,8 @@ var script = {
         this.$root.$emit('he-tree-drag', store);
       },
       filterTargetTree: (targetTreeEl, store) => {
-        var targetTree = this.getTreeVmByTreeEl(targetTreeEl);
-        var {
-          startTree
-        } = store;
+        const targetTree = this.getTreeVmByTreeEl(targetTreeEl);
+        const startTree = store.startTree;
 
         if (startTree !== targetTree) {
           if (this._internal_hook_filterTargetTree) {
@@ -1458,7 +1559,7 @@ var script = {
           }
         }
 
-        var targetTreeDroppable = hp.resolveValueOrGettter(targetTree.droppable, [targetTree, store]);
+        const targetTreeDroppable = hp.resolveValueOrGettter(targetTree.droppable, [targetTree, store]);
 
         if (!targetTreeDroppable) {
           return false;
@@ -1471,9 +1572,7 @@ var script = {
         }
       },
       beforeDrop: (pathChanged, store) => {
-        var {
-          targetTree
-        } = store;
+        const targetTree = store.targetTree;
 
         if (targetTree.hasHook('ondragend') && targetTree.executeHook('ondragend', [targetTree, store]) === false) {
           return false;
@@ -1484,39 +1583,37 @@ var script = {
       },
       ondrop: (store, t) => {
         if (store.pathChanged) {
-          var {
-            startTree,
-            targetTree,
-            startPath,
-            targetPath,
-            dragNode
-          } = store;
+          const startTree = store.startTree,
+                targetTree = store.targetTree,
+                startPath = store.startPath,
+                targetPath = store.targetPath,
+                dragNode = store.dragNode;
 
           if (this.cloneWhenDrag !== true) {
             // remove from start position
-            var startParentPath = hp.arrayWithoutEnd(startPath, 1);
-            var startParent = startTree.getNodeByPath(startParentPath);
-            var startSiblings = startParentPath.length === 0 ? startTree.treeData : startParent.children;
-            var startIndex = hp.arrayLast(startPath);
+            const startParentPath = hp.arrayWithoutEnd(startPath, 1);
+            const startParent = startTree.getNodeByPath(startParentPath);
+            const startSiblings = startParentPath.length === 0 ? startTree.treeData : startParent.children;
+            const startIndex = hp.arrayLast(startPath);
             startSiblings.splice(startIndex, 1); // update targetPath
 
             if (startTree === targetTree) {
               if (startPath.length <= targetPath.length) {
-                var lenNoEnd = startPath.length - 1;
-                var same = true;
+                const lenNoEnd = startPath.length - 1;
+                let same = true;
 
-                for (var i = 0; i < lenNoEnd; i++) {
-                  var s = startPath[i];
-                  var _t = targetPath[i];
+                for (let i = 0; i < lenNoEnd; i++) {
+                  const s = startPath[i];
+                  const t = targetPath[i];
 
-                  if (s !== _t) {
+                  if (s !== t) {
                     same = false;
                     break;
                   }
                 }
 
                 if (same) {
-                  var endIndex = startPath.length - 1;
+                  const endIndex = startPath.length - 1;
 
                   if (startPath[endIndex] < targetPath[endIndex]) {
                     targetPath[endIndex] -= 1;
@@ -1527,9 +1624,9 @@ var script = {
           } // insert to target position
 
 
-          var targetParentPath = hp.arrayWithoutEnd(targetPath, 1);
-          var targetParent = targetTree.getNodeByPath(targetParentPath);
-          var targetSiblings;
+          const targetParentPath = hp.arrayWithoutEnd(targetPath, 1);
+          const targetParent = targetTree.getNodeByPath(targetParentPath);
+          let targetSiblings;
 
           if (targetParentPath.length === 0) {
             targetSiblings = targetTree.treeData;
@@ -1541,7 +1638,7 @@ var script = {
             targetSiblings = targetParent.children;
           }
 
-          var targetIndex = hp.arrayLast(targetPath);
+          const targetIndex = hp.arrayLast(targetPath);
           targetSiblings.splice(targetIndex, 0, dragNode); // emit event
 
           startTree.$emit('input', startTree.treeData);
@@ -1561,7 +1658,7 @@ var script = {
       }
     };
 
-    var _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
+    const _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
 
 
     ['indent', 'triggerClass', 'unfoldWhenDragover', 'cloneWhenDrag'].forEach(name => {
@@ -1576,28 +1673,28 @@ var script = {
 };
 
 /* script */
-var __vue_script__$1 = script;
+const __vue_script__$1 = script;
 /* template */
 
 /* style */
 
-var __vue_inject_styles__$1 = undefined;
+const __vue_inject_styles__$1 = undefined;
 /* scoped */
 
-var __vue_scope_id__$1 = undefined;
+const __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = undefined;
+const __vue_module_identifier__$1 = undefined;
 /* functional template */
 
-var __vue_is_functional_template__$1 = undefined;
+const __vue_is_functional_template__$1 = undefined;
 /* style inject */
 
 /* style inject SSR */
 
 /* style inject shadow dom */
 
-var __vue_component__$1 = __vue_normalize__({}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
+const __vue_component__$1 = __vue_normalize__({}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
 
 exports.Check = check;
 exports.Draggable = __vue_component__$1;

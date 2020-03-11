@@ -1,6 +1,7 @@
 /*!
- * he-tree-vue v1.1.1
- * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
+ * he-tree-vue v1.1.2
+ * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
+ * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
 import _defineProperty from '@babel/runtime/helpers/defineProperty';

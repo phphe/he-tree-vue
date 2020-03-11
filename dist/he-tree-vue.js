@@ -1,6 +1,7 @@
 /*!
- * he-tree-vue v1.1.1
- * (c) phphe <phphe@outlook.com> (https://github.com/phphe) homepage: https://he-tree-vue.phphe.com
+ * he-tree-vue v1.1.2
+ * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
+ * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
 (function (global, factory) {
@@ -1313,8 +1314,8 @@
                 _context2.prev = 27;
                 _context2.prev = 28;
 
-                if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
-                  _iterator4["return"]();
+                if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+                  _iterator4.return();
                 }
 
               case 30:
@@ -1380,8 +1381,8 @@
                 _context2.prev = 57;
                 _context2.prev = 58;
 
-                if (!_iteratorNormalCompletion5 && _iterator5["return"] != null) {
-                  _iterator5["return"]();
+                if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
+                  _iterator5.return();
                 }
 
               case 60:
@@ -1425,8 +1426,8 @@
           _iteratorError6 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion6 && _iterator6["return"] != null) {
-              _iterator6["return"]();
+            if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
+              _iterator6.return();
             }
           } finally {
             if (_didIteratorError6) {
@@ -1576,8 +1577,8 @@
       _iteratorError8 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion8 && _iterator8["return"] != null) {
-          _iterator8["return"]();
+        if (!_iteratorNormalCompletion8 && _iterator8.return != null) {
+          _iterator8.return();
         }
       } finally {
         if (_didIteratorError8) {
@@ -1824,8 +1825,8 @@
       _iteratorError13 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion13 && _iterator13["return"] != null) {
-          _iterator13["return"]();
+        if (!_iteratorNormalCompletion13 && _iterator13.return != null) {
+          _iterator13.return();
         }
       } finally {
         if (_didIteratorError13) {
@@ -2200,15 +2201,15 @@
 
         var slotDefault = function slotDefault() {
           var original = function original() {
-            if (_this.$scopedSlots["default"]) {
-              return _this.$scopedSlots["default"]({
+            if (_this.$scopedSlots.default) {
+              return _this.$scopedSlots.default({
                 node: node,
                 index: index,
                 path: path,
                 tree: _this
               });
-            } else if (_this.$slots["default"]) {
-              return _this.$slots["default"];
+            } else if (_this.$slots.default) {
+              return _this.$slots.default;
             } else {
               return node.text;
             }
@@ -2277,10 +2278,10 @@
     props: {
       indent: {
         type: Number,
-        "default": 20
+        default: 20
       },
       rootNode: {
-        "default": function _default(is) {
+        default: function _default(is) {
           return {};
         }
       }
@@ -2368,7 +2369,7 @@
     mixPlugins: function mixPlugins(plugins) {
       var MixedTree = {
         name: 'Tree',
-        "extends": Tree,
+        extends: Tree,
         mixins: plugins,
         mixPlugins: this.mixPlugins
       };
@@ -2584,8 +2585,8 @@
           _iteratorError = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
           } finally {
             if (_didIteratorError) {
@@ -3323,8 +3324,8 @@
           _iteratorError = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
           } finally {
             if (_didIteratorError) {
@@ -4137,15 +4138,15 @@
     props: {
       triggerClass: {
         type: String,
-        "default": 'tree-node'
+        default: 'tree-node'
       },
       draggable: {
         type: [Boolean, Function],
-        "default": true
+        default: true
       },
       droppable: {
         type: [Boolean, Function],
-        "default": true
+        default: true
       },
       eachDraggable: {
         type: [Function]
@@ -4163,7 +4164,7 @@
       },
       unfoldWhenDragover: {
         type: Boolean,
-        "default": true
+        default: true
       }
     },
     // components: {},
@@ -4216,8 +4217,8 @@
           _iteratorError = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
             }
           } finally {
             if (_didIteratorError) {
@@ -4261,8 +4262,8 @@
           _iteratorError2 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-              _iterator2["return"]();
+            if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+              _iterator2.return();
             }
           } finally {
             if (_didIteratorError2) {
@@ -4341,8 +4342,8 @@
           _iteratorError3 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
-              _iterator3["return"]();
+            if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+              _iterator3.return();
             }
           } finally {
             if (_didIteratorError3) {
@@ -4435,8 +4436,8 @@
             _iteratorError4 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
-                _iterator4["return"]();
+              if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+                _iterator4.return();
               }
             } finally {
               if (_didIteratorError4) {
