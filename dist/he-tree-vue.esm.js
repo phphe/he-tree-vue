@@ -1,11 +1,11 @@
 /*!
- * he-tree-vue v1.1.2
+ * he-tree-vue v1.1.3
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
 import _defineProperty from '@babel/runtime/helpers/defineProperty';
-import { TreeData, findParent, hasClass, getOffset, getBoundingClientRect, elementsFromPoint, isDescendantOf, attachCache, insertAfter, removeEl, waitTime, binarySearch, findNodeList, appendTo, insertBefore, prependTo, createElementFromHTML, addClass, iterateAll, resolveValueOrGettter, arrayWithoutEnd, arrayLast } from 'helper-js';
+import { TreeData, strRand, findParent, hasClass, getOffset, getBoundingClientRect, elementsFromPoint, isDescendantOf, attachCache, insertAfter, removeEl, waitTime, binarySearch, findNodeList, appendTo, insertBefore, prependTo, createElementFromHTML, addClass, iterateAll, resolveValueOrGettter, arrayWithoutEnd, arrayLast } from 'helper-js';
 import { updatablePropsEvenUnbound, hookHelper } from 'vue-functions';
 import __vue_normalize__ from 'vue-runtime-helpers/dist/normalize-component.mjs';
 import Vue from 'vue';
@@ -111,7 +111,7 @@ var template = function template(h) {
   return h("div", {
     "class": "he-tree ".concat(this.treeClass),
     "attrs": {
-      "data-tree-id": this._uid
+      "data-tree-id": this.treeId
     }
   }, [this.blockHeader && this.blockHeader(), childrenListTpl(this.rootNode.children, this.rootNode, []), this.blockFooter && this.blockFooter()]);
 };
@@ -139,7 +139,8 @@ var Tree = {
   data() {
     return {
       trees,
-      treeClass: ''
+      treeClass: '',
+      treeId: strRand()
     };
   },
 
@@ -219,9 +220,9 @@ var Tree = {
       immediate: true
     }); //
 
-    this.$set(this.trees, this._uid, this);
+    this.$set(this.trees, this.treeId, this);
     this.$once('hook:beforeDestroy', () => {
-      this.$delete(this.trees, this._uid);
+      this.$delete(this.trees, this.treeId);
     });
   },
 

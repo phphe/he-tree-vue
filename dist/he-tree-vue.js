@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.1.2
+ * he-tree-vue v1.1.3
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -946,6 +946,29 @@
 
   function isFunction(v) {
     return typeof v === 'function';
+  }
+
+
+  function numRand(min, max) {
+    if (arguments.length === 1) {
+      max = min;
+      min = 0;
+    }
+
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  function strRand() {
+    var len = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 8;
+    var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    var r = '';
+    var seeds = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (var i = 0; i < len; i++) {
+      r += seeds[numRand(seeds.length - 1)];
+    }
+
+    return prefix + r;
   }
 
 
@@ -2261,7 +2284,7 @@
     return h("div", {
       "class": "he-tree ".concat(this.treeClass),
       "attrs": {
-        "data-tree-id": this._uid
+        "data-tree-id": this.treeId
       }
     }, [this.blockHeader && this.blockHeader(), childrenListTpl(this.rootNode.children, this.rootNode, []), this.blockFooter && this.blockFooter()]);
   };
@@ -2290,7 +2313,8 @@
     data: function data() {
       return {
         trees: trees,
-        treeClass: ''
+        treeClass: '',
+        treeId: strRand()
       };
     },
     // computed: {},
@@ -2358,9 +2382,9 @@
         immediate: true
       }); //
 
-      this.$set(this.trees, this._uid, this);
+      this.$set(this.trees, this.treeId, this);
       this.$once('hook:beforeDestroy', function () {
-        _this2.$delete(_this2.trees, _this2._uid);
+        _this2.$delete(_this2.trees, _this2.treeId);
       });
     },
     // mounted() {},

@@ -52,7 +52,7 @@ const template = function (h) {
       {nodes.map(branchTpl)}
     </div>
   }
-  return <div class={`he-tree ${this.treeClass}`} data-tree-id={this._uid}>
+  return <div class={`he-tree ${this.treeClass}`} data-tree-id={this.treeId}>
     {this.blockHeader && this.blockHeader()}
     {childrenListTpl(this.rootNode.children, this.rootNode, [])}
     {this.blockFooter && this.blockFooter()}
@@ -78,6 +78,7 @@ const Tree = {
     return {
       trees,
       treeClass: '',
+      treeId: hp.strRand(),
     }
   },
   // computed: {},
@@ -134,9 +135,9 @@ const Tree = {
     this.$watch('rootNode', updateRootNode, {immediate: true})
     this.$watch('treeData', updateRootNode, {immediate: true})
     //
-    this.$set(this.trees, this._uid, this)
+    this.$set(this.trees, this.treeId, this)
     this.$once('hook:beforeDestroy', () => {
-      this.$delete(this.trees, this._uid)
+      this.$delete(this.trees, this.treeId)
     })
   },
   // mounted() {},

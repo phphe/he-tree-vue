@@ -48,6 +48,7 @@ export class Tree extends Vue{
   // data
   trees: Trees
   treeClass: string
+  treeId: string
   // methods
   iteratePath(path: Path, opt?: iteratePathOptions): IterableIterator<[Path, Node]>
   getTreeVmByTreeEl(treeEl: HTMLElement): Vue

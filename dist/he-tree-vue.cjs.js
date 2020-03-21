@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.1.2
+ * he-tree-vue v1.1.3
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -117,7 +117,7 @@ const template = function template(h) {
   return h("div", {
     "class": `he-tree ${this.treeClass}`,
     "attrs": {
-      "data-tree-id": this._uid
+      "data-tree-id": this.treeId
     }
   }, [this.blockHeader && this.blockHeader(), childrenListTpl(this.rootNode.children, this.rootNode, []), this.blockFooter && this.blockFooter()]);
 };
@@ -145,7 +145,8 @@ const Tree = {
   data() {
     return {
       trees,
-      treeClass: ''
+      treeClass: '',
+      treeId: hp.strRand()
     };
   },
 
@@ -225,9 +226,9 @@ const Tree = {
       immediate: true
     }); //
 
-    this.$set(this.trees, this._uid, this);
+    this.$set(this.trees, this.treeId, this);
     this.$once('hook:beforeDestroy', () => {
-      this.$delete(this.trees, this._uid);
+      this.$delete(this.trees, this.treeId);
     });
   },
 
