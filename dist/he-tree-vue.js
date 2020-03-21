@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.1.3
+ * he-tree-vue v1.1.4
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -2380,14 +2380,18 @@
       });
       this.$watch('treeData', updateRootNode, {
         immediate: true
-      }); //
-
-      this.$set(this.trees, this.treeId, this);
-      this.$once('hook:beforeDestroy', function () {
-        _this2.$delete(_this2.trees, _this2.treeId);
       });
     },
-    // mounted() {},
+    mounted: function mounted() {
+      var _this3 = this;
+
+      //
+      this.treeId = strRand();
+      this.$set(this.trees, this.treeId, this);
+      this.$once('hook:beforeDestroy', function () {
+        _this3.$delete(_this3.trees, _this3.treeId);
+      });
+    },
     // beforeDestroy() {},
     //
     mixPlugins: function mixPlugins(plugins) {

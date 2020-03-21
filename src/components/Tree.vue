@@ -134,13 +134,15 @@ const Tree = {
     const updateRootNode = () => { this.$set(this.rootNode, 'children', this.treeData) }
     this.$watch('rootNode', updateRootNode, {immediate: true})
     this.$watch('treeData', updateRootNode, {immediate: true})
+  },
+  mounted() {
     //
+    this.treeId = hp.strRand()
     this.$set(this.trees, this.treeId, this)
     this.$once('hook:beforeDestroy', () => {
       this.$delete(this.trees, this.treeId)
     })
   },
-  // mounted() {},
   // beforeDestroy() {},
 
   //
