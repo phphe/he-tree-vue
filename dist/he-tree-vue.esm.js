@@ -1,11 +1,11 @@
 /*!
- * he-tree-vue v1.1.4
+ * he-tree-vue v1.2.0
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
 import _defineProperty from '@babel/runtime/helpers/defineProperty';
-import { TreeData, strRand, findParent, hasClass, getOffset, getBoundingClientRect, elementsFromPoint, isDescendantOf, attachCache, insertAfter, removeEl, waitTime, binarySearch, findNodeList, appendTo, insertBefore, prependTo, createElementFromHTML, addClass, iterateAll, resolveValueOrGettter, arrayWithoutEnd, arrayLast } from 'helper-js';
+import { TreeData, strRand, findParent, hasClass, getOffset, getBoundingClientRect, elementsFromPoint, isDescendantOf, attachCache, insertAfter, removeEl, waitTime, binarySearch, findNodeList, appendTo, insertBefore, createElementFromHTML, addClass, prependTo, iterateAll, resolveValueOrGettter, arrayWithoutEnd, arrayLast } from 'helper-js';
 import { updatablePropsEvenUnbound, hookHelper } from 'vue-functions';
 import __vue_normalize__ from 'vue-runtime-helpers/dist/normalize-component.mjs';
 import Vue from 'vue';
@@ -617,6 +617,19 @@ function makeTreeDraggable(treeEl) {
       var movingNode = movingEl.querySelector(".".concat(options.nodeClass));
       var movingNodeOf = getOffset(movingNode);
       var movingNodeRect = getBoundingClientRect(movingNode);
+
+      if (options.draggingNodePositionMode === 'mouse') {
+        // use mouse position as dragging node position
+        movingNodeOf = {
+          x: moveEvent.pageX,
+          y: moveEvent.pageY
+        };
+        movingNodeRect = {
+          x: moveEvent.clientX,
+          y: moveEvent.clientY
+        };
+      }
+
       var elsBetweenMovingElAndTree = []; // including tree
 
       var elsToTree = []; // start from top, including tree
@@ -933,8 +946,7 @@ function makeTreeDraggable(treeEl) {
               return doAction('insert after', info.closestBranch);
             } else {
               if (options.isNodeDroppable(info.closestBranch, store.targetTreeEl)) {
-                var childrenEl = yield unfoldAndGetChildrenEl(info.closestBranch);
-                prependTo(store.placeholder, childrenEl);
+                yield tryUnfoldAndPrepend(info.closestBranch);
               } else {
                 return secondCase(info.closestBranch);
               }
@@ -958,7 +970,7 @@ function makeTreeDraggable(treeEl) {
               return;
             }
 
-            if (options.ifNodeFolded(info.closestPrev, store) && !options.unfoldWhenDragover) {
+            if (options.ifNodeFolded(info.closestPrev, store)) {
               return doAction('insert after', info.closestPrev);
             } else {
               if (options.isNodeDroppable(info.closestPrev, store.targetTreeEl)) {
@@ -1000,9 +1012,8 @@ function makeTreeDraggable(treeEl) {
       function () {
         var _ref3 = _asyncToGenerator(function* (branchEl) {
           // the third case
-          if (options.isNodeDroppable(branchEl, store.targetTreeEl)) {
-            var childrenEl = yield unfoldAndGetChildrenEl(branchEl);
-            prependTo(store.placeholder, childrenEl);
+          if (!options.ifNodeFolded(branchEl, store) && options.isNodeDroppable(branchEl, store.targetTreeEl)) {
+            yield tryUnfoldAndPrepend(branchEl);
           }
         });
 
@@ -1028,6 +1039,42 @@ function makeTreeDraggable(treeEl) {
 
         return function unfoldAndGetChildrenEl(_x3) {
           return _ref4.apply(this, arguments);
+        };
+      }();
+
+      var tryUnfoldAndPrepend =
+      /*#__PURE__*/
+      function () {
+        var _ref5 = _asyncToGenerator(function* (branchEl) {
+          var func =
+          /*#__PURE__*/
+          function () {
+            var _ref6 = _asyncToGenerator(function* () {
+              var childrenEl = yield unfoldAndGetChildrenEl(branchEl);
+              prependTo(store.placeholder, childrenEl);
+            });
+
+            return function func() {
+              return _ref6.apply(this, arguments);
+            };
+          }();
+
+          if (options.ifNodeFolded(branchEl, store)) {
+            // delay if node folded
+            var oneMoveStore = store.oneMoveStore;
+            setTimeout(() => {
+              // check if expired
+              if (oneMoveStore === store.oneMoveStore) {
+                func();
+              }
+            }, options.unfoldWhenDragoverDelay);
+          } else {
+            yield func();
+          }
+        });
+
+        return function tryUnfoldAndPrepend(_x4) {
+          return _ref5.apply(this, arguments);
         };
       }(); // actions end ========================================
       //
@@ -1117,7 +1164,7 @@ function makeTreeDraggable(treeEl) {
         }
       });
 
-      function drop(_x4, _x5, _x6) {
+      function drop(_x5, _x6, _x7) {
         return _drop.apply(this, arguments);
       }
 
@@ -1183,7 +1230,16 @@ var script = {
     unfoldWhenDragover: {
       type: Boolean,
       default: true
-    }
+    },
+    unfoldWhenDragoverDelay: {
+      type: Number,
+      default: 30
+    },
+    draggingNodePositionMode: {
+      type: String,
+      default: 'top_left_corner'
+    } // top_left_corner, mouse
+
   },
 
   // components: {},
@@ -1337,6 +1393,8 @@ var script = {
       indent: this.indent,
       triggerClass: this.triggerClass,
       unfoldWhenDragover: this.unfoldWhenDragover,
+      unfoldWhenDragoverDelay: this.unfoldWhenDragoverDelay,
+      draggingNodePositionMode: this.draggingNodePositionMode,
       cloneWhenDrag: this.cloneWhenDrag,
       treeClass: 'he-tree',
       rootClass: 'tree-root',
@@ -1563,7 +1621,7 @@ var script = {
     var _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
 
 
-    ['indent', 'triggerClass', 'unfoldWhenDragover', 'cloneWhenDrag'].forEach(name => {
+    ['indent', 'triggerClass', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag'].forEach(name => {
       this.$watch(name, value => {
         _makeTreeDraggable_obj.options[name] = value;
 

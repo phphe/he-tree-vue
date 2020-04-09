@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.1.4
+ * he-tree-vue v1.2.0
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -633,8 +633,21 @@ function makeTreeDraggable(treeEl, options = {}) {
 
       let tree;
       const movingNode = movingEl.querySelector(`.${options.nodeClass}`);
-      const movingNodeOf = hp.getOffset(movingNode);
-      const movingNodeRect = hp.getBoundingClientRect(movingNode);
+      let movingNodeOf = hp.getOffset(movingNode);
+      let movingNodeRect = hp.getBoundingClientRect(movingNode);
+
+      if (options.draggingNodePositionMode === 'mouse') {
+        // use mouse position as dragging node position
+        movingNodeOf = {
+          x: moveEvent.pageX,
+          y: moveEvent.pageY
+        };
+        movingNodeRect = {
+          x: moveEvent.clientX,
+          y: moveEvent.clientY
+        };
+      }
+
       const elsBetweenMovingElAndTree = []; // including tree
 
       const elsToTree = []; // start from top, including tree
@@ -975,8 +988,7 @@ function makeTreeDraggable(treeEl, options = {}) {
               return doAction('insert after', info.closestBranch);
             } else {
               if (options.isNodeDroppable(info.closestBranch, store.targetTreeEl)) {
-                const childrenEl = yield unfoldAndGetChildrenEl(info.closestBranch);
-                hp.prependTo(store.placeholder, childrenEl);
+                yield tryUnfoldAndPrepend(info.closestBranch);
               } else {
                 return secondCase(info.closestBranch);
               }
@@ -1000,7 +1012,7 @@ function makeTreeDraggable(treeEl, options = {}) {
               return;
             }
 
-            if (options.ifNodeFolded(info.closestPrev, store) && !options.unfoldWhenDragover) {
+            if (options.ifNodeFolded(info.closestPrev, store)) {
               return doAction('insert after', info.closestPrev);
             } else {
               if (options.isNodeDroppable(info.closestPrev, store.targetTreeEl)) {
@@ -1042,9 +1054,8 @@ function makeTreeDraggable(treeEl, options = {}) {
       function () {
         var _ref3 = _asyncToGenerator(function* (branchEl) {
           // the third case
-          if (options.isNodeDroppable(branchEl, store.targetTreeEl)) {
-            const childrenEl = yield unfoldAndGetChildrenEl(branchEl);
-            hp.prependTo(store.placeholder, childrenEl);
+          if (!options.ifNodeFolded(branchEl, store) && options.isNodeDroppable(branchEl, store.targetTreeEl)) {
+            yield tryUnfoldAndPrepend(branchEl);
           }
         });
 
@@ -1070,6 +1081,42 @@ function makeTreeDraggable(treeEl, options = {}) {
 
         return function unfoldAndGetChildrenEl(_x3) {
           return _ref4.apply(this, arguments);
+        };
+      }();
+
+      const tryUnfoldAndPrepend =
+      /*#__PURE__*/
+      function () {
+        var _ref5 = _asyncToGenerator(function* (branchEl) {
+          const func =
+          /*#__PURE__*/
+          function () {
+            var _ref6 = _asyncToGenerator(function* () {
+              const childrenEl = yield unfoldAndGetChildrenEl(branchEl);
+              hp.prependTo(store.placeholder, childrenEl);
+            });
+
+            return function func() {
+              return _ref6.apply(this, arguments);
+            };
+          }();
+
+          if (options.ifNodeFolded(branchEl, store)) {
+            // delay if node folded
+            let oneMoveStore = store.oneMoveStore;
+            setTimeout(() => {
+              // check if expired
+              if (oneMoveStore === store.oneMoveStore) {
+                func();
+              }
+            }, options.unfoldWhenDragoverDelay);
+          } else {
+            yield func();
+          }
+        });
+
+        return function tryUnfoldAndPrepend(_x4) {
+          return _ref5.apply(this, arguments);
         };
       }(); // actions end ========================================
       //
@@ -1162,7 +1209,7 @@ function makeTreeDraggable(treeEl, options = {}) {
         }
       });
 
-      function drop(_x4, _x5, _x6) {
+      function drop(_x5, _x6, _x7) {
         return _drop.apply(this, arguments);
       }
 
@@ -1231,7 +1278,16 @@ var script = {
     unfoldWhenDragover: {
       type: Boolean,
       default: true
-    }
+    },
+    unfoldWhenDragoverDelay: {
+      type: Number,
+      default: 30
+    },
+    draggingNodePositionMode: {
+      type: String,
+      default: 'top_left_corner'
+    } // top_left_corner, mouse
+
   },
 
   // components: {},
@@ -1432,6 +1488,8 @@ var script = {
       indent: this.indent,
       triggerClass: this.triggerClass,
       unfoldWhenDragover: this.unfoldWhenDragover,
+      unfoldWhenDragoverDelay: this.unfoldWhenDragoverDelay,
+      draggingNodePositionMode: this.draggingNodePositionMode,
       cloneWhenDrag: this.cloneWhenDrag,
       treeClass: 'he-tree',
       rootClass: 'tree-root',
@@ -1665,7 +1723,7 @@ var script = {
     const _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
 
 
-    ['indent', 'triggerClass', 'unfoldWhenDragover', 'cloneWhenDrag'].forEach(name => {
+    ['indent', 'triggerClass', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag'].forEach(name => {
       this.$watch(name, value => {
         _makeTreeDraggable_obj.options[name] = value;
 

@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.1.4
+ * he-tree-vue v1.2.0
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -3318,6 +3318,19 @@
         var movingNode = movingEl.querySelector(".".concat(options.nodeClass));
         var movingNodeOf = getOffset(movingNode);
         var movingNodeRect = getBoundingClientRect(movingNode);
+
+        if (options.draggingNodePositionMode === 'mouse') {
+          // use mouse position as dragging node position
+          movingNodeOf = {
+            x: moveEvent.pageX,
+            y: moveEvent.pageY
+          };
+          movingNodeRect = {
+            x: moveEvent.clientX,
+            y: moveEvent.clientY
+          };
+        }
+
         var elsBetweenMovingElAndTree = []; // including tree
 
         var elsToTree = []; // start from top, including tree
@@ -3783,7 +3796,6 @@
             return asyncToGenerator(
             /*#__PURE__*/
             regenerator.mark(function _callee6() {
-              var childrenEl;
               return regenerator.wrap(function _callee6$(_context6) {
                 while (1) {
                   switch (_context6.prev = _context6.next) {
@@ -3805,23 +3817,21 @@
 
                     case 6:
                       if (!options.isNodeDroppable(info.closestBranch, store.targetTreeEl)) {
-                        _context6.next = 13;
+                        _context6.next = 11;
                         break;
                       }
 
                       _context6.next = 9;
-                      return unfoldAndGetChildrenEl(info.closestBranch);
+                      return tryUnfoldAndPrepend(info.closestBranch);
 
                     case 9:
-                      childrenEl = _context6.sent;
-                      prependTo(store.placeholder, childrenEl);
-                      _context6.next = 14;
+                      _context6.next = 12;
                       break;
 
-                    case 13:
+                    case 11:
                       return _context6.abrupt("return", secondCase(info.closestBranch));
 
-                    case 14:
+                    case 12:
                     case "end":
                       return _context6.stop();
                   }
@@ -3874,7 +3884,7 @@
                       return _context8.abrupt("return");
 
                     case 2:
-                      if (!(options.ifNodeFolded(info.closestPrev, store) && !options.unfoldWhenDragover)) {
+                      if (!options.ifNodeFolded(info.closestPrev, store)) {
                         _context8.next = 6;
                         break;
                       }
@@ -3957,24 +3967,19 @@
           var _ref3 = asyncToGenerator(
           /*#__PURE__*/
           regenerator.mark(function _callee10(branchEl) {
-            var childrenEl;
             return regenerator.wrap(function _callee10$(_context10) {
               while (1) {
                 switch (_context10.prev = _context10.next) {
                   case 0:
-                    if (!options.isNodeDroppable(branchEl, store.targetTreeEl)) {
-                      _context10.next = 5;
+                    if (!(!options.ifNodeFolded(branchEl, store) && options.isNodeDroppable(branchEl, store.targetTreeEl))) {
+                      _context10.next = 3;
                       break;
                     }
 
                     _context10.next = 3;
-                    return unfoldAndGetChildrenEl(branchEl);
+                    return tryUnfoldAndPrepend(branchEl);
 
                   case 3:
-                    childrenEl = _context10.sent;
-                    prependTo(store.placeholder, childrenEl);
-
-                  case 5:
                   case "end":
                     return _context10.stop();
                 }
@@ -4022,6 +4027,81 @@
           return function unfoldAndGetChildrenEl(_x3) {
             return _ref4.apply(this, arguments);
           };
+        }();
+
+        var tryUnfoldAndPrepend =
+        /*#__PURE__*/
+        function () {
+          var _ref5 = asyncToGenerator(
+          /*#__PURE__*/
+          regenerator.mark(function _callee13(branchEl) {
+            var func, oneMoveStore;
+            return regenerator.wrap(function _callee13$(_context13) {
+              while (1) {
+                switch (_context13.prev = _context13.next) {
+                  case 0:
+                    func =
+                    /*#__PURE__*/
+                    function () {
+                      var _ref6 = asyncToGenerator(
+                      /*#__PURE__*/
+                      regenerator.mark(function _callee12() {
+                        var childrenEl;
+                        return regenerator.wrap(function _callee12$(_context12) {
+                          while (1) {
+                            switch (_context12.prev = _context12.next) {
+                              case 0:
+                                _context12.next = 2;
+                                return unfoldAndGetChildrenEl(branchEl);
+
+                              case 2:
+                                childrenEl = _context12.sent;
+                                prependTo(store.placeholder, childrenEl);
+
+                              case 4:
+                              case "end":
+                                return _context12.stop();
+                            }
+                          }
+                        }, _callee12);
+                      }));
+
+                      return function func() {
+                        return _ref6.apply(this, arguments);
+                      };
+                    }();
+
+                    if (!options.ifNodeFolded(branchEl, store)) {
+                      _context13.next = 6;
+                      break;
+                    }
+
+                    // delay if node folded
+                    oneMoveStore = store.oneMoveStore;
+                    setTimeout(function () {
+                      // check if expired
+                      if (oneMoveStore === store.oneMoveStore) {
+                        func();
+                      }
+                    }, options.unfoldWhenDragoverDelay);
+                    _context13.next = 8;
+                    break;
+
+                  case 6:
+                    _context13.next = 8;
+                    return func();
+
+                  case 8:
+                  case "end":
+                    return _context13.stop();
+                }
+              }
+            }, _callee13);
+          }));
+
+          return function tryUnfoldAndPrepend(_x4) {
+            return _ref5.apply(this, arguments);
+          };
         }(); // actions end ========================================
         //
 
@@ -4055,13 +4135,13 @@
       drop: function () {
         var _drop = asyncToGenerator(
         /*#__PURE__*/
-        regenerator.mark(function _callee12(endEvent, store, opt) {
+        regenerator.mark(function _callee14(endEvent, store, opt) {
           var movingEl, placeholder, tempChildren, maskTree, pathChanged, isPathChanged;
-          return regenerator.wrap(function _callee12$(_context12) {
+          return regenerator.wrap(function _callee14$(_context14) {
             while (1) {
-              switch (_context12.prev = _context12.next) {
+              switch (_context14.prev = _context14.next) {
                 case 0:
-                  isPathChanged = function _ref5() {
+                  isPathChanged = function _ref7() {
                     var startTree = store.startTree,
                         targetTree = store.targetTree,
                         startPath = store.startPath,
@@ -4100,16 +4180,16 @@
                   }
 
                   store.restoreDOM();
-                  _context12.next = 7;
+                  _context14.next = 7;
                   return options.ondrop(store, opt);
 
                 case 7:
                   if (!maskTree) {
-                    _context12.next = 12;
+                    _context14.next = 12;
                     break;
                   }
 
-                  _context12.next = 10;
+                  _context14.next = 10;
                   return waitTime(30);
 
                 case 10:
@@ -4118,13 +4198,13 @@
 
                 case 12:
                 case "end":
-                  return _context12.stop();
+                  return _context14.stop();
               }
             }
-          }, _callee12);
+          }, _callee14);
         }));
 
-        function drop(_x4, _x5, _x6) {
+        function drop(_x5, _x6, _x7) {
           return _drop.apply(this, arguments);
         }
 
@@ -4193,7 +4273,16 @@
       unfoldWhenDragover: {
         type: Boolean,
         default: true
-      }
+      },
+      unfoldWhenDragoverDelay: {
+        type: Number,
+        default: 30
+      },
+      draggingNodePositionMode: {
+        type: String,
+        default: 'top_left_corner'
+      } // top_left_corner, mouse
+
     },
     // components: {},
     data: function data() {
@@ -4391,6 +4480,8 @@
         indent: this.indent,
         triggerClass: this.triggerClass,
         unfoldWhenDragover: this.unfoldWhenDragover,
+        unfoldWhenDragoverDelay: this.unfoldWhenDragoverDelay,
+        draggingNodePositionMode: this.draggingNodePositionMode,
         cloneWhenDrag: this.cloneWhenDrag,
         treeClass: 'he-tree',
         rootClass: 'tree-root',
@@ -4634,7 +4725,7 @@
       var _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
 
 
-      ['indent', 'triggerClass', 'unfoldWhenDragover', 'cloneWhenDrag'].forEach(function (name) {
+      ['indent', 'triggerClass', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag'].forEach(function (name) {
         _this.$watch(name, function (value) {
           _makeTreeDraggable_obj.options[name] = value;
 
