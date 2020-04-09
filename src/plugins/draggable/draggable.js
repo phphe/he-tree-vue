@@ -337,7 +337,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           if (info.closestPrev === store.placeholder) {
             return
           }
-          if (options.ifNodeFolded(info.closestPrev, store) && !options.unfoldWhenDragover) {
+          if (options.ifNodeFolded(info.closestPrev, store)) {
             return doAction('insert after', info.closestPrev)
           } else {
             if (options.isNodeDroppable(info.closestPrev, store.targetTreeEl)) {
