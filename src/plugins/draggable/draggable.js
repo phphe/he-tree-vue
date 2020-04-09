@@ -347,7 +347,8 @@ export default function makeTreeDraggable(treeEl, options = {}) {
             return doAction('insert after', info.closestPrev)
           } else {
             if (options.isNodeDroppable(info.closestPrev, store.targetTreeEl)) {
-              await tryUnfoldAndPrepend(info.closestPrev)
+              const childrenEl = await unfoldAndGetChildrenEl(info.closestPrev)
+              hp.appendTo(store.placeholder, childrenEl)
             } else {
               return secondCase(info.closestPrev)
             }
