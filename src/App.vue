@@ -5,16 +5,18 @@
   .flex
     BaseTree.mr
     NodeBackTree.mr
+    ThirdCase.mr
     //- DraggableProTree.mr
 </template>
 
 <script>
 import BaseTree from '@/examples/Base'
 import NodeBackTree from '@/examples/NodeBack'
+import ThirdCase from '@/examples/ThirdCase.vue'
 // import DraggableProTree from '@/examples/DraggablePro'
 
 export default {
-  components: {BaseTree, NodeBackTree},
+  components: {BaseTree, NodeBackTree, ThirdCase},
   // data() {
   //   return {}
   // },

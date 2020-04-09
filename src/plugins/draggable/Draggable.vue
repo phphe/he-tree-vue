@@ -15,6 +15,7 @@ export default {
     ondragstart: {type: Function},
     ondragend: {type: Function},
     unfoldWhenDragover: {type: Boolean, default: true},
+    unfoldWhenDragoverDelay: {type: Number, default: 30},
   },
   // components: {},
   data() {
@@ -119,6 +120,7 @@ export default {
       indent: this.indent,
       triggerClass: this.triggerClass,
       unfoldWhenDragover: this.unfoldWhenDragover,
+      unfoldWhenDragoverDelay: this.unfoldWhenDragoverDelay,
       cloneWhenDrag: this.cloneWhenDrag,
       treeClass: 'he-tree',
       rootClass: 'tree-root',
@@ -132,9 +134,9 @@ export default {
       draggingClass: 'dragging',
       placeholderId: `he_tree_drag_placeholder`,
       ifNodeFolded: (branchEl, store) => {
-         const {targetTree} = store
-         const node = targetTree.getNodeByBranchEl(branchEl)
-         return node.$folded
+        const {targetTree} = store
+        const node = targetTree.getNodeByBranchEl(branchEl)
+        return node.$folded
       },
       isTargetTreeRootDroppable: (store) => {
         const droppable = hp.resolveValueOrGettter(store.targetTree.rootNode.$droppable, [store.targetTree, store])
@@ -293,7 +295,7 @@ export default {
     }
     const _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options);
     // watch props and update options
-    ['indent', 'triggerClass', 'unfoldWhenDragover', 'cloneWhenDrag'].forEach(name => {
+    ['indent', 'triggerClass', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'cloneWhenDrag'].forEach(name => {
       this.$watch(name, (value) => {
         _makeTreeDraggable_obj.options[name] = value
         _makeTreeDraggable_obj.optionsUpdated()

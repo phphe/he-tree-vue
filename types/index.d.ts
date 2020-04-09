@@ -152,6 +152,8 @@ export class Draggable extends Vue{
   ondragend: prop_ondragstart_ondragend
   @Prop({default: true})
   unfoldWhenDragover: boolean
+  @Prop({default: 30})
+  unfoldWhenDragoverDelay: number
   // data
   treesStore: {store: Store} // just for get the darg info store
   // methods

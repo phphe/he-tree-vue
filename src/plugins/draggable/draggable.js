@@ -319,8 +319,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
             return doAction('insert after', info.closestBranch)
           } else {
             if (options.isNodeDroppable(info.closestBranch, store.targetTreeEl)) {
-              const childrenEl = await unfoldAndGetChildrenEl(info.closestBranch)
-              hp.prependTo(store.placeholder, childrenEl)
+              await tryUnfoldAndPrepend(info.closestBranch)
             } else {
               return secondCase(info.closestBranch)
             }
@@ -341,8 +340,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
             return doAction('insert after', info.closestPrev)
           } else {
             if (options.isNodeDroppable(info.closestPrev, store.targetTreeEl)) {
-              const childrenEl = await unfoldAndGetChildrenEl(info.closestPrev)
-              hp.appendTo(store.placeholder, childrenEl)
+              await tryUnfoldAndPrepend(info.closestPrev)
             } else {
               return secondCase(info.closestPrev)
             }
@@ -364,9 +362,8 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       // 当操作是'after', 第一种第二种情况无效时, 尝试prepend
       const thirdCase = async (branchEl) => {
         // the third case
-        if (options.isNodeDroppable(branchEl, store.targetTreeEl)) {
-          const childrenEl = await unfoldAndGetChildrenEl(branchEl)
-          hp.prependTo(store.placeholder, childrenEl)
+        if (!options.ifNodeFolded(branchEl, store) && options.isNodeDroppable(branchEl, store.targetTreeEl)) {
+          await tryUnfoldAndPrepend(branchEl)
         }
       }
       const unfoldAndGetChildrenEl = async (branch) => {
@@ -377,6 +374,24 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           hp.appendTo(childrenEl, branch)
         }
         return childrenEl
+      }
+      const tryUnfoldAndPrepend = async (branchEl) => {
+        const func = async () => {
+          const childrenEl = await unfoldAndGetChildrenEl(branchEl)
+          hp.prependTo(store.placeholder, childrenEl)
+        }
+        if (options.ifNodeFolded(branchEl, store)) {
+          // delay if node folded
+          let oneMoveStore = store.oneMoveStore
+          setTimeout(() => {
+            // check if expired
+            if (oneMoveStore === store.oneMoveStore) {
+              func()
+            }
+          }, options.unfoldWhenDragoverDelay)
+        } else {
+          await func()
+        }
       }
       // actions end ========================================
       //
