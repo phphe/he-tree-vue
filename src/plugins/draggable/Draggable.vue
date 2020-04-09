@@ -16,6 +16,7 @@ export default {
     ondragend: {type: Function},
     unfoldWhenDragover: {type: Boolean, default: true},
     unfoldWhenDragoverDelay: {type: Number, default: 30},
+    draggingNodePositionMode: {type: String, default: 'top_left_corner'}, // top_left_corner, mouse
   },
   // components: {},
   data() {
@@ -121,6 +122,7 @@ export default {
       triggerClass: this.triggerClass,
       unfoldWhenDragover: this.unfoldWhenDragover,
       unfoldWhenDragoverDelay: this.unfoldWhenDragoverDelay,
+      draggingNodePositionMode: this.draggingNodePositionMode,
       cloneWhenDrag: this.cloneWhenDrag,
       treeClass: 'he-tree',
       rootClass: 'tree-root',
@@ -295,7 +297,7 @@ export default {
     }
     const _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options);
     // watch props and update options
-    ['indent', 'triggerClass', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'cloneWhenDrag'].forEach(name => {
+    ['indent', 'triggerClass', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag'].forEach(name => {
       this.$watch(name, (value) => {
         _makeTreeDraggable_obj.options[name] = value
         _makeTreeDraggable_obj.optionsUpdated()

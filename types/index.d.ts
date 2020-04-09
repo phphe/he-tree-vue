@@ -154,6 +154,8 @@ export class Draggable extends Vue{
   unfoldWhenDragover: boolean
   @Prop({default: 30})
   unfoldWhenDragoverDelay: number
+  @Prop({default: 'top_left_corner'})
+  draggingNodePositionMode: 'top_left_corner'|'mouse'
   // data
   treesStore: {store: Store} // just for get the darg info store
   // methods

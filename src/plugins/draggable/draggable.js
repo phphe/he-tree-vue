@@ -8,6 +8,8 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     // indent: 20,
     // triggerClass: 'tree-node',
     // unfoldWhenDragover
+    // unfoldWhenDragoverDelay
+    // draggingNodePositionMode
     // getTriggerEl optional
     // rootClass: 'tree-root',
     // childrenClass: 'tree-children',
@@ -71,8 +73,13 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       // find closest branch and hovering tree
       let tree
       const movingNode = movingEl.querySelector(`.${options.nodeClass}`)
-      const movingNodeOf = hp.getOffset(movingNode)
-      const movingNodeRect = hp.getBoundingClientRect(movingNode)
+      let movingNodeOf = hp.getOffset(movingNode)
+      let movingNodeRect = hp.getBoundingClientRect(movingNode)
+      if (options.draggingNodePositionMode === 'mouse') {
+        // use mouse position as dragging node position
+        movingNodeOf = {x: moveEvent.pageX, y: moveEvent.pageY}
+        movingNodeRect = {x: moveEvent.clientX, y: moveEvent.clientY} 
+      }
       const elsBetweenMovingElAndTree = [] // including tree
       const elsToTree = [] // start from top, including tree
       // loop to find put els between movingEl and tree
