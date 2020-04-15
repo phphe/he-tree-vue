@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.2.0
+ * he-tree-vue v1.2.1
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -11,10 +11,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var _defineProperty = _interopDefault(require('@babel/runtime/helpers/defineProperty'));
+var _toConsumableArray = _interopDefault(require('@babel/runtime/helpers/toConsumableArray'));
 var hp = require('helper-js');
 var vf = require('vue-functions');
 var __vue_normalize__ = _interopDefault(require('vue-runtime-helpers/dist/normalize-component.js'));
 var Vue = _interopDefault(require('vue'));
+var _regeneratorRuntime = _interopDefault(require('@babel/runtime/regenerator'));
 var _asyncToGenerator = _interopDefault(require('@babel/runtime/helpers/asyncToGenerator'));
 var draggableHelper = _interopDefault(require('draggable-helper'));
 
@@ -25,9 +27,9 @@ function walkTreeData(treeData, handler, opt) {
   return new hp.TreeData(treeData).walk(handler, opt);
 }
 function getPureTreeData(treeData) {
-  const opt = {
-    afterNodeCreated: newNode => {
-      Object.keys(newNode).forEach(key => {
+  var opt = {
+    afterNodeCreated: function afterNodeCreated(newNode) {
+      Object.keys(newNode).forEach(function (key) {
         if (key[0] === '$') {
           delete newNode[key];
         }
@@ -41,89 +43,93 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-const template = function template(h) {
+var template = function template(h) {
+  var _this = this;
+
   // convert undefined to empty str
-  const noUndefined = str => str ? str : ''; // tree tpl, to render recursively
+  var noUndefined = function noUndefined(str) {
+    return str ? str : '';
+  }; // tree tpl, to render recursively
 
 
-  const childrenListTpl = (nodes, parent, parentPath) => {
-    const indentStyle = {
-      paddingLeft: parentPath.length * this.indent + 'px'
+  var childrenListTpl = function childrenListTpl(nodes, parent, parentPath) {
+    var indentStyle = {
+      paddingLeft: parentPath.length * _this.indent + 'px'
     };
 
-    const branchTpl = (node, index) => {
-      const path = [...parentPath, index];
-      const transitionComponent = this.foldingTransition || 'transition';
+    var branchTpl = function branchTpl(node, index) {
+      var path = [].concat(_toConsumableArray(parentPath), [index]);
+      var transitionComponent = _this.foldingTransition || 'transition';
 
-      const slotDefault = () => {
-        const original = () => {
-          if (this.$scopedSlots.default) {
-            return this.$scopedSlots.default({
-              node,
-              index,
-              path,
-              tree: this
+      var slotDefault = function slotDefault() {
+        var original = function original() {
+          if (_this.$scopedSlots.default) {
+            return _this.$scopedSlots.default({
+              node: node,
+              index: index,
+              path: path,
+              tree: _this
             });
-          } else if (this.$slots.default) {
-            return this.$slots.default;
+          } else if (_this.$slots.default) {
+            return _this.$slots.default;
           } else {
             return node.text;
           }
         };
 
-        if (this.overrideSlotDefault) {
-          return this.overrideSlotDefault({
-            node,
-            index,
-            path,
-            tree: this
+        if (_this.overrideSlotDefault) {
+          return _this.overrideSlotDefault({
+            node: node,
+            index: index,
+            path: path,
+            tree: _this
           }, original);
         } else {
           return original();
         }
       };
 
-      let nodebackStyle = indentStyle;
+      var nodebackStyle = indentStyle;
 
       if (node.$nodeBackStyle) {
         nodebackStyle = _objectSpread({}, nodebackStyle, {}, node.$nodeBackStyle);
       }
 
       return h("div", {
-        "class": `tree-branch ${noUndefined(node.$branchClass)} ${noUndefined(node.$hidden && 'he-tree--hidden')}`,
+        "class": "tree-branch ".concat(noUndefined(node.$branchClass), " ").concat(noUndefined(node.$hidden && 'he-tree--hidden')),
         "style": node.$branchStyle || {},
         "attrs": {
           "data-tree-node-path": path.join(',')
         }
       }, [h("div", {
-        "class": `tree-node-back ${noUndefined(node.$nodeBackClass)}`,
+        "class": "tree-node-back ".concat(noUndefined(node.$nodeBackClass)),
         "style": nodebackStyle || {}
       }, [h("div", {
-        "class": `tree-node ${noUndefined(node.$nodeClass)}`,
+        "class": "tree-node ".concat(noUndefined(node.$nodeClass)),
         "style": node.$nodeStyle || {}
       }, [slotDefault()])]), (node.children && node.children.length) > 0 && h(transitionComponent, {
         "attrs": {
-          "name": this.$props.foldingTransitionName
+          "name": _this.$props.foldingTransitionName
         }
       }, [!node.$folded && childrenListTpl(node.children, node, path)])]);
     };
 
     return h("div", {
-      "class": `tree-children ${noUndefined(parent === this.rootNode && 'tree-root')} ${noUndefined(parent.$childrenClass)}`,
+      "class": "tree-children ".concat(noUndefined(parent === _this.rootNode && 'tree-root'), " ").concat(noUndefined(parent.$childrenClass)),
       "style": parent.$childrenStyle || {}
     }, [nodes.map(branchTpl)]);
   };
 
   return h("div", {
-    "class": `he-tree ${this.treeClass}`,
+    "class": "he-tree ".concat(this.treeClass),
     "attrs": {
       "data-tree-id": this.treeId
     }
   }, [this.blockHeader && this.blockHeader(), childrenListTpl(this.rootNode.children, this.rootNode, []), this.blockFooter && this.blockFooter()]);
 };
 
-const trees = {};
-const Tree = {
+var trees = {};
+var Tree = {
   render: template,
   mixins: [vf.updatablePropsEvenUnbound({
     value: {
@@ -137,86 +143,75 @@ const Tree = {
       default: 20
     },
     rootNode: {
-      default: is => ({})
+      default: function _default(is) {
+        return {};
+      }
     }
   },
-
   // components: {},
-  data() {
+  data: function data() {
     return {
-      trees,
+      trees: trees,
       treeClass: '',
       treeId: hp.strRand()
     };
   },
-
   // computed: {},
   watch: {
     treeData: {
       immediate: true,
-
-      handler(treeData) {
+      handler: function handler(treeData) {
         this._TreeDataHelper = new hp.TreeData(this.treeData);
       }
-
     }
   },
   methods: {
-    iteratePath(path, opt) {
+    iteratePath: function iteratePath(path, opt) {
       return this._TreeDataHelper.iteratePath(path, opt);
     },
-
-    getTreeVmByTreeEl(treeEl) {
+    getTreeVmByTreeEl: function getTreeVmByTreeEl(treeEl) {
       return this.trees[treeEl.getAttribute('data-tree-id')];
     },
-
-    getAllNodesByPath(path) {
+    getAllNodesByPath: function getAllNodesByPath(path) {
       return this._TreeDataHelper.getAllNodes(path);
     },
-
-    getNodeByPath(path) {
+    getNodeByPath: function getNodeByPath(path) {
       return this._TreeDataHelper.getNode(path);
     },
-
-    getPathByBranchEl(branchEl) {
-      return branchEl.getAttribute('data-tree-node-path').split(',').map(v => parseInt(v));
+    getPathByBranchEl: function getPathByBranchEl(branchEl) {
+      return branchEl.getAttribute('data-tree-node-path').split(',').map(function (v) {
+        return parseInt(v);
+      });
     },
-
-    getBranchElByPath(path) {
-      return this.$el.querySelector(`[data-tree-node-path='${path.join(',')}']`);
+    getBranchElByPath: function getBranchElByPath(path) {
+      return this.$el.querySelector("[data-tree-node-path='".concat(path.join(','), "']"));
     },
-
-    getNodeByBranchEl(branchEl) {
+    getNodeByBranchEl: function getNodeByBranchEl(branchEl) {
       return this.getNodeByPath(this.getPathByBranchEl(branchEl));
     },
-
-    getNodeParentByPath(path) {
+    getNodeParentByPath: function getNodeParentByPath(path) {
       return this._TreeDataHelper.getNodeParent(path);
     },
-
-    removeNodeByPath(path) {
+    removeNodeByPath: function removeNodeByPath(path) {
       return this._TreeDataHelper.removeNode(path);
     },
-
-    walkTreeData(handler, opt) {
+    walkTreeData: function walkTreeData$1(handler, opt) {
       return walkTreeData(this.treeData, handler, opt);
     },
-
-    cloneTreeData(opt) {
+    cloneTreeData: function cloneTreeData$1(opt) {
       return cloneTreeData(this.treeData, opt);
     },
-
     // return cloned new tree data without property witch starts with `$`
-    getPureTreeData() {
+    getPureTreeData: function getPureTreeData$1() {
       return getPureTreeData(this.treeData);
     }
-
   },
+  created: function created() {
+    var _this2 = this;
 
-  created() {
     //
-    const updateRootNode = () => {
-      this.$set(this.rootNode, 'children', this.treeData);
+    var updateRootNode = function updateRootNode() {
+      _this2.$set(_this2.rootNode, 'children', _this2.treeData);
     };
 
     this.$watch('rootNode', updateRootNode, {
@@ -226,20 +221,20 @@ const Tree = {
       immediate: true
     });
   },
+  mounted: function mounted() {
+    var _this3 = this;
 
-  mounted() {
     //
     this.treeId = hp.strRand();
     this.$set(this.trees, this.treeId, this);
-    this.$once('hook:beforeDestroy', () => {
-      this.$delete(this.trees, this.treeId);
+    this.$once('hook:beforeDestroy', function () {
+      _this3.$delete(_this3.trees, _this3.treeId);
     });
   },
-
   // beforeDestroy() {},
   //
-  mixPlugins(plugins) {
-    const MixedTree = {
+  mixPlugins: function mixPlugins(plugins) {
+    var MixedTree = {
       name: 'Tree',
       extends: Tree,
       mixins: plugins,
@@ -247,43 +242,42 @@ const Tree = {
     };
     return MixedTree;
   }
-
 };
 
 /* script */
-const __vue_script__ = Tree;
+var __vue_script__ = Tree;
 /* template */
 
 /* style */
 
-const __vue_inject_styles__ = undefined;
+var __vue_inject_styles__ = undefined;
 /* scoped */
 
-const __vue_scope_id__ = undefined;
+var __vue_scope_id__ = undefined;
 /* module identifier */
 
-const __vue_module_identifier__ = undefined;
+var __vue_module_identifier__ = undefined;
 /* functional template */
 
-const __vue_is_functional_template__ = undefined;
+var __vue_is_functional_template__ = undefined;
 /* style inject */
 
 /* style inject SSR */
 
 /* style inject shadow dom */
 
-const __vue_component__ = __vue_normalize__({}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
+var __vue_component__ = __vue_normalize__({}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
 
 function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 function foldAll(treeData) {
-  walkTreeData(treeData, childNode => {
+  walkTreeData(treeData, function (childNode) {
     Vue.set(childNode, '$folded', true);
   });
 }
 function unfoldAll(treeData) {
-  walkTreeData(treeData, childNode => {
+  walkTreeData(treeData, function (childNode) {
     Vue.set(childNode, '$folded', false);
   });
 }
@@ -298,13 +292,13 @@ var fold = {
     }
   },
   methods: {
-    fold(node, path) {
+    fold: function fold(node, path) {
       if (!node.$folded) {
         this.$set(node, '$folded', true);
       }
     },
-
-    unfold(node, path, opt = {}) {
+    unfold: function unfold(node, path) {
+      var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
       opt = _objectSpread$1({
         foldOthers: false
       }, opt);
@@ -317,46 +311,46 @@ var fold = {
         this.$set(node, '$folded', false);
       }
     },
-
-    toggleFold(node, path, opt) {
+    toggleFold: function toggleFold(node, path, opt) {
       if (node.$folded) {
         this.unfold(node, path, opt);
       } else {
         this.fold(node, path, opt);
       }
     },
+    foldAll: function foldAll() {
+      var _this = this;
 
-    foldAll() {
-      this.walkTreeData(childNode => {
-        this.fold(childNode);
+      this.walkTreeData(function (childNode) {
+        _this.fold(childNode);
       });
     },
+    unfoldAll: function unfoldAll() {
+      var _this2 = this;
 
-    unfoldAll() {
-      this.walkTreeData(childNode => {
-        this.unfold(childNode, {
+      this.walkTreeData(function (childNode) {
+        _this2.unfold(childNode, {
           unfoldParent: false
         });
       });
     }
-
   },
-
-  mounted() {
+  mounted: function mounted() {
     if (this.foldAllAfterMounted) {
       this.foldAll();
     }
   }
-
 };
 
 var check = {
   props: {},
   methods: {
-    afterCheckChanged(node, path) {
+    afterCheckChanged: function afterCheckChanged(node, path) {
+      var _this = this;
+
       // update parent
-      const nodes = this.getAllNodesByPath(path);
-      const reversedParents = nodes.slice(0, nodes.length - 1);
+      var nodes = this.getAllNodesByPath(path);
+      var reversedParents = nodes.slice(0, nodes.length - 1);
       reversedParents.reverse();
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
@@ -364,8 +358,10 @@ var check = {
 
       try {
         for (var _iterator = reversedParents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          const parent = _step.value;
-          this.$set(parent, '$checked', parent.children.every(child => child.$checked));
+          var parent = _step.value;
+          this.$set(parent, '$checked', parent.children.every(function (child) {
+            return child.$checked;
+          }));
         } // update children
 
       } catch (err) {
@@ -384,34 +380,30 @@ var check = {
       }
 
       if (node.children && node.children.length > 0) {
-        walkTreeData(node.children, childNode => {
-          this.$set(childNode, '$checked', node.$checked);
+        walkTreeData(node.children, function (childNode) {
+          _this.$set(childNode, '$checked', node.$checked);
         });
       }
     },
-
-    check(node, path) {
+    check: function check(node, path) {
       this.$set(node, '$checked', true);
       this.afterCheckChanged(node, path);
     },
-
-    uncheck(node, path) {
+    uncheck: function uncheck(node, path) {
       this.$set(node, '$checked', false);
       this.afterCheckChanged(node, path);
     },
-
-    toggleCheck(node, path) {
+    toggleCheck: function toggleCheck(node, path) {
       this.$set(node, '$checked', !node.$checked);
       this.afterCheckChanged(node, path);
     }
-
   }
 };
 
-function doDraggableDecision ({
-  conditions,
-  doAction
-}) {
+function doDraggableDecision (_ref) {
+  var conditions = _ref.conditions,
+      doAction = _ref.doAction;
+
   // decision start =================================
   if (conditions['no closest'] === true) {
     doAction('append to root');
@@ -565,17 +557,17 @@ function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if 
 
 function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-function makeTreeDraggable(treeEl, options = {}) {
+function makeTreeDraggable(treeEl) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   options = _objectSpread$2({}, options, {
-    treeEl
+    treeEl: treeEl
   });
 
-  const _draggableHelper = draggableHelper(treeEl, {
+  var _draggableHelper = draggableHelper(treeEl, {
     draggingClass: options.draggingClass,
     restoreDOMManuallyOndrop: true,
     clone: options.cloneWhenDrag,
-
-    beforeDrag(startEvent, moveEvent, store, opt) {
+    beforeDrag: function beforeDrag(startEvent, moveEvent, store, opt) {
       store.startTreeEl = treeEl;
 
       if (options.beforeDrag && options.beforeDrag(store, opt) === false) {
@@ -583,7 +575,7 @@ function makeTreeDraggable(treeEl, options = {}) {
       } // if the event target is a trigger
 
 
-      const isTrigger = hp.findParent(startEvent.target, el => {
+      var isTrigger = hp.findParent(startEvent.target, function (el) {
         if (hp.hasClass(el, options.triggerClass)) {
           return true;
         }
@@ -606,17 +598,18 @@ function makeTreeDraggable(treeEl, options = {}) {
 
       startEvent._triggeredBy = store.startTree;
     },
-
     // get the element which will be moved
-    getEl: (dragHandlerEl, store, opt) => {
-      const el = hp.findParent(store.startEvent.target, el => hp.hasClass(el, options.branchClass), {
+    getEl: function getEl(dragHandlerEl, store, opt) {
+      var el = hp.findParent(store.startEvent.target, function (el) {
+        return hp.hasClass(el, options.branchClass);
+      }, {
         withSelf: true
       });
       return el;
     },
-    drag: (startEvent, moveEvent, store, opt) => {
+    drag: function drag(startEvent, moveEvent, store, opt) {
       store.dragBranchEl = store.el;
-      const movingEl = store.el; // branch
+      var movingEl = store.el; // branch
 
       store.startPath = options.getPathByBranchEl(movingEl);
 
@@ -624,17 +617,17 @@ function makeTreeDraggable(treeEl, options = {}) {
         return false;
       }
     },
-    moving: (moveEvent, store, opt) => {
+    moving: function moving(moveEvent, store, opt) {
       // return false in moving will prevent move animation; return undefined just prevent doAction
       store.oneMoveStore = {}; // life cycle: one move
 
-      const movingEl = store.el; // branch
+      var movingEl = store.el; // branch
       // find closest branch and hovering tree
 
-      let tree;
-      const movingNode = movingEl.querySelector(`.${options.nodeClass}`);
-      let movingNodeOf = hp.getOffset(movingNode);
-      let movingNodeRect = hp.getBoundingClientRect(movingNode);
+      var tree;
+      var movingNode = movingEl.querySelector(".".concat(options.nodeClass));
+      var movingNodeOf = hp.getOffset(movingNode);
+      var movingNodeRect = hp.getBoundingClientRect(movingNode);
 
       if (options.draggingNodePositionMode === 'mouse') {
         // use mouse position as dragging node position
@@ -648,12 +641,12 @@ function makeTreeDraggable(treeEl, options = {}) {
         };
       }
 
-      const elsBetweenMovingElAndTree = []; // including tree
+      var elsBetweenMovingElAndTree = []; // including tree
 
-      const elsToTree = []; // start from top, including tree
+      var elsToTree = []; // start from top, including tree
       // loop to find put els between movingEl and tree
 
-      let movingElLooped; // 已循环到了movingEl
+      var movingElLooped; // 已循环到了movingEl
 
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
@@ -661,7 +654,7 @@ function makeTreeDraggable(treeEl, options = {}) {
 
       try {
         for (var _iterator = hp.elementsFromPoint(movingNodeRect.x, movingNodeRect.y)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          const itemEl = _step.value;
+          var itemEl = _step.value;
 
           if (movingElLooped) {
             elsBetweenMovingElAndTree.push(itemEl);
@@ -693,7 +686,7 @@ function makeTreeDraggable(treeEl, options = {}) {
       }
 
       if (!movingElLooped) {
-        elsBetweenMovingElAndTree.push(...elsToTree);
+        elsBetweenMovingElAndTree.push.apply(elsBetweenMovingElAndTree, elsToTree);
       }
 
       if (!tree) {
@@ -702,7 +695,7 @@ function makeTreeDraggable(treeEl, options = {}) {
       } // check tree if is covered, like modal
 
 
-      let treeBeCoved;
+      var treeBeCoved;
 
       if (elsBetweenMovingElAndTree && elsBetweenMovingElAndTree[0]) {
         if (elsBetweenMovingElAndTree[0] !== tree && !hp.isDescendantOf(elsBetweenMovingElAndTree[0], tree)) {
@@ -722,7 +715,7 @@ function makeTreeDraggable(treeEl, options = {}) {
       store.targetTreeEl = tree; // info ========================================
       // life cycle: one move
 
-      const info = {
+      var info = {
         tree: function (_tree) {
           function tree() {
             return _tree.apply(this, arguments);
@@ -733,15 +726,19 @@ function makeTreeDraggable(treeEl, options = {}) {
           };
 
           return tree;
-        }(() => tree),
-        root: () => info.tree.querySelector(`.${options.childrenClass}`),
-        closestNode: () => {
-          const nodes = []; // all visible nodes sort by y
+        }(function () {
+          return tree;
+        }),
+        root: function root() {
+          return info.tree.querySelector(".".concat(options.childrenClass));
+        },
+        closestNode: function closestNode() {
+          var nodes = []; // all visible nodes sort by y
 
-          const walkToGetNodes = branch => {
+          var walkToGetNodes = function walkToGetNodes(branch) {
             //
             if (branch !== info.tree) {
-              const node = branch.querySelector(`.${options.nodeClass}`);
+              var node = branch.querySelector(".".concat(options.nodeClass));
 
               if (node && !isElementHidden(node)) {
                 nodes.push(node);
@@ -749,11 +746,11 @@ function makeTreeDraggable(treeEl, options = {}) {
             } //
 
 
-            const childrenEl = branch.querySelector(`.${options.childrenClass}`);
+            var childrenEl = branch.querySelector(".".concat(options.childrenClass));
 
             if (childrenEl) {
-              for (let i = 0; i < childrenEl.children.length; i++) {
-                const child = childrenEl.children[i];
+              for (var i = 0; i < childrenEl.children.length; i++) {
+                var child = childrenEl.children[i];
 
                 if (child !== movingEl && hp.hasClass(child, options.branchClass)) {
                   walkToGetNodes(child);
@@ -769,8 +766,10 @@ function makeTreeDraggable(treeEl, options = {}) {
           } //
 
 
-          let found;
-          const t = hp.binarySearch(nodes, node => hp.getOffset(node).y - movingNodeOf.y, null, null, true);
+          var found;
+          var t = hp.binarySearch(nodes, function (node) {
+            return hp.getOffset(node).y - movingNodeOf.y;
+          }, null, null, true);
 
           if (t.hit) {
             found = t.value;
@@ -784,10 +783,16 @@ function makeTreeDraggable(treeEl, options = {}) {
 
           return found;
         },
-        closestNodeOffset: () => hp.getOffset(info.closestNode),
-        closestBranch: () => hp.findParent(info.closestNode, el => hp.hasClass(el, options.branchClass)),
-        closestNext: () => {
-          let next = info.closestBranch.nextSibling;
+        closestNodeOffset: function closestNodeOffset() {
+          return hp.getOffset(info.closestNode);
+        },
+        closestBranch: function closestBranch() {
+          return hp.findParent(info.closestNode, function (el) {
+            return hp.hasClass(el, options.branchClass);
+          });
+        },
+        closestNext: function closestNext() {
+          var next = info.closestBranch.nextSibling;
 
           while (next) {
             if (next !== movingEl && hp.hasClass(next, options.branchClass) && !isElementHidden(next)) {
@@ -797,8 +802,8 @@ function makeTreeDraggable(treeEl, options = {}) {
             next = next.nextSibling;
           }
         },
-        closestPrev: () => {
-          let prev = info.closestBranch.previousSibling;
+        closestPrev: function closestPrev() {
+          var prev = info.closestBranch.previousSibling;
 
           while (prev) {
             if (prev !== movingEl && hp.hasClass(prev, options.branchClass) && !isElementHidden(prev)) {
@@ -808,7 +813,7 @@ function makeTreeDraggable(treeEl, options = {}) {
             prev = prev.previousSibling;
           }
         },
-        aboveBranch: () => {
+        aboveBranch: function aboveBranch() {
           // find above from branch to root
           // closestBranch must be placeholder
           if (info.closestBranch !== store.placeholder) {
@@ -820,9 +825,9 @@ function makeTreeDraggable(treeEl, options = {}) {
           } // find placeholder prev or parent
 
 
-          let cur = info.closestBranch;
-          let prev = cur.previousSibling;
-          let found;
+          var cur = info.closestBranch;
+          var prev = cur.previousSibling;
+          var found;
 
           while (prev) {
             if (prev !== movingEl && hp.hasClass(prev, options.branchClass) && !isElementHidden(prev)) {
@@ -835,19 +840,21 @@ function makeTreeDraggable(treeEl, options = {}) {
           }
 
           if (!found) {
-            cur = hp.findParent(cur, el => hp.hasClass(el, options.branchClass));
+            cur = hp.findParent(cur, function (el) {
+              return hp.hasClass(el, options.branchClass);
+            });
           } //
 
 
           while (cur) {
-            const curNode = cur.querySelector(`.${options.nodeClass}`);
+            var curNode = cur.querySelector(".".concat(options.nodeClass));
 
             if (hp.getOffset(curNode).x <= movingNodeOf.x) {
               break;
             }
 
-            let hasNextBranch;
-            let t = cur.nextSibling;
+            var hasNextBranch = void 0;
+            var t = cur.nextSibling;
 
             while (t) {
               if (t !== movingEl && t !== store.placeholder && hp.hasClass(t, options.branchClass) && !isElementHidden(t)) {
@@ -862,7 +869,9 @@ function makeTreeDraggable(treeEl, options = {}) {
               break;
             }
 
-            const parent = hp.findParent(cur, el => hp.hasClass(el, options.branchClass));
+            var parent = hp.findParent(cur, function (el) {
+              return hp.hasClass(el, options.branchClass);
+            });
 
             if (!parent) {
               break;
@@ -876,28 +885,54 @@ function makeTreeDraggable(treeEl, options = {}) {
       }; // conditions ========================================
       // life cycle: one move
 
-      const conditions = {
-        'no closest': () => !info.closestNode,
-        'closest is top': () => info.closestBranch === hp.findNodeList(info.root.children, el => el !== movingEl && !isElementHidden(el)),
-        'closest is top excluding placeholder': () => info.closestBranch === hp.findNodeList(info.root.children, el => el !== movingEl && el !== store.placeholder && !isElementHidden(el)),
-        'on closest middle': () => movingNodeOf.y < info.closestNodeOffset.y + info.closestNode.offsetHeight / 2,
-        'at closest indent right': () => movingNodeOf.x > info.closestNodeOffset.x + options.indent,
-        'at closest left': () => movingNodeOf.x < info.closestNodeOffset.x,
-        'closest is placeholder': () => info.closestBranch === store.placeholder,
-        'no aboveBranch': () => !info.aboveBranch,
-        'closest has next': () => info.closestNext,
-        'closest has prev': () => info.closestPrev,
-        'closest has children excluding placeholder movingEl': () => {
-          const childrenEl = info.closestBranch.querySelector(`.${options.childrenClass}`);
+      var conditions = {
+        'no closest': function noClosest() {
+          return !info.closestNode;
+        },
+        'closest is top': function closestIsTop() {
+          return info.closestBranch === hp.findNodeList(info.root.children, function (el) {
+            return el !== movingEl && !isElementHidden(el);
+          });
+        },
+        'closest is top excluding placeholder': function closestIsTopExcludingPlaceholder() {
+          return info.closestBranch === hp.findNodeList(info.root.children, function (el) {
+            return el !== movingEl && el !== store.placeholder && !isElementHidden(el);
+          });
+        },
+        'on closest middle': function onClosestMiddle() {
+          return movingNodeOf.y < info.closestNodeOffset.y + info.closestNode.offsetHeight / 2;
+        },
+        'at closest indent right': function atClosestIndentRight() {
+          return movingNodeOf.x > info.closestNodeOffset.x + options.indent;
+        },
+        'at closest left': function atClosestLeft() {
+          return movingNodeOf.x < info.closestNodeOffset.x;
+        },
+        'closest is placeholder': function closestIsPlaceholder() {
+          return info.closestBranch === store.placeholder;
+        },
+        'no aboveBranch': function noAboveBranch() {
+          return !info.aboveBranch;
+        },
+        'closest has next': function closestHasNext() {
+          return info.closestNext;
+        },
+        'closest has prev': function closestHasPrev() {
+          return info.closestPrev;
+        },
+        'closest has children excluding placeholder movingEl': function closestHasChildrenExcludingPlaceholderMovingEl() {
+          var childrenEl = info.closestBranch.querySelector(".".concat(options.childrenClass));
 
           if (childrenEl) {
-            return hp.findNodeList(childrenEl.children, el => el !== movingEl && el !== store.placeholder && !isElementHidden(el));
+            return hp.findNodeList(childrenEl.children, function (el) {
+              return el !== movingEl && el !== store.placeholder && !isElementHidden(el);
+            });
           }
         }
       }; // convert conditions result to Boolean
 
-      Object.keys(conditions).forEach(key => {
-        const old = conditions[key];
+      Object.keys(conditions).forEach(function (key) {
+        var old = conditions[key];
 
         conditions[key] = function () {
           return Boolean(old.call(this));
@@ -907,140 +942,327 @@ function makeTreeDraggable(treeEl, options = {}) {
       hp.attachCache(info, info);
       hp.attachCache(conditions, conditions); // actions start ========================================
 
-      const doAction = (name, ...args) => {
+      var doAction = function doAction(name) {
+        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
         if (!store._doActionQueue) {
           store._doActionQueue = Promise.resolve();
         }
 
-        const queue = store._doActionQueue;
+        var queue = store._doActionQueue;
         store._doActionQueue = queue.then(
         /*#__PURE__*/
-        _asyncToGenerator(function* () {
-          // record tried actions in one move
-          if (!store.oneMoveStore.actionRecords) {
-            store.oneMoveStore.actionRecords = [];
-          }
+        _asyncToGenerator(
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee() {
+          var actionRecords, action, r, placeholderPath, placeholderNodeBack;
+          return _regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  // record tried actions in one move
+                  if (!store.oneMoveStore.actionRecords) {
+                    store.oneMoveStore.actionRecords = [];
+                  }
 
-          const actionRecords = store.oneMoveStore.actionRecords; //
+                  actionRecords = store.oneMoveStore.actionRecords; //
 
-          const action = actions[name];
-          const r = action(...args);
-          actionRecords.push(name);
-          yield r; // set indent of placeholder
+                  action = actions[name];
+                  r = action.apply(void 0, args);
+                  actionRecords.push(name);
+                  _context.next = 7;
+                  return r;
 
-          const placeholderPath = options.getPathByBranchEl(store.placeholder);
-          const placeholderNodeBack = store.placeholder.querySelector(`.${options.nodeBackClass}`);
-          placeholderNodeBack.style.paddingLeft = (placeholderPath.length - 1) * options.indent + 'px'; // remove tempChildren if empty
+                case 7:
+                  // set indent of placeholder
+                  placeholderPath = options.getPathByBranchEl(store.placeholder);
+                  placeholderNodeBack = store.placeholder.querySelector(".".concat(options.nodeBackClass));
+                  placeholderNodeBack.style.paddingLeft = (placeholderPath.length - 1) * options.indent + 'px'; // remove tempChildren if empty
 
-          if (store.tempChildren.children.length === 0) {
-            hp.removeEl(store.tempChildren);
-          }
-        }));
+                  if (store.tempChildren.children.length === 0) {
+                    hp.removeEl(store.tempChildren);
+                  }
+
+                case 11:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        })));
       };
 
-      const actions = {
-        'nothing'() {
-          return _asyncToGenerator(function* () {})();
+      var actions = {
+        'nothing': function nothing() {
+          return _asyncToGenerator(
+          /*#__PURE__*/
+          _regeneratorRuntime.mark(function _callee2() {
+            return _regeneratorRuntime.wrap(function _callee2$(_context2) {
+              while (1) {
+                switch (_context2.prev = _context2.next) {
+                  case 0:
+                  case "end":
+                    return _context2.stop();
+                }
+              }
+            }, _callee2);
+          }))();
         },
-
         // do nothing
-        'append to root'() {
-          return _asyncToGenerator(function* () {
-            // no closest branch, just append to root
-            if (options.isTargetTreeRootDroppable(store)) {
-              hp.appendTo(store.placeholder, info.root);
-            }
-          })();
-        },
+        'append to root': function appendToRoot() {
+          return _asyncToGenerator(
+          /*#__PURE__*/
+          _regeneratorRuntime.mark(function _callee3() {
+            return _regeneratorRuntime.wrap(function _callee3$(_context3) {
+              while (1) {
+                switch (_context3.prev = _context3.next) {
+                  case 0:
+                    // no closest branch, just append to root
+                    if (options.isTargetTreeRootDroppable(store)) {
+                      hp.appendTo(store.placeholder, info.root);
+                    }
 
-        'insert before'() {
-          return _asyncToGenerator(function* () {
-            if (options.isNodeParentDroppable(info.closestBranch, store.targetTreeEl)) {
-              hp.insertBefore(store.placeholder, info.closestBranch);
-            } else {
-              return secondCase(getParentBranchByEl(info.closestBranch));
-            }
-          })();
-        },
-
-        'insert after'(branch = info.closestBranch) {
-          return _asyncToGenerator(function* () {
-            if (options.isNodeParentDroppable(branch, store.targetTreeEl)) {
-              hp.insertAfter(store.placeholder, branch);
-            } else {
-              const moved = yield secondCase(getParentBranchByEl(branch));
-              const isFirstTriedAction = !store.oneMoveStore.actionRecords || store.oneMoveStore.actionRecords.length === 1;
-
-              if (!moved && isFirstTriedAction) {
-                return thirdCase(branch);
+                  case 1:
+                  case "end":
+                    return _context3.stop();
+                }
               }
-            }
-          })();
+            }, _callee3);
+          }))();
         },
+        'insert before': function insertBefore() {
+          return _asyncToGenerator(
+          /*#__PURE__*/
+          _regeneratorRuntime.mark(function _callee4() {
+            return _regeneratorRuntime.wrap(function _callee4$(_context4) {
+              while (1) {
+                switch (_context4.prev = _context4.next) {
+                  case 0:
+                    if (!options.isNodeParentDroppable(info.closestBranch, store.targetTreeEl)) {
+                      _context4.next = 4;
+                      break;
+                    }
 
-        prepend() {
-          return _asyncToGenerator(function* () {
-            if (info.closestBranch === store.placeholder) {
-              return;
-            }
+                    hp.insertBefore(store.placeholder, info.closestBranch);
+                    _context4.next = 5;
+                    break;
 
-            if (options.ifNodeFolded(info.closestBranch, store) && !options.unfoldWhenDragover) {
-              return doAction('insert after', info.closestBranch);
-            } else {
-              if (options.isNodeDroppable(info.closestBranch, store.targetTreeEl)) {
-                yield tryUnfoldAndPrepend(info.closestBranch);
-              } else {
-                return secondCase(info.closestBranch);
+                  case 4:
+                    return _context4.abrupt("return", secondCase(getParentBranchByEl(info.closestBranch)));
+
+                  case 5:
+                  case "end":
+                    return _context4.stop();
+                }
               }
-            }
-          })();
+            }, _callee4);
+          }))();
         },
+        'insert after': function insertAfter() {
+          var branch = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : info.closestBranch;
+          return _asyncToGenerator(
+          /*#__PURE__*/
+          _regeneratorRuntime.mark(function _callee5() {
+            var moved, isFirstTriedAction;
+            return _regeneratorRuntime.wrap(function _callee5$(_context5) {
+              while (1) {
+                switch (_context5.prev = _context5.next) {
+                  case 0:
+                    if (!options.isNodeParentDroppable(branch, store.targetTreeEl)) {
+                      _context5.next = 4;
+                      break;
+                    }
 
-        'after above'() {
-          return _asyncToGenerator(function* () {
-            if (options.isNodeParentDroppable(info.aboveBranch, store.targetTreeEl)) {
-              hp.insertAfter(store.placeholder, info.aboveBranch);
-            } else {
-              return secondCase(getParentBranchByEl(info.aboveBranch));
-            }
-          })();
-        },
+                    hp.insertAfter(store.placeholder, branch);
+                    _context5.next = 10;
+                    break;
 
-        'append to prev'() {
-          return _asyncToGenerator(function* () {
-            if (info.closestPrev === store.placeholder) {
-              return;
-            }
+                  case 4:
+                    _context5.next = 6;
+                    return secondCase(getParentBranchByEl(branch));
 
-            if (options.ifNodeFolded(info.closestPrev, store)) {
-              return doAction('insert after', info.closestPrev);
-            } else {
-              if (options.isNodeDroppable(info.closestPrev, store.targetTreeEl)) {
-                const childrenEl = yield unfoldAndGetChildrenEl(info.closestPrev);
-                hp.appendTo(store.placeholder, childrenEl);
-              } else {
-                return secondCase(info.closestPrev);
+                  case 6:
+                    moved = _context5.sent;
+                    isFirstTriedAction = !store.oneMoveStore.actionRecords || store.oneMoveStore.actionRecords.length === 1;
+
+                    if (!(!moved && isFirstTriedAction)) {
+                      _context5.next = 10;
+                      break;
+                    }
+
+                    return _context5.abrupt("return", thirdCase(branch));
+
+                  case 10:
+                  case "end":
+                    return _context5.stop();
+                }
               }
-            }
-          })();
+            }, _callee5);
+          }))();
+        },
+        prepend: function prepend() {
+          return _asyncToGenerator(
+          /*#__PURE__*/
+          _regeneratorRuntime.mark(function _callee6() {
+            return _regeneratorRuntime.wrap(function _callee6$(_context6) {
+              while (1) {
+                switch (_context6.prev = _context6.next) {
+                  case 0:
+                    if (!(info.closestBranch === store.placeholder)) {
+                      _context6.next = 2;
+                      break;
+                    }
+
+                    return _context6.abrupt("return");
+
+                  case 2:
+                    if (!(options.ifNodeFolded(info.closestBranch, store) && !options.unfoldWhenDragover)) {
+                      _context6.next = 6;
+                      break;
+                    }
+
+                    return _context6.abrupt("return", doAction('insert after', info.closestBranch));
+
+                  case 6:
+                    if (!options.isNodeDroppable(info.closestBranch, store.targetTreeEl)) {
+                      _context6.next = 11;
+                      break;
+                    }
+
+                    _context6.next = 9;
+                    return tryUnfoldAndPrepend(info.closestBranch);
+
+                  case 9:
+                    _context6.next = 12;
+                    break;
+
+                  case 11:
+                    return _context6.abrupt("return", secondCase(info.closestBranch));
+
+                  case 12:
+                  case "end":
+                    return _context6.stop();
+                }
+              }
+            }, _callee6);
+          }))();
+        },
+        'after above': function afterAbove() {
+          return _asyncToGenerator(
+          /*#__PURE__*/
+          _regeneratorRuntime.mark(function _callee7() {
+            return _regeneratorRuntime.wrap(function _callee7$(_context7) {
+              while (1) {
+                switch (_context7.prev = _context7.next) {
+                  case 0:
+                    if (!options.isNodeParentDroppable(info.aboveBranch, store.targetTreeEl)) {
+                      _context7.next = 4;
+                      break;
+                    }
+
+                    hp.insertAfter(store.placeholder, info.aboveBranch);
+                    _context7.next = 5;
+                    break;
+
+                  case 4:
+                    return _context7.abrupt("return", secondCase(getParentBranchByEl(info.aboveBranch)));
+
+                  case 5:
+                  case "end":
+                    return _context7.stop();
+                }
+              }
+            }, _callee7);
+          }))();
+        },
+        'append to prev': function appendToPrev() {
+          return _asyncToGenerator(
+          /*#__PURE__*/
+          _regeneratorRuntime.mark(function _callee8() {
+            var childrenEl;
+            return _regeneratorRuntime.wrap(function _callee8$(_context8) {
+              while (1) {
+                switch (_context8.prev = _context8.next) {
+                  case 0:
+                    if (!(info.closestPrev === store.placeholder)) {
+                      _context8.next = 2;
+                      break;
+                    }
+
+                    return _context8.abrupt("return");
+
+                  case 2:
+                    if (!options.ifNodeFolded(info.closestPrev, store)) {
+                      _context8.next = 6;
+                      break;
+                    }
+
+                    return _context8.abrupt("return", doAction('insert after', info.closestPrev));
+
+                  case 6:
+                    if (!options.isNodeDroppable(info.closestPrev, store.targetTreeEl)) {
+                      _context8.next = 13;
+                      break;
+                    }
+
+                    _context8.next = 9;
+                    return unfoldAndGetChildrenEl(info.closestPrev);
+
+                  case 9:
+                    childrenEl = _context8.sent;
+                    hp.appendTo(store.placeholder, childrenEl);
+                    _context8.next = 14;
+                    break;
+
+                  case 13:
+                    return _context8.abrupt("return", secondCase(info.closestPrev));
+
+                  case 14:
+                  case "end":
+                    return _context8.stop();
+                }
+              }
+            }, _callee8);
+          }))();
         }
-
       }; // second case for actions, when target position not droppable
       // return true if moved
 
-      const secondCase =
+      var secondCase =
       /*#__PURE__*/
       function () {
-        var _ref2 = _asyncToGenerator(function* (branchEl) {
-          if (branchEl) {
-            const targetEl = options._findClosestDroppablePosition(branchEl, store.targetTreeEl);
+        var _ref2 = _asyncToGenerator(
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee9(branchEl) {
+          var targetEl;
+          return _regeneratorRuntime.wrap(function _callee9$(_context9) {
+            while (1) {
+              switch (_context9.prev = _context9.next) {
+                case 0:
+                  if (!branchEl) {
+                    _context9.next = 5;
+                    break;
+                  }
 
-            if (targetEl) {
-              hp.insertAfter(store.placeholder, targetEl);
-              return true;
+                  targetEl = options._findClosestDroppablePosition(branchEl, store.targetTreeEl);
+
+                  if (!targetEl) {
+                    _context9.next = 5;
+                    break;
+                  }
+
+                  hp.insertAfter(store.placeholder, targetEl);
+                  return _context9.abrupt("return", true);
+
+                case 5:
+                case "end":
+                  return _context9.stop();
+              }
             }
-          }
-        });
+          }, _callee9);
+        }));
 
         return function secondCase(_x) {
           return _ref2.apply(this, arguments);
@@ -1049,71 +1271,143 @@ function makeTreeDraggable(treeEl, options = {}) {
       // 当操作是'after', 第一种第二种情况无效时, 尝试prepend
 
 
-      const thirdCase =
+      var thirdCase =
       /*#__PURE__*/
       function () {
-        var _ref3 = _asyncToGenerator(function* (branchEl) {
-          // the third case
-          if (!options.ifNodeFolded(branchEl, store) && options.isNodeDroppable(branchEl, store.targetTreeEl)) {
-            yield tryUnfoldAndPrepend(branchEl);
-          }
-        });
+        var _ref3 = _asyncToGenerator(
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee10(branchEl) {
+          return _regeneratorRuntime.wrap(function _callee10$(_context10) {
+            while (1) {
+              switch (_context10.prev = _context10.next) {
+                case 0:
+                  if (!(!options.ifNodeFolded(branchEl, store) && options.isNodeDroppable(branchEl, store.targetTreeEl))) {
+                    _context10.next = 3;
+                    break;
+                  }
+
+                  _context10.next = 3;
+                  return tryUnfoldAndPrepend(branchEl);
+
+                case 3:
+                case "end":
+                  return _context10.stop();
+              }
+            }
+          }, _callee10);
+        }));
 
         return function thirdCase(_x2) {
           return _ref3.apply(this, arguments);
         };
       }();
 
-      const unfoldAndGetChildrenEl =
+      var unfoldAndGetChildrenEl =
       /*#__PURE__*/
       function () {
-        var _ref4 = _asyncToGenerator(function* (branch) {
-          yield options.unfoldTargetNodeByEl(branch, store);
-          let childrenEl = branch.querySelector(`.${options.childrenClass}`);
+        var _ref4 = _asyncToGenerator(
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee11(branch) {
+          var childrenEl;
+          return _regeneratorRuntime.wrap(function _callee11$(_context11) {
+            while (1) {
+              switch (_context11.prev = _context11.next) {
+                case 0:
+                  _context11.next = 2;
+                  return options.unfoldTargetNodeByEl(branch, store);
 
-          if (!childrenEl) {
-            childrenEl = store.tempChildren;
-            hp.appendTo(childrenEl, branch);
-          }
+                case 2:
+                  childrenEl = branch.querySelector(".".concat(options.childrenClass));
 
-          return childrenEl;
-        });
+                  if (!childrenEl) {
+                    childrenEl = store.tempChildren;
+                    hp.appendTo(childrenEl, branch);
+                  }
+
+                  return _context11.abrupt("return", childrenEl);
+
+                case 5:
+                case "end":
+                  return _context11.stop();
+              }
+            }
+          }, _callee11);
+        }));
 
         return function unfoldAndGetChildrenEl(_x3) {
           return _ref4.apply(this, arguments);
         };
       }();
 
-      const tryUnfoldAndPrepend =
+      var tryUnfoldAndPrepend =
       /*#__PURE__*/
       function () {
-        var _ref5 = _asyncToGenerator(function* (branchEl) {
-          const func =
-          /*#__PURE__*/
-          function () {
-            var _ref6 = _asyncToGenerator(function* () {
-              const childrenEl = yield unfoldAndGetChildrenEl(branchEl);
-              hp.prependTo(store.placeholder, childrenEl);
-            });
+        var _ref5 = _asyncToGenerator(
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee13(branchEl) {
+          var func, oneMoveStore;
+          return _regeneratorRuntime.wrap(function _callee13$(_context13) {
+            while (1) {
+              switch (_context13.prev = _context13.next) {
+                case 0:
+                  func =
+                  /*#__PURE__*/
+                  function () {
+                    var _ref6 = _asyncToGenerator(
+                    /*#__PURE__*/
+                    _regeneratorRuntime.mark(function _callee12() {
+                      var childrenEl;
+                      return _regeneratorRuntime.wrap(function _callee12$(_context12) {
+                        while (1) {
+                          switch (_context12.prev = _context12.next) {
+                            case 0:
+                              _context12.next = 2;
+                              return unfoldAndGetChildrenEl(branchEl);
 
-            return function func() {
-              return _ref6.apply(this, arguments);
-            };
-          }();
+                            case 2:
+                              childrenEl = _context12.sent;
+                              hp.prependTo(store.placeholder, childrenEl);
 
-          if (options.ifNodeFolded(branchEl, store)) {
-            // delay if node folded
-            let oneMoveStore = store.oneMoveStore;
-            setTimeout(() => {
-              // check if expired
-              if (oneMoveStore === store.oneMoveStore) {
-                func();
+                            case 4:
+                            case "end":
+                              return _context12.stop();
+                          }
+                        }
+                      }, _callee12);
+                    }));
+
+                    return function func() {
+                      return _ref6.apply(this, arguments);
+                    };
+                  }();
+
+                  if (!options.ifNodeFolded(branchEl, store)) {
+                    _context13.next = 6;
+                    break;
+                  }
+
+                  // delay if node folded
+                  oneMoveStore = store.oneMoveStore;
+                  setTimeout(function () {
+                    // check if expired
+                    if (oneMoveStore === store.oneMoveStore) {
+                      func();
+                    }
+                  }, options.unfoldWhenDragoverDelay);
+                  _context13.next = 8;
+                  break;
+
+                case 6:
+                  _context13.next = 8;
+                  return func();
+
+                case 8:
+                case "end":
+                  return _context13.stop();
               }
-            }, options.unfoldWhenDragoverDelay);
-          } else {
-            yield func();
-          }
-        });
+            }
+          }, _callee13);
+        }));
 
         return function tryUnfoldAndPrepend(_x4) {
           return _ref5.apply(this, arguments);
@@ -1122,21 +1416,14 @@ function makeTreeDraggable(treeEl, options = {}) {
       //
 
 
-      const checkPlaceholder = () => {
+      var checkPlaceholder = function checkPlaceholder() {
         if (!store.placeholder) {
-          const placeholder = hp.createElementFromHTML(`
-            <div id="${options.placeholderId}" class="${options.branchClass} ${options.placeholderClass}">
-              <div class="${options.nodeBackClass} ${options.placeholderNodeBackClass}">
-                <div class="${options.nodeClass} ${options.placeholderNodeClass}">
-                </div>
-              </div>
-            </div>
-          `);
+          var placeholder = hp.createElementFromHTML("\n            <div id=\"".concat(options.placeholderId, "\" class=\"").concat(options.branchClass, " ").concat(options.placeholderClass, "\">\n              <div class=\"").concat(options.nodeBackClass, " ").concat(options.placeholderNodeBackClass, "\">\n                <div class=\"").concat(options.nodeClass, " ").concat(options.placeholderNodeClass, "\">\n                </div>\n              </div>\n            </div>\n          "));
           hp.insertAfter(placeholder, movingEl);
           store.placeholder = placeholder;
           options.afterPlaceholderCreated(store); // create a tree children el to use when can't get childrenEl
 
-          const tempChildren = document.createElement('DIV');
+          var tempChildren = document.createElement('DIV');
           hp.addClass(tempChildren, options.childrenClass);
           store.tempChildren = tempChildren;
         }
@@ -1145,69 +1432,87 @@ function makeTreeDraggable(treeEl, options = {}) {
 
       checkPlaceholder();
       doDraggableDecision({
-        options,
-        event,
-        store,
-        opt,
-        info,
-        conditions,
-        actions,
-        doAction
+        options: options,
+        event: event,
+        store: store,
+        opt: opt,
+        info: info,
+        conditions: conditions,
+        actions: actions,
+        doAction: doAction
       });
     },
     drop: function () {
-      var _drop = _asyncToGenerator(function* (endEvent, store, opt) {
-        const movingEl = store.el; // branch
+      var _drop = _asyncToGenerator(
+      /*#__PURE__*/
+      _regeneratorRuntime.mark(function _callee14(endEvent, store, opt) {
+        var movingEl, placeholder, tempChildren, maskTree, pathChanged, isPathChanged;
+        return _regeneratorRuntime.wrap(function _callee14$(_context14) {
+          while (1) {
+            switch (_context14.prev = _context14.next) {
+              case 0:
+                isPathChanged = function _ref7() {
+                  var startTree = store.startTree,
+                      targetTree = store.targetTree,
+                      startPath = store.startPath,
+                      targetPath = store.targetPath;
+                  return startTree !== targetTree || startPath.toString() !== targetPath.toString();
+                };
 
-        const placeholder = store.placeholder,
-              tempChildren = store.tempChildren; // use mask tree to avoid flick caused by DOM update in short time
-        // 复制 targetTreeEl 作为遮罩, 避免短时间内更新DOM引起的闪烁
+                movingEl = store.el; // branch
 
-        let maskTree;
+                placeholder = store.placeholder, tempChildren = store.tempChildren; // use mask tree to avoid flick caused by DOM update in short time
+                // 复制 targetTreeEl 作为遮罩, 避免短时间内更新DOM引起的闪烁
 
-        if (placeholder) {
-          // placeholder not mounted is rarely
-          // create mask tree
-          maskTree = store.targetTreeEl.cloneNode(true);
-          store.targetTreeEl.style.display = 'none';
-          hp.insertAfter(maskTree, store.targetTreeEl); //
+                if (placeholder) {
+                  // placeholder not mounted is rarely
+                  // create mask tree
+                  maskTree = store.targetTreeEl.cloneNode(true);
+                  store.targetTreeEl.style.display = 'none';
+                  hp.insertAfter(maskTree, store.targetTreeEl); //
 
-          store.targetPath = options.getPathByBranchEl(placeholder);
-          let pathChanged = isPathChanged();
-          store.targetPathNotEqualToStartPath = pathChanged;
-          store.pathChangePrevented = false;
+                  store.targetPath = options.getPathByBranchEl(placeholder);
+                  pathChanged = isPathChanged();
+                  store.targetPathNotEqualToStartPath = pathChanged;
+                  store.pathChangePrevented = false;
 
-          if (options.beforeDrop && options.beforeDrop(pathChanged, store, opt) === false) {
-            pathChanged = false;
-            store.pathChangePrevented = false;
+                  if (options.beforeDrop && options.beforeDrop(pathChanged, store, opt) === false) {
+                    pathChanged = false;
+                    store.pathChangePrevented = false;
+                  }
+
+                  store.pathChanged = pathChanged;
+                  hp.removeEl(placeholder);
+
+                  if (tempChildren) {
+                    hp.removeEl(tempChildren);
+                  }
+                }
+
+                store.restoreDOM();
+                _context14.next = 7;
+                return options.ondrop(store, opt);
+
+              case 7:
+                if (!maskTree) {
+                  _context14.next = 12;
+                  break;
+                }
+
+                _context14.next = 10;
+                return hp.waitTime(30);
+
+              case 10:
+                hp.removeEl(maskTree);
+                store.targetTreeEl.style.display = 'block';
+
+              case 12:
+              case "end":
+                return _context14.stop();
+            }
           }
-
-          store.pathChanged = pathChanged;
-          hp.removeEl(placeholder);
-
-          if (tempChildren) {
-            hp.removeEl(tempChildren);
-          }
-        }
-
-        store.restoreDOM();
-        yield options.ondrop(store, opt); // remove mask tree
-
-        if (maskTree) {
-          yield hp.waitTime(30);
-          hp.removeEl(maskTree);
-          store.targetTreeEl.style.display = 'block';
-        } //
-
-
-        function isPathChanged() {
-          const startTree = store.startTree,
-                targetTree = store.targetTree,
-                startPath = store.startPath,
-                targetPath = store.targetPath;
-          return startTree !== targetTree || startPath.toString() !== targetPath.toString();
-        }
-      });
+        }, _callee14);
+      }));
 
       function drop(_x5, _x6, _x7) {
         return _drop.apply(this, arguments);
@@ -1216,17 +1521,17 @@ function makeTreeDraggable(treeEl, options = {}) {
       return drop;
     }()
   }),
-        destroy = _draggableHelper.destroy,
-        draggableHelperOptions = _draggableHelper.draggableHelperOptions;
+      destroy = _draggableHelper.destroy,
+      draggableHelperOptions = _draggableHelper.draggableHelperOptions;
 
   return {
-    destroy,
-    options,
-    optionsUpdated
+    destroy: destroy,
+    options: options,
+    optionsUpdated: optionsUpdated
   };
 
   function getParentBranchByEl(el) {
-    return hp.findParent(el, el => {
+    return hp.findParent(el, function (el) {
       if (hp.hasClass(el, options.branchClass)) {
         return true;
       }
@@ -1246,7 +1551,7 @@ function isElementHidden(el) {
   return el.offsetWidth === 0 && el.offsetHeight === 0;
 }
 
-const treesStore = {};
+var treesStore = {};
 var script = {
   props: {
     triggerClass: {
@@ -1289,32 +1594,29 @@ var script = {
     } // top_left_corner, mouse
 
   },
-
   // components: {},
-  data() {
+  data: function data() {
     return {
-      treesStore
+      treesStore: treesStore
     };
   },
-
   // computed: {},
   // watch: {},
   methods: {
-    _Draggable_unfoldTargetNodeByEl(branchEl, store) {
-      const targetTree = store.targetTree;
-      const path = targetTree.getPathByBranchEl(branchEl);
-      const node = targetTree.getNodeByPath(path);
+    _Draggable_unfoldTargetNodeByEl: function _Draggable_unfoldTargetNodeByEl(branchEl, store) {
+      var targetTree = store.targetTree;
+      var path = targetTree.getPathByBranchEl(branchEl);
+      var node = targetTree.getNodeByPath(path);
       targetTree.unfold && targetTree.unfold(node, path);
-      return new Promise((resolve, reject) => {
-        targetTree.$nextTick(() => {
+      return new Promise(function (resolve, reject) {
+        targetTree.$nextTick(function () {
           resolve();
         });
       });
     },
-
-    isNodeDraggable(node, path) {
-      const store = this.treesStore.store;
-      const allNodes = this.getAllNodesByPath(path);
+    isNodeDraggable: function isNodeDraggable(node, path) {
+      var store = this.treesStore.store;
+      var allNodes = this.getAllNodesByPath(path);
       allNodes.unshift(this.rootNode);
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
@@ -1324,12 +1626,12 @@ var script = {
         for (var _iterator = hp.iterateAll(allNodes, {
           reverse: true
         })[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          const _step$value = _step.value,
-                node = _step$value.value,
-                index = _step$value.index;
-          const currentPath = path.slice(0, index + 1);
-          const draggableOpt = node.$draggable !== undefined ? node.$draggable : this.eachDraggable;
-          const draggable = hp.resolveValueOrGettter(draggableOpt, [currentPath, this, store]);
+          var _step$value = _step.value,
+              _node = _step$value.value,
+              index = _step$value.index;
+          var currentPath = path.slice(0, index + 1);
+          var draggableOpt = _node.$draggable !== undefined ? _node.$draggable : this.eachDraggable;
+          var draggable = hp.resolveValueOrGettter(draggableOpt, [currentPath, this, store]);
 
           if (draggable === undefined) {
             continue;
@@ -1354,12 +1656,11 @@ var script = {
 
       return true;
     },
-
-    isNodeDroppable(node, path) {
-      const store = this.treesStore.store;
-      const allNodes = this.getAllNodesByPath(path);
+    isNodeDroppable: function isNodeDroppable(node, path) {
+      var store = this.treesStore.store;
+      var allNodes = this.getAllNodesByPath(path);
       allNodes.unshift(this.rootNode);
-      let droppableFinal, resolved;
+      var droppableFinal, resolved;
       var _iteratorNormalCompletion2 = true;
       var _didIteratorError2 = false;
       var _iteratorError2 = undefined;
@@ -1368,12 +1669,12 @@ var script = {
         for (var _iterator2 = hp.iterateAll(allNodes, {
           reverse: true
         })[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          const _step2$value = _step2.value,
-                node = _step2$value.value,
-                index = _step2$value.index;
-          const currentPath = path.slice(0, index + 1);
-          const droppableOpt = node.$droppable !== undefined ? node.$droppable : this.eachDroppable;
-          const droppable = hp.resolveValueOrGettter(droppableOpt, [currentPath, this, store]);
+          var _step2$value = _step2.value,
+              _node2 = _step2$value.value,
+              index = _step2$value.index;
+          var currentPath = path.slice(0, index + 1);
+          var droppableOpt = _node2.$droppable !== undefined ? _node2.$droppable : this.eachDroppable;
+          var droppable = hp.resolveValueOrGettter(droppableOpt, [currentPath, this, store]);
 
           if (droppable === undefined) {
             continue;
@@ -1404,35 +1705,36 @@ var script = {
 
       if (this._internal_hook_isNodeDroppable) {
         return this._internal_hook_isNodeDroppable({
-          droppableFinal,
-          node,
-          path,
-          store
+          droppableFinal: droppableFinal,
+          node: node,
+          path: path,
+          store: store
         });
       }
 
       return droppableFinal;
     },
-
     // override
-    getPathByBranchEl(branchEl) {
-      const getAttrPath = el => {
-        const pathStr = el.getAttribute('data-tree-node-path');
+    getPathByBranchEl: function getPathByBranchEl(branchEl) {
+      var getAttrPath = function getAttrPath(el) {
+        var pathStr = el.getAttribute('data-tree-node-path');
 
         if (pathStr) {
-          return pathStr.split(',').map(v => parseInt(v));
+          return pathStr.split(',').map(function (v) {
+            return parseInt(v);
+          });
         }
       };
 
-      const path = getAttrPath(branchEl);
+      var path = getAttrPath(branchEl);
 
       if (path) {
         return path;
       } // placeholder path
 
 
-      let parentPath;
-      hp.findParent(branchEl, el => {
+      var parentPath;
+      hp.findParent(branchEl, function (el) {
         if (hp.hasClass(el, 'tree-root')) {
           parentPath = [];
           return true;
@@ -1443,16 +1745,16 @@ var script = {
           return true;
         }
       });
-      let index = 0;
+      var index = 0;
       var _iteratorNormalCompletion3 = true;
       var _didIteratorError3 = false;
       var _iteratorError3 = undefined;
 
       try {
         for (var _iterator3 = hp.iterateAll(branchEl.parentElement.children)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          const _step3$value = _step3.value,
-                el = _step3$value.value,
-                index2 = _step3$value.index;
+          var _step3$value = _step3.value,
+              el = _step3$value.value,
+              index2 = _step3$value.index;
 
           if (hp.hasClass(el, 'tree-branch') || hp.hasClass(el, 'tree-placeholder')) {
             if (el === branchEl) {
@@ -1477,14 +1779,14 @@ var script = {
         }
       }
 
-      return [...parentPath, index];
+      return [].concat(_toConsumableArray(parentPath), [index]);
     }
-
   },
-
   // created() {},
-  mounted() {
-    const options = this._draggableOptions = {
+  mounted: function mounted() {
+    var _this = this;
+
+    var options = this._draggableOptions = {
       indent: this.indent,
       triggerClass: this.triggerClass,
       unfoldWhenDragover: this.unfoldWhenDragover,
@@ -1501,14 +1803,14 @@ var script = {
       placeholderNodeBackClass: 'tree-placeholder-node-back',
       placeholderNodeClass: 'tree-placeholder-node',
       draggingClass: 'dragging',
-      placeholderId: `he_tree_drag_placeholder`,
-      ifNodeFolded: (branchEl, store) => {
-        const targetTree = store.targetTree;
-        const node = targetTree.getNodeByBranchEl(branchEl);
+      placeholderId: "he_tree_drag_placeholder",
+      ifNodeFolded: function ifNodeFolded(branchEl, store) {
+        var targetTree = store.targetTree;
+        var node = targetTree.getNodeByBranchEl(branchEl);
         return node.$folded;
       },
-      isTargetTreeRootDroppable: store => {
-        const droppable = hp.resolveValueOrGettter(store.targetTree.rootNode.$droppable, [store.targetTree, store]);
+      isTargetTreeRootDroppable: function isTargetTreeRootDroppable(store) {
+        var droppable = hp.resolveValueOrGettter(store.targetTree.rootNode.$droppable, [store.targetTree, store]);
 
         if (droppable !== undefined) {
           return droppable;
@@ -1516,25 +1818,30 @@ var script = {
 
         return true;
       },
-      unfoldTargetNodeByEl: (...args) => this._Draggable_unfoldTargetNodeByEl(...args),
-      isNodeParentDroppable: (branchEl, treeEl) => {
-        const tree = this.getTreeVmByTreeEl(treeEl);
-        const path = tree.getPathByBranchEl(branchEl);
-        const parentPath = hp.arrayWithoutEnd(path, 1);
-        const parent = tree.getNodeByPath(parentPath);
+      unfoldTargetNodeByEl: function unfoldTargetNodeByEl() {
+        return _this._Draggable_unfoldTargetNodeByEl.apply(_this, arguments);
+      },
+      isNodeParentDroppable: function isNodeParentDroppable(branchEl, treeEl) {
+        var tree = _this.getTreeVmByTreeEl(treeEl);
+
+        var path = tree.getPathByBranchEl(branchEl);
+        var parentPath = hp.arrayWithoutEnd(path, 1);
+        var parent = tree.getNodeByPath(parentPath);
         return tree.isNodeDroppable(parent, parentPath);
       },
-      isNodeDroppable: (branchEl, treeEl) => {
-        const tree = this.getTreeVmByTreeEl(treeEl);
-        const path = tree.getPathByBranchEl(branchEl);
-        const node = tree.getNodeByPath(path);
+      isNodeDroppable: function isNodeDroppable(branchEl, treeEl) {
+        var tree = _this.getTreeVmByTreeEl(treeEl);
+
+        var path = tree.getPathByBranchEl(branchEl);
+        var node = tree.getNodeByPath(path);
         return tree.isNodeDroppable(node, path);
       },
-      _findClosestDroppablePosition: (branchEl, treeEl) => {
-        const tree = this.getTreeVmByTreeEl(treeEl);
-        const path = tree.getPathByBranchEl(branchEl);
-        const findPath = hp.arrayWithoutEnd(path, 1);
-        let cur = path;
+      _findClosestDroppablePosition: function _findClosestDroppablePosition(branchEl, treeEl) {
+        var tree = _this.getTreeVmByTreeEl(treeEl);
+
+        var path = tree.getPathByBranchEl(branchEl);
+        var findPath = hp.arrayWithoutEnd(path, 1);
+        var cur = path;
         var _iteratorNormalCompletion4 = true;
         var _didIteratorError4 = false;
         var _iteratorError4 = undefined;
@@ -1543,14 +1850,14 @@ var script = {
           for (var _iterator4 = tree.iteratePath(findPath, {
             reverse: true
           })[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-            const _step4$value = _step4.value,
-                  node = _step4$value.node,
-                  path = _step4$value.path;
+            var _step4$value = _step4.value,
+                node = _step4$value.node,
+                _path = _step4$value.path;
 
-            if (tree.isNodeDroppable(node, path)) {
+            if (tree.isNodeDroppable(node, _path)) {
               return tree.getBranchElByPath(cur);
             } else {
-              cur = path;
+              cur = _path;
             }
           }
         } catch (err) {
@@ -1568,31 +1875,33 @@ var script = {
           }
         }
 
-        if (tree.isNodeDroppable(this.rootNode, [])) {
+        if (tree.isNodeDroppable(_this.rootNode, [])) {
           return tree.getBranchElByPath(cur);
         }
       },
-      afterPlaceholderCreated: store => {
+      afterPlaceholderCreated: function afterPlaceholderCreated(store) {
         store.startTree.$emit('afterPlaceholderCreated', store);
       },
-      getPathByBranchEl: branchEl => this.getPathByBranchEl(branchEl),
-      beforeDrag: store => {
-        this.treesStore.store = store;
-        store.startTree = this.getTreeVmByTreeEl(store.startTreeEl);
-        const draggable = hp.resolveValueOrGettter(store.startTree.draggable, [store.startTree, store]);
+      getPathByBranchEl: function getPathByBranchEl(branchEl) {
+        return _this.getPathByBranchEl(branchEl);
+      },
+      beforeDrag: function beforeDrag(store) {
+        _this.treesStore.store = store;
+        store.startTree = _this.getTreeVmByTreeEl(store.startTreeEl);
+        var draggable = hp.resolveValueOrGettter(store.startTree.draggable, [store.startTree, store]);
 
         if (!draggable) {
           return false;
         }
       },
-      ondrag: store => {
-        const startTree = store.startTree,
-              dragBranchEl = store.dragBranchEl,
-              startPath = store.startPath;
-        const path = startTree.getPathByBranchEl(dragBranchEl);
+      ondrag: function ondrag(store) {
+        var startTree = store.startTree,
+            dragBranchEl = store.dragBranchEl,
+            startPath = store.startPath;
+        var path = startTree.getPathByBranchEl(dragBranchEl);
         store.dragNode = startTree.getNodeByPath(path);
 
-        if (this.cloneWhenDrag) {
+        if (_this.cloneWhenDrag) {
           store.dragNode = cloneTreeData(store.dragNode);
         }
 
@@ -1605,15 +1914,17 @@ var script = {
         }
 
         store.startTree.$emit('drag', store);
-        this.$root.$emit('he-tree-drag', store);
+
+        _this.$root.$emit('he-tree-drag', store);
       },
-      filterTargetTree: (targetTreeEl, store) => {
-        const targetTree = this.getTreeVmByTreeEl(targetTreeEl);
-        const startTree = store.startTree;
+      filterTargetTree: function filterTargetTree(targetTreeEl, store) {
+        var targetTree = _this.getTreeVmByTreeEl(targetTreeEl);
+
+        var startTree = store.startTree;
 
         if (startTree !== targetTree) {
-          if (this._internal_hook_filterTargetTree) {
-            if (this._internal_hook_filterTargetTree(targetTree, store) === false) {
+          if (_this._internal_hook_filterTargetTree) {
+            if (_this._internal_hook_filterTargetTree(targetTree, store) === false) {
               return false;
             }
           } else {
@@ -1621,7 +1932,7 @@ var script = {
           }
         }
 
-        const targetTreeDroppable = hp.resolveValueOrGettter(targetTree.droppable, [targetTree, store]);
+        var targetTreeDroppable = hp.resolveValueOrGettter(targetTree.droppable, [targetTree, store]);
 
         if (!targetTreeDroppable) {
           return false;
@@ -1629,53 +1940,54 @@ var script = {
 
         store.targetTree = targetTree;
 
-        if (!hp.resolveValueOrGettter(store.startTree === store.targetTree) && hp.resolveValueOrGettter(this._Draggable_unfoldTargetNode, [false, this.treeData]) !== this.rootNode.children) {
+        if (!hp.resolveValueOrGettter(store.startTree === store.targetTree) && hp.resolveValueOrGettter(_this._Draggable_unfoldTargetNode, [false, _this.treeData]) !== _this.rootNode.children) {
           return false;
         }
       },
-      beforeDrop: (pathChanged, store) => {
-        const targetTree = store.targetTree;
+      beforeDrop: function beforeDrop(pathChanged, store) {
+        var targetTree = store.targetTree;
 
         if (targetTree.hasHook('ondragend') && targetTree.executeHook('ondragend', [targetTree, store]) === false) {
           return false;
         }
 
         targetTree.$emit('drop', store);
-        this.$root.$emit('he-tree-drop', store);
-      },
-      ondrop: (store, t) => {
-        if (store.pathChanged) {
-          const startTree = store.startTree,
-                targetTree = store.targetTree,
-                startPath = store.startPath,
-                targetPath = store.targetPath,
-                dragNode = store.dragNode;
 
-          if (this.cloneWhenDrag !== true) {
+        _this.$root.$emit('he-tree-drop', store);
+      },
+      ondrop: function ondrop(store, t) {
+        if (store.pathChanged) {
+          var startTree = store.startTree,
+              targetTree = store.targetTree,
+              startPath = store.startPath,
+              targetPath = store.targetPath,
+              dragNode = store.dragNode;
+
+          if (_this.cloneWhenDrag !== true) {
             // remove from start position
-            const startParentPath = hp.arrayWithoutEnd(startPath, 1);
-            const startParent = startTree.getNodeByPath(startParentPath);
-            const startSiblings = startParentPath.length === 0 ? startTree.treeData : startParent.children;
-            const startIndex = hp.arrayLast(startPath);
+            var startParentPath = hp.arrayWithoutEnd(startPath, 1);
+            var startParent = startTree.getNodeByPath(startParentPath);
+            var startSiblings = startParentPath.length === 0 ? startTree.treeData : startParent.children;
+            var startIndex = hp.arrayLast(startPath);
             startSiblings.splice(startIndex, 1); // update targetPath
 
             if (startTree === targetTree) {
               if (startPath.length <= targetPath.length) {
-                const lenNoEnd = startPath.length - 1;
-                let same = true;
+                var lenNoEnd = startPath.length - 1;
+                var same = true;
 
-                for (let i = 0; i < lenNoEnd; i++) {
-                  const s = startPath[i];
-                  const t = targetPath[i];
+                for (var i = 0; i < lenNoEnd; i++) {
+                  var s = startPath[i];
+                  var _t = targetPath[i];
 
-                  if (s !== t) {
+                  if (s !== _t) {
                     same = false;
                     break;
                   }
                 }
 
                 if (same) {
-                  const endIndex = startPath.length - 1;
+                  var endIndex = startPath.length - 1;
 
                   if (startPath[endIndex] < targetPath[endIndex]) {
                     targetPath[endIndex] -= 1;
@@ -1686,21 +1998,21 @@ var script = {
           } // insert to target position
 
 
-          const targetParentPath = hp.arrayWithoutEnd(targetPath, 1);
-          const targetParent = targetTree.getNodeByPath(targetParentPath);
-          let targetSiblings;
+          var targetParentPath = hp.arrayWithoutEnd(targetPath, 1);
+          var targetParent = targetTree.getNodeByPath(targetParentPath);
+          var targetSiblings;
 
           if (targetParentPath.length === 0) {
             targetSiblings = targetTree.treeData;
           } else {
             if (!targetParent.children) {
-              this.$set(targetParent, 'children', []);
+              _this.$set(targetParent, 'children', []);
             }
 
             targetSiblings = targetParent.children;
           }
 
-          const targetIndex = hp.arrayLast(targetPath);
+          var targetIndex = hp.arrayLast(targetPath);
           targetSiblings.splice(targetIndex, 0, dragNode); // emit event
 
           startTree.$emit('input', startTree.treeData);
@@ -1711,8 +2023,8 @@ var script = {
             targetTree.$emit('change');
           }
 
-          return new Promise((resolve, reject) => {
-            targetTree.$nextTick(() => {
+          return new Promise(function (resolve, reject) {
+            targetTree.$nextTick(function () {
               resolve();
             });
           });
@@ -1720,43 +2032,42 @@ var script = {
       }
     };
 
-    const _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
+    var _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
 
 
-    ['indent', 'triggerClass', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag'].forEach(name => {
-      this.$watch(name, value => {
+    ['indent', 'triggerClass', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag'].forEach(function (name) {
+      _this.$watch(name, function (value) {
         _makeTreeDraggable_obj.options[name] = value;
 
         _makeTreeDraggable_obj.optionsUpdated();
       });
     });
   }
-
 };
 
 /* script */
-const __vue_script__$1 = script;
+var __vue_script__$1 = script;
 /* template */
 
 /* style */
 
-const __vue_inject_styles__$1 = undefined;
+var __vue_inject_styles__$1 = undefined;
 /* scoped */
 
-const __vue_scope_id__$1 = undefined;
+var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-const __vue_module_identifier__$1 = undefined;
+var __vue_module_identifier__$1 = undefined;
 /* functional template */
 
-const __vue_is_functional_template__$1 = undefined;
+var __vue_is_functional_template__$1 = undefined;
 /* style inject */
 
 /* style inject SSR */
 
 /* style inject shadow dom */
 
-const __vue_component__$1 = __vue_normalize__({}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
+var __vue_component__$1 = __vue_normalize__({}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
 
 exports.Check = check;
 exports.Draggable = __vue_component__$1;

@@ -1,4 +1,4 @@
-import {belongsTo, report} from "rogo";
+import {belongsTo, report, camelize} from "rogo";
 import * as rollup from "rollup";
 import * as path from "path";
 const babel = require('rollup-plugin-babel');
@@ -14,7 +14,7 @@ const pkg = require("../package.json")
 const input = 'src/index.js'
 const outDir = 'dist'
 const outputName = pkg.name // the built file name is outDir/outputName.format.js
-const moduleName = 'heTreeVue' // for umd, amd
+const moduleName = camelize(pkg.name) // for umd, amd
 const extractCssPath = path.resolve(outDir, `${outputName}.css`)
 
 const getBabelConfig = () => ({
@@ -23,6 +23,7 @@ const getBabelConfig = () => ({
     ['@vue/cli-plugin-babel/preset', {
       useBuiltIns: false,
       polyfills: [],
+      targets: 'defaults', // default browsers, coverage 90%
     }],
   ],
   plugins: [
@@ -37,14 +38,11 @@ const getBabelConfig = () => ({
 })
 
 const esmBabelConfig = <any>getBabelConfig()
-esmBabelConfig.presets[0][1]['targets'] = {esmodules: true}
 
 const cjsBabelConfig = <any>getBabelConfig()
-cjsBabelConfig.presets[0][1]['targets'] = {node: 6}
 cjsBabelConfig.plugins.push(['module-extension', {mjs: 'js'}]) // replace .mjs to .js
 
 const umdBabelConfig = <any>getBabelConfig()
-umdBabelConfig.presets[0][1]['targets'] = 'defaults' // default browsers, coverage 90%
 
 export default <rollup.RollupOptions[]>[
   // esm

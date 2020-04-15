@@ -14,7 +14,7 @@ const pkg = require("../package.json");
 const input = 'src/index.js';
 const outDir = 'dist';
 const outputName = pkg.name; // the built file name is outDir/outputName.format.js
-const moduleName = 'heTreeVue'; // for umd, amd
+const moduleName = rogo_1.camelize(pkg.name); // for umd, amd
 const extractCssPath = path.resolve(outDir, `${outputName}.css`);
 const getBabelConfig = () => ({
     // .babelrc
@@ -22,6 +22,7 @@ const getBabelConfig = () => ({
         ['@vue/cli-plugin-babel/preset', {
                 useBuiltIns: false,
                 polyfills: [],
+                targets: 'defaults',
             }],
     ],
     plugins: [
@@ -35,12 +36,9 @@ const getBabelConfig = () => ({
     babelrc: false,
 });
 const esmBabelConfig = getBabelConfig();
-esmBabelConfig.presets[0][1]['targets'] = { esmodules: true };
 const cjsBabelConfig = getBabelConfig();
-cjsBabelConfig.presets[0][1]['targets'] = { node: 6 };
 cjsBabelConfig.plugins.push(['module-extension', { mjs: 'js' }]); // replace .mjs to .js
 const umdBabelConfig = getBabelConfig();
-umdBabelConfig.presets[0][1]['targets'] = 'defaults'; // default browsers, coverage 90%
 exports.default = [
     // esm
     {

@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.2.0
+ * he-tree-vue v1.2.1
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -63,26 +63,6 @@
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
 
-  var _typeof_1 = createCommonjsModule(function (module) {
-  function _typeof(obj) {
-    "@babel/helpers - typeof";
-
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      module.exports = _typeof = function _typeof(obj) {
-        return typeof obj;
-      };
-    } else {
-      module.exports = _typeof = function _typeof(obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
-  }
-
-  module.exports = _typeof;
-  });
-
   var getPrototypeOf = createCommonjsModule(function (module) {
   function _getPrototypeOf(o) {
     module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
@@ -140,6 +120,26 @@
   }
 
   module.exports = _setPrototypeOf;
+  });
+
+  var _typeof_1 = createCommonjsModule(function (module) {
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+
+    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+      module.exports = _typeof = function _typeof(obj) {
+        return typeof obj;
+      };
+    } else {
+      module.exports = _typeof = function _typeof(obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+      };
+    }
+
+    return _typeof(obj);
+  }
+
+  module.exports = _typeof;
   });
 
   function _defineProperties(target, props) {
@@ -898,9 +898,12 @@
 
   var regenerator = runtime_1;
 
-  var _marked =
-  /*#__PURE__*/
-  regenerator.mark(iterateAll);
+  /*!
+   * helper-js v1.4.36
+   * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
+   * Homepage: undefined
+   * Released under the MIT License.
+   */
 
   function ownKeys(object, enumerableOnly) {
     var keys = Object.keys(object);
@@ -934,6 +937,84 @@
     }
 
     return target;
+  }
+
+  var _marked =
+  /*#__PURE__*/
+  regenerator.mark(iterateAll);
+
+  function _createForOfIteratorHelper(o) {
+    if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+      if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) {
+        var i = 0;
+
+        var F = function F() {};
+
+        return {
+          s: F,
+          n: function n() {
+            if (i >= o.length) return {
+              done: true
+            };
+            return {
+              done: false,
+              value: o[i++]
+            };
+          },
+          e: function e(_e) {
+            throw _e;
+          },
+          f: F
+        };
+      }
+
+      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+
+    var it,
+        normalCompletion = true,
+        didErr = false,
+        err;
+    return {
+      s: function s() {
+        it = o[Symbol.iterator]();
+      },
+      n: function n() {
+        var step = it.next();
+        normalCompletion = step.done;
+        return step;
+      },
+      e: function e(_e2) {
+        didErr = true;
+        err = _e2;
+      },
+      f: function f() {
+        try {
+          if (!normalCompletion && it.return != null) it.return();
+        } finally {
+          if (didErr) throw err;
+        }
+      }
+    };
+  }
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(n);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
   } // local store
 
   function isArray(v) {
@@ -997,14 +1078,14 @@
     var opt,
         i,
         info,
-        _i10,
+        _i7,
         _Object$keys2,
         key,
         _info,
-        _i5,
+        _i8,
         _info2,
         keys,
-        _i11,
+        _i9,
         _keys2,
         _key2,
         _info3,
@@ -1014,7 +1095,7 @@
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            opt = _args.length > 1 && _args[1] !== undefined ? _args[1] : {}; // opt: {reverse, exclude}
+            opt = _args.length > 1 && _args[1] !== undefined ? _args[1] : {};
 
             if (opt.reverse) {
               _context.next = 30;
@@ -1062,15 +1143,15 @@
               break;
             }
 
-            _i10 = 0, _Object$keys2 = Object.keys(val);
+            _i7 = 0, _Object$keys2 = Object.keys(val);
 
           case 16:
-            if (!(_i10 < _Object$keys2.length)) {
+            if (!(_i7 < _Object$keys2.length)) {
               _context.next = 25;
               break;
             }
 
-            key = _Object$keys2[_i10];
+            key = _Object$keys2[_i7];
             _info = {
               value: val[key],
               key: key
@@ -1085,7 +1166,7 @@
             return _info;
 
           case 22:
-            _i10++;
+            _i7++;
             _context.next = 16;
             break;
 
@@ -1106,17 +1187,17 @@
               break;
             }
 
-            _i5 = val.length - 1;
+            _i8 = val.length - 1;
 
           case 32:
-            if (!(_i5 >= 0)) {
+            if (!(_i8 >= 0)) {
               _context.next = 40;
               break;
             }
 
             _info2 = {
-              value: val[_i5],
-              index: _i5
+              value: val[_i8],
+              index: _i8
             };
 
             if (!(!opt.exclude || !opt.exclude(_info2))) {
@@ -1128,7 +1209,7 @@
             return _info2;
 
           case 37:
-            _i5--;
+            _i8--;
             _context.next = 32;
             break;
 
@@ -1144,15 +1225,15 @@
 
             keys = Object.keys(val);
             keys.reverse();
-            _i11 = 0, _keys2 = keys;
+            _i9 = 0, _keys2 = keys;
 
           case 46:
-            if (!(_i11 < _keys2.length)) {
+            if (!(_i9 < _keys2.length)) {
               _context.next = 55;
               break;
             }
 
-            _key2 = _keys2[_i11];
+            _key2 = _keys2[_i9];
             _info3 = {
               value: val[_key2],
               key: _key2
@@ -1167,7 +1248,7 @@
             return _info3;
 
           case 52:
-            _i11++;
+            _i9++;
             _context.next = 46;
             break;
 
@@ -1186,7 +1267,7 @@
     }, _marked);
   } // Deprecated in next version
   // Depth-First-Search
-  // todo change args in next version
+  // TODO change args in next version
 
 
   function depthFirstSearch(obj, handler) {
@@ -1209,7 +1290,7 @@
       for (var i = 0; i < len; i++) {
         var item = children[i];
         var index = reverse ? len - i - 1 : i;
-        var path = parentPath ? [].concat(toConsumableArray(parentPath), [index]) : []; // todo change args in next version
+        var path = parentPath ? [].concat(toConsumableArray(parentPath), [index]) : []; // TODO change args in next version
 
         var r = handler(item, index, parent, path);
 
@@ -1260,18 +1341,12 @@
             rootChildren,
             prevPath,
             prevChildren,
-            _iteratorNormalCompletion4,
-            _didIteratorError4,
-            _iteratorError4,
             _iterator4,
             _step4,
             index,
             currentPath,
             currentNode,
             list,
-            _iteratorNormalCompletion5,
-            _didIteratorError5,
-            _iteratorError5,
             _iterator5,
             _step5,
             _step5$value,
@@ -1287,176 +1362,129 @@
                 childrenKey = this.childrenKey, rootChildren = this.rootChildren;
 
                 if (opt.reverse) {
-                  _context2.next = 37;
+                  _context2.next = 29;
                   break;
                 }
 
                 prevPath = [];
                 prevChildren = rootChildren;
-                _iteratorNormalCompletion4 = true;
-                _didIteratorError4 = false;
-                _iteratorError4 = undefined;
-                _context2.prev = 8;
-                _iterator4 = path[Symbol.iterator]();
+                _iterator4 = _createForOfIteratorHelper(path);
+                _context2.prev = 6;
 
-              case 10:
-                if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {
-                  _context2.next = 21;
+                _iterator4.s();
+
+              case 8:
+                if ((_step4 = _iterator4.n()).done) {
+                  _context2.next = 19;
                   break;
                 }
 
                 index = _step4.value;
                 currentPath = [].concat(toConsumableArray(prevPath), [index]);
                 currentNode = prevChildren[index];
-                _context2.next = 16;
+                _context2.next = 14;
                 return {
                   path: currentPath,
                   node: currentNode
                 };
 
-              case 16:
+              case 14:
                 prevPath = currentPath;
                 prevChildren = currentNode[childrenKey];
 
-              case 18:
-                _iteratorNormalCompletion4 = true;
-                _context2.next = 10;
+              case 17:
+                _context2.next = 8;
+                break;
+
+              case 19:
+                _context2.next = 24;
                 break;
 
               case 21:
-                _context2.next = 27;
-                break;
+                _context2.prev = 21;
+                _context2.t0 = _context2["catch"](6);
 
-              case 23:
-                _context2.prev = 23;
-                _context2.t0 = _context2["catch"](8);
-                _didIteratorError4 = true;
-                _iteratorError4 = _context2.t0;
+                _iterator4.e(_context2.t0);
+
+              case 24:
+                _context2.prev = 24;
+
+                _iterator4.f();
+
+                return _context2.finish(24);
 
               case 27:
-                _context2.prev = 27;
-                _context2.prev = 28;
-
-                if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-                  _iterator4.return();
-                }
-
-              case 30:
-                _context2.prev = 30;
-
-                if (!_didIteratorError4) {
-                  _context2.next = 33;
-                  break;
-                }
-
-                throw _iteratorError4;
-
-              case 33:
-                return _context2.finish(30);
-
-              case 34:
-                return _context2.finish(27);
-
-              case 35:
-                _context2.next = 65;
+                _context2.next = 48;
                 break;
 
-              case 37:
+              case 29:
                 list = toConsumableArray(this.iteratePath(path, _objectSpread({}, opt, {
                   reverse: false
                 })));
                 list.reverse();
-                _iteratorNormalCompletion5 = true;
-                _didIteratorError5 = false;
-                _iteratorError5 = undefined;
-                _context2.prev = 42;
-                _iterator5 = list[Symbol.iterator]();
+                _iterator5 = _createForOfIteratorHelper(list);
+                _context2.prev = 32;
 
-              case 44:
-                if (_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done) {
-                  _context2.next = 51;
+                _iterator5.s();
+
+              case 34:
+                if ((_step5 = _iterator5.n()).done) {
+                  _context2.next = 40;
                   break;
                 }
 
                 _step5$value = _step5.value, _path = _step5$value.path, node = _step5$value.node;
-                _context2.next = 48;
+                _context2.next = 38;
                 return {
                   path: _path,
                   node: node
                 };
 
+              case 38:
+                _context2.next = 34;
+                break;
+
+              case 40:
+                _context2.next = 45;
+                break;
+
+              case 42:
+                _context2.prev = 42;
+                _context2.t1 = _context2["catch"](32);
+
+                _iterator5.e(_context2.t1);
+
+              case 45:
+                _context2.prev = 45;
+
+                _iterator5.f();
+
+                return _context2.finish(45);
+
               case 48:
-                _iteratorNormalCompletion5 = true;
-                _context2.next = 44;
-                break;
-
-              case 51:
-                _context2.next = 57;
-                break;
-
-              case 53:
-                _context2.prev = 53;
-                _context2.t1 = _context2["catch"](42);
-                _didIteratorError5 = true;
-                _iteratorError5 = _context2.t1;
-
-              case 57:
-                _context2.prev = 57;
-                _context2.prev = 58;
-
-                if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
-                  _iterator5.return();
-                }
-
-              case 60:
-                _context2.prev = 60;
-
-                if (!_didIteratorError5) {
-                  _context2.next = 63;
-                  break;
-                }
-
-                throw _iteratorError5;
-
-              case 63:
-                return _context2.finish(60);
-
-              case 64:
-                return _context2.finish(57);
-
-              case 65:
               case "end":
                 return _context2.stop();
             }
           }
-        }, iteratePath, this, [[8, 23, 27, 35], [28,, 30, 34], [42, 53, 57, 65], [58,, 60, 64]]);
+        }, iteratePath, this, [[6, 21, 24, 27], [32, 42, 45, 48]]);
       })
     }, {
       key: "getAllNodes",
       value: function getAllNodes(path) {
         var all = [];
-        var _iteratorNormalCompletion6 = true;
-        var _didIteratorError6 = false;
-        var _iteratorError6 = undefined;
+
+        var _iterator6 = _createForOfIteratorHelper(this.iteratePath(path)),
+            _step6;
 
         try {
-          for (var _iterator6 = this.iteratePath(path)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+          for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
             var node = _step6.value.node;
             all.push(node);
           }
         } catch (err) {
-          _didIteratorError6 = true;
-          _iteratorError6 = err;
+          _iterator6.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
-              _iterator6.return();
-            }
-          } finally {
-            if (_didIteratorError6) {
-              throw _iteratorError6;
-            }
-          }
+          _iterator6.f();
         }
 
         return all;
@@ -1519,7 +1547,7 @@
       value: function walk(handler) {
         var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var childrenKey = this.childrenKey,
-            data = this.data; // todo change args in next version
+            data = this.data; // TODO change args in next version
 
         return walkTreeData(data, handler, childrenKey, opt.reverse);
       }
@@ -1527,7 +1555,7 @@
       key: "clone",
       value: function clone() {
         var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {}; // opt.afterNodeCreated(newNode, {oldNode: node, index, parent, path})
-        // todo change args in next version
+        // TODO change args in next version
 
         var childrenKey = this.childrenKey;
         var td = new TreeData();
@@ -1583,31 +1611,21 @@
   function joinFunctionsByNext(funcs) {
     var next = function next() {};
 
-    var _iteratorNormalCompletion8 = true;
-    var _didIteratorError8 = false;
-    var _iteratorError8 = undefined;
+    var _iterator8 = _createForOfIteratorHelper(iterateAll(funcs, {
+      reverse: true
+    })),
+        _step8;
 
     try {
-      for (var _iterator8 = iterateAll(funcs, {
-        reverse: true
-      })[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+      for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
         var func = _step8.value.value;
         var currentNext = next;
         next = wrapFuncWithNext(func, currentNext);
       }
     } catch (err) {
-      _didIteratorError8 = true;
-      _iteratorError8 = err;
+      _iterator8.e(err);
     } finally {
-      try {
-        if (!_iteratorNormalCompletion8 && _iterator8.return != null) {
-          _iterator8.return();
-        }
-      } finally {
-        if (_didIteratorError8) {
-          throw _iteratorError8;
-        }
-      }
+      _iterator8.f();
     }
 
     return next;
@@ -1829,12 +1847,12 @@
     var iterator = iterateAll(list, {
       reverse: opt.reverse
     });
-    var _iteratorNormalCompletion13 = true;
-    var _didIteratorError13 = false;
-    var _iteratorError13 = undefined;
+
+    var _iterator13 = _createForOfIteratorHelper(iterator),
+        _step13;
 
     try {
-      for (var _iterator13 = iterator[Symbol.iterator](), _step13; !(_iteratorNormalCompletion13 = (_step13 = _iterator13.next()).done); _iteratorNormalCompletion13 = true) {
+      for (_iterator13.s(); !(_step13 = _iterator13.n()).done;) {
         var _step13$value = _step13.value,
             value = _step13$value.value,
             index = _step13$value.index;
@@ -1844,18 +1862,9 @@
         }
       }
     } catch (err) {
-      _didIteratorError13 = true;
-      _iteratorError13 = err;
+      _iterator13.e(err);
     } finally {
-      try {
-        if (!_iteratorNormalCompletion13 && _iterator13.return != null) {
-          _iterator13.return();
-        }
-      } finally {
-        if (_didIteratorError13) {
-          throw _iteratorError13;
-        }
-      }
+      _iterator13.f();
     }
   }
 
@@ -2028,6 +2037,12 @@
     }
   }
 
+  /*!
+   * vue-functions v2.0.5
+   * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
+   * Homepage: undefined
+   * Released under the MIT License.
+   */
   /**
    * [updatablePropsEvenUnbound description]
    * @param  {[type]} props [object or getter]
@@ -2037,6 +2052,7 @@
     }
      default localName is `localProps_${name}`
    */
+
 
   function updatablePropsEvenUnbound(props) {
     if (isFunction(props)) {
@@ -2094,34 +2110,33 @@
       return t;
     };
 
-    var _loop2 = function _loop2(_name2) {
-      var prop = props[_name2];
+    var _loop2 = function _loop2() {
+      var name = _Object$keys2[_i2];
+      var prop = props[name];
 
-      component.watch[_name2] = function (value) {
-        this.localValueOfUpdatableProps[_name2] = prop.$localSetter(value, this);
+      component.watch[name] = function (value) {
+        this.localValueOfUpdatableProps[name] = prop.$localSetter(value, this);
       };
 
       var localName = prop.$localName;
       component.computed[localName] = {
         get: function get() {
-          return this.localValueOfUpdatableProps[_name2];
+          return this.localValueOfUpdatableProps[name];
         },
         set: function set(value) {
-          if (_name2 === 'value') {
+          if (name === 'value') {
             this.$emit('input', value);
           } else {
-            this.$emit("update:".concat(_name2), value);
+            this.$emit("update:".concat(name), value);
           }
 
-          this.localValueOfUpdatableProps[_name2] = prop.$localSetter(value, this);
+          this.localValueOfUpdatableProps[name] = prop.$localSetter(value, this);
         }
       };
     };
 
     for (var _i2 = 0, _Object$keys2 = Object.keys(props); _i2 < _Object$keys2.length; _i2++) {
-      var _name2 = _Object$keys2[_i2];
-
-      _loop2(_name2);
+      _loop2();
     }
 
     return component;
@@ -2160,7 +2175,7 @@
         return this._getNonPropHooksByName(name) || this[name];
       },
       executeHook: function executeHook(name, args) {
-        var _this = this;
+        var _this2 = this;
 
         var hooks = this._getNonPropHooksByName(name);
 
@@ -2172,7 +2187,7 @@
               args[_key - 1] = arguments[_key];
             }
 
-            return _this[name].apply(_this, args);
+            return _this2[name].apply(_this2, args);
           });
         }
 
@@ -2682,6 +2697,12 @@
 
   var asyncToGenerator = _asyncToGenerator;
 
+  /*!
+   * drag-event-service v1.0.4
+   * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
+   * Homepage: undefined
+   * Released under the MIT License.
+   */
   var events = {
     start: ['mousedown', 'touchstart'],
     move: ['mousemove', 'touchmove'],
@@ -2699,6 +2720,8 @@
       return el._wrapperStore;
     },
     on: function on(el, name, handler, options) {
+      var _hp$onDOM, _hp$onDOM2;
+
       var _resolveOptions = resolveOptions(options),
           args = _resolveOptions.args,
           mouseArgs = _resolveOptions.mouseArgs,
@@ -2741,8 +2764,9 @@
       // 以下写法将会使打包工具认为hp是上下文, 导致打包整个hp
       // hp.onDOM(el, events[name][0], wrapper, ...args)
 
-      onDOM.call.apply(onDOM, [null, el, events[name][0], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(mouseArgs))));
-      onDOM.call.apply(onDOM, [null, el, events[name][1], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(touchArgs))));
+      (_hp$onDOM = onDOM).call.apply(_hp$onDOM, [null, el, events[name][0], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(mouseArgs))));
+
+      (_hp$onDOM2 = onDOM).call.apply(_hp$onDOM2, [null, el, events[name][1], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(touchArgs))));
     },
     off: function off(el, name, handler, options) {
       var _resolveOptions2 = resolveOptions(options),
@@ -2757,8 +2781,12 @@
             wrapper = _store$i.wrapper;
 
         if (handler === handler2) {
-          offDOM.call.apply(offDOM, [null, el, events[name][0], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(mouseArgs))));
-          offDOM.call.apply(offDOM, [null, el, events[name][1], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(mouseArgs))));
+          var _hp$offDOM, _hp$offDOM2;
+
+          (_hp$offDOM = offDOM).call.apply(_hp$offDOM, [null, el, events[name][0], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(mouseArgs))));
+
+          (_hp$offDOM2 = offDOM).call.apply(_hp$offDOM2, [null, el, events[name][1], wrapper].concat([].concat(toConsumableArray(args), toConsumableArray(mouseArgs))));
+
           store.splice(i, 1);
         }
       }
@@ -2781,8 +2809,9 @@
   }
 
   /*!
-   * draggable-helper v4.0.1
+   * draggable-helper v4.0.2
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
+   * Homepage: undefined
    * Released under the MIT License.
    */
 
