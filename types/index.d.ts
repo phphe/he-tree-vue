@@ -165,19 +165,13 @@ export class Draggable extends Vue{
 interface cloneTreeDataOptions{
   afterNodeCreated(newNode: object, info: {oldNode: object, index: number, parent: object, path: Path}): void
 }
-export interface cloneTreeData {
-  (treeData: TreeData, options?: cloneTreeDataOptions): TreeData
-}
+export function cloneTreeData(treeData: TreeData, options?: cloneTreeDataOptions): TreeData
 
 type walkTreeDataCallbackReturn = void|false|'skip children'|'skip siblings'
 interface walkTreeDataCallback {
   (node: Node, index: number, parent: object|null, path:number[]): walkTreeDataCallbackReturn
 }
-export interface walkTreeData {
-  (treeData: TreeData, callback: walkTreeDataCallback, options?: {reverse: boolean}): void
-}
+export function walkTreeData(treeData: TreeData, callback: walkTreeDataCallback, options?: {reverse: boolean}): void
 
 // remove key which starts with '$
-export interface getPureTreeData {
-  (treeData: TreeData): TreeData
-}
+export function getPureTreeData(treeData: TreeData): TreeData
