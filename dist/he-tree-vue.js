@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.2.1
+ * he-tree-vue v1.2.2
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -2809,7 +2809,7 @@
   }
 
   /*!
-   * draggable-helper v4.0.2
+   * draggable-helper v4.0.3
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
@@ -2949,7 +2949,12 @@
       } // detect draggable end =================================
 
 
-      e.preventDefault();
+      if (!index.isTouch(e)) {
+        // Do not prevent event now and when the client is mobile. Doing so will result in elements within the node not triggering click event.
+        // 不要在此时, 客户端为移动端时阻止事件. 否则将导致节点内的元素不触发点击事件.
+        e.preventDefault();
+      }
+
       store.mouse = {
         x: mouse.x,
         y: mouse.y
