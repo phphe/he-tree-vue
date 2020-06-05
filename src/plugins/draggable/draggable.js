@@ -1,5 +1,6 @@
 import * as hp from 'helper-js'
 import draggableHelper from 'draggable-helper'
+// import draggableHelper from '../../../../draggable-helper'
 import doDraggableDecision from './draggable-decision-part.js'
 
 // in follow code, options belongs to makeTreeDraggable, opt belongs to draggableHelper
@@ -65,6 +66,12 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       if (options.ondrag && options.ondrag(store, opt) === false) {
         return false
       }
+      const treeRoot = hp.findParent(store.dragBranchEl, (el) => hp.hasClass(el, options.rootClass))
+      hp.backupAttr(treeRoot, 'style')
+      treeRoot.style.height = treeRoot.offsetHeight + 'px'
+      setTimeout(() => {
+        hp.restoreAttr(treeRoot, 'style')
+      }, 100)
     },
     moving: (moveEvent, store, opt) => {
       // return false in moving will prevent move animation; return undefined just prevent doAction

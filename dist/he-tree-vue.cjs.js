@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.2.3
+ * he-tree-vue v1.2.4-beta
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -618,6 +618,15 @@ function makeTreeDraggable(treeEl) {
       if (options.ondrag && options.ondrag(store, opt) === false) {
         return false;
       }
+
+      var treeRoot = hp.findParent(store.dragBranchEl, function (el) {
+        return hp.hasClass(el, options.rootClass);
+      });
+      hp.backupAttr(treeRoot, 'style');
+      treeRoot.style.height = treeRoot.offsetHeight + 'px';
+      setTimeout(function () {
+        hp.restoreAttr(treeRoot, 'style');
+      }, 100);
     },
     moving: function moving(moveEvent, store, opt) {
       // return false in moving will prevent move animation; return undefined just prevent doAction

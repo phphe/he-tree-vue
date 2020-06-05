@@ -1,12 +1,12 @@
 /*!
- * he-tree-vue v1.2.3
+ * he-tree-vue v1.2.4-beta
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
 import _defineProperty from '@babel/runtime/helpers/defineProperty';
 import _toConsumableArray from '@babel/runtime/helpers/toConsumableArray';
-import { TreeData, strRand, findParent, hasClass, getOffset, getBoundingClientRect, elementsFromPoint, isDescendantOf, attachCache, removeEl, insertAfter, binarySearch, findNodeList, appendTo, insertBefore, prependTo, createElementFromHTML, addClass, waitTime, iterateAll, resolveValueOrGettter, arrayWithoutEnd, arrayLast } from 'helper-js';
+import { TreeData, strRand, findParent, hasClass, backupAttr, restoreAttr, getOffset, getBoundingClientRect, elementsFromPoint, isDescendantOf, attachCache, removeEl, insertAfter, binarySearch, findNodeList, appendTo, insertBefore, prependTo, createElementFromHTML, addClass, waitTime, iterateAll, resolveValueOrGettter, arrayWithoutEnd, arrayLast } from 'helper-js';
 import { updatablePropsEvenUnbound, hookHelper } from 'vue-functions';
 import __vue_normalize__ from 'vue-runtime-helpers/dist/normalize-component.mjs';
 import Vue from 'vue';
@@ -612,6 +612,15 @@ function makeTreeDraggable(treeEl) {
       if (options.ondrag && options.ondrag(store, opt) === false) {
         return false;
       }
+
+      var treeRoot = findParent(store.dragBranchEl, function (el) {
+        return hasClass(el, options.rootClass);
+      });
+      backupAttr(treeRoot, 'style');
+      treeRoot.style.height = treeRoot.offsetHeight + 'px';
+      setTimeout(function () {
+        restoreAttr(treeRoot, 'style');
+      }, 100);
     },
     moving: function moving(moveEvent, store, opt) {
       // return false in moving will prevent move animation; return undefined just prevent doAction
