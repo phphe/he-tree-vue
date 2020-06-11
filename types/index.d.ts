@@ -1,5 +1,6 @@
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import {VNode} from 'vue'
+import * as dh from "draggable-helper";
 
 interface Node {
   [propName: string]: any
@@ -43,6 +44,8 @@ export class Tree extends Vue{
   // Declared as computed property setter
   @Prop({ default: 20 })
   indent: number
+  @Prop()
+  rtl: boolean // direction=rtl
   @Prop({ default: {} })
   rootNode: Node
   // data
@@ -105,13 +108,7 @@ export class Check extends Vue{
 }
 type IsDraggableOrIsDroppable = boolean | undefined
 // darg info store
-interface Store {
-  el?: HTMLElement
-  originalEl?: HTMLElement
-  mouse?: {x:number, y:number}
-  movedCount?: number
-  startEvent?: MouseEvent
-  endEvent?: MouseEvent
+interface Store extends dh.Store{
   startTreeEl?: HTMLElement
   startTree?: Vue
   startPath?: Path
@@ -138,6 +135,8 @@ interface prop_ondragstart_ondragend{
 export class Draggable extends Vue{
   @Prop({default: 'tree-node'})
   triggerClass: string
+  @Prop()
+  triggerBySelf: boolean
   @Prop({default: true})
   draggable: boolean | prop_draggable_droppable
   @Prop({default: true})
@@ -156,6 +155,14 @@ export class Draggable extends Vue{
   unfoldWhenDragoverDelay: number
   @Prop({default: 'top_left_corner'})
   draggingNodePositionMode: 'top_left_corner'|'mouse'
+  @Prop()
+  edgeScroll: boolean
+  @Prop({default: 50})
+  edgeScrollTriggerMargin: number
+  @Prop({default: 0.35})
+  edgeScrollSpeed: number
+  @Prop({default: 'top_left_corner'})
+  edgeScrollTriggerMode: 'top_left_corner'|'mouse'
   // data
   treesStore: {store: Store} // just for get the darg info store
   // methods
