@@ -200,12 +200,11 @@ export default {
           return false
         }
         const {startTree, dragBranchEl, startPath} = store
-        const path = startTree.getPathByBranchEl(dragBranchEl)
-        store.dragNode = startTree.getNodeByPath(path)
+        store.dragNode = startTree.getNodeByPath(startPath)
         if (this.cloneWhenDrag) {
           store.dragNode = ut.cloneTreeData(store.dragNode)
         }
-        if (!startTree.isNodeDraggable(store.dragNode, path)) {
+        if (!startTree.isNodeDraggable(store.dragNode, startPath)) {
           return false
         }
         if (startTree.hasHook('ondragstart') && startTree.executeHook('ondragstart', [startTree, store]) === false) {
@@ -312,6 +311,7 @@ export default {
     'unfoldWhenDragover', 
     'unfoldWhenDragoverDelay', 
     'draggingNodePositionMode', 
+    'cloneWhenDrag', 
     'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 
     'rtl'
     ].forEach(name => {
