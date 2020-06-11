@@ -1,11 +1,15 @@
 <!-- this is an example -->
 <template lang="pug">
 #app
-  h3 These are just some simple examples.
+  h3 These are just some simple examples. For show and test.
   .flex
     BaseTree.mr
     NodeBackTree.mr
     ThirdCase.mr
+    DragTransition.mr
+    InScrollBox.mr
+    CustomTrigger.mr
+    RTLTree.mr
     //- DraggableProTree.mr
 </template>
 
@@ -13,10 +17,15 @@
 import BaseTree from '@/examples/Base'
 import NodeBackTree from '@/examples/NodeBack'
 import ThirdCase from '@/examples/ThirdCase.vue'
-// import DraggableProTree from '@/examples/DraggablePro'
+import DragTransition from '@/examples/DragTransition.vue'
+import InScrollBox from '@/examples/InScrollBox.vue'
+import CustomTrigger from '@/examples/CustomTrigger.vue'
+import RTLTree from '@/examples/RTLTree.vue'
 
 export default {
-  components: {BaseTree, NodeBackTree, ThirdCase},
+  components: {BaseTree, NodeBackTree, ThirdCase, DragTransition, InScrollBox, CustomTrigger, RTLTree,
+    // DraggableProTree: () => import('@/examples/DraggablePro'),
+  },
   // data() {
   //   return {}
   // },
@@ -30,6 +39,8 @@ export default {
 
 <style>
 #app{
+  width: 3000px;
+  overflow: auto;
 }
 .flex{
   display: flex;
@@ -40,11 +51,9 @@ export default {
 .mr{
   margin-right: 1em;
 }
-// ===============
 .he-tree{
   border: 1px solid #ccc;
   padding: 20px;
-  display: inline-block;
 }
 .tree-node{
 }

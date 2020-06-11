@@ -1,15 +1,15 @@
 <!-- this is an example -->
 <template lang="pug">
-div
-  h2 Node Back
-  Tree.tree-with-nodeba-back(:value="treeData" ref="tree")
+.CustomTrigger
+  h2 RTL
+  Tree(:value="treeData" ref="tree" triggerClass="trigger" rtl)
     div(slot-scope="{node, index, path, tree}")
+      button.trigger drag
+      div(style="width:.5em;height:1em;display:inline-block;")
       b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
       input(type="checkbox" :checked="node.$checked" @change="tree.toggleCheck(node, path)")
       | &nbsp;
       span {{node.text}}
-  hr
-  Tree.tree-with-nodeba-back(:value="treeData2" ref="tree2")
 </template>
 
 <script>
@@ -26,32 +26,23 @@ export default {
   data() {
     return {
       treeData: [
-        {text: 'node 1', children: [
+        {text: 'node 1', $droppable: true, children: [
           {text: 'node 1-0'},
-          {text: 'node 1-1'},
-          {text: 'node 1-2'},
-          {text: 'node 1-3'},
-          {text: 'node 1-4'},
-          {text: 'node 1-5'},
-          {text: 'node 1-6'},
-          {text: 'node 1-7'},
-          {text: 'node 1-8'},
-          {text: 'node 1-9'},
         ]},
-      ],
-      treeData2: [
-        {text: 'node 1', children: [
-          {text: 'node 1-0'},
-          {text: 'node 1-1'},
-          {text: 'node 1-2'},
-          {text: 'node 1-3'},
-          {text: 'node 1-4'},
-          {text: 'node 1-5'},
-          {text: 'node 1-6'},
-          {text: 'node 1-7'},
-          {text: 'node 1-8'},
-          {text: 'node 1-9'},
+        {text: 'node 2', $droppable: true, children: [
+          {text: 'node 2-0'},
         ]},
+        {text: 'node 3', $droppable: true, children: [
+          {text: 'node 3-0'},
+        ]},
+        {text: 'node 4', $droppable: true, children: [
+          {text: 'node 4-0'},
+        ]},
+        {text: 'node 5', $droppable: true},
+        {text: 'node 6', $droppable: true},
+        {text: 'node 7', $droppable: true},
+        {text: 'node 8', $droppable: true},
+        {text: 'node 9', $droppable: true},
       ],
     }
   },
@@ -65,7 +56,6 @@ export default {
 </script>
 
 <style>
-.tree-with-nodeba-back .tree-node-back:hover{
-  background: #e2e2e2;
+.RTLTree{
 }
 </style>

@@ -12,9 +12,6 @@ div
         | &nbsp;
         span {{node.text}}
     .ml
-      b Empty Tree
-      Tree.base-tree(:value="treeDataEmpty" ref="tree4")
-      hr
       b Fola all after mounted:
       Tree.base-tree(:value="treeData2" ref="tree3" foldAllAfterMounted)
         div(slot-scope="{node, index, path, tree}")
