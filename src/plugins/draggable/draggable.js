@@ -24,6 +24,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     // placeholderId
     // unfoldTargetNodeByEl
     // getPathByBranchEl
+    // rtl: false
     ...options,
     treeEl,
   }
@@ -32,6 +33,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     triggerBySelf: options.triggerBySelf,
     draggingClassName: options.draggingClass,
     clone: options.cloneWhenDrag,
+    rtl: options.rtl,
     updateMovedElementStyleManually: true,
     getMovedOrClonedElement: (directTriggerElement, store) => {
       // find closest branch from parents
@@ -92,12 +94,18 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       // find closest branch and hovering tree
       let tree
       const movingNode = movingEl.querySelector(`.${options.nodeClass}`)
+      // movingNodeOf and movingNodeRect are not always real. when RTL, there 'x' is top right. when draggingNodePositionMode is mouse, there x and y are mouse position. So don't calc them with their width or height.
+      // movingNodeOf 和 movingNodeRect并非一直如字面意义是movingNode真实坐标. RTL时, x坐标是右上角. draggingNodePositionMode是mouse时, x和y是鼠标坐标.
       let movingNodeOf = hp.getOffset(movingNode)
       let movingNodeRect = hp.getBoundingClientRect(movingNode)
       if (options.draggingNodePositionMode === 'mouse') {
         // use mouse position as dragging node position
+        const {moveEvent} = store
         movingNodeOf = {x: moveEvent.pageX, y: moveEvent.pageY}
         movingNodeRect = {x: moveEvent.clientX, y: moveEvent.clientY} 
+      } else if (options.rtl) {
+        movingNodeOf.x += movingNode.offsetWidth
+        movingNodeRect.x += movingNode.offsetWidth
       }
       // find tree with elementsFromPoint
       let found
@@ -217,8 +225,14 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           //
           while (cur) {
             const curNode = cur.querySelector(`.${options.nodeClass}`)
-            if (hp.getOffset(curNode).x <= movingNodeOf.x) {
-              break
+            if (!options.rtl) {
+              if (hp.getOffset(curNode).x <= movingNodeOf.x) {
+                break
+              }
+            } else {
+              if (hp.getOffset(curNode).x + curNode.offsetWidth >= movingNodeOf.x) {
+                break
+              }
             }
             let hasNextBranch
             let t = cur.nextSibling
@@ -260,6 +274,13 @@ export default function makeTreeDraggable(treeEl, options = {}) {
             return hp.findNodeList(childrenEl.children, el => el !== movingEl && el !== store.placeholder && !isElementHidden(el))
           }
         },
+      }
+      // fix for rtl
+      if (options.rtl) {
+        Object.assign(conditions, {
+          'at closest indent right': () => movingNodeOf.x < info.closestNodeOffset.x + info.closestNode.offsetWidth - options.indent, // at indent left
+          'at closest left': () => movingNodeOf.x > info.closestNodeOffset.x + info.closestNode.offsetWidth, // at right
+        })
       }
       // convert conditions result to Boolean
       Object.keys(conditions).forEach(key => {
@@ -476,6 +497,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       triggerBySelf: options.triggerBySelf,
       draggingClassName: options.draggingClass,
       clone: options.cloneWhenDrag,
+      rtl: options.rtl,
     })
   }
 }

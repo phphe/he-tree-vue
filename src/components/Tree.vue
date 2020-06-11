@@ -8,7 +8,7 @@ const template = function (h) {
   const noUndefined = (str) => str ? str : ''
   // tree tpl, to render recursively
   const childrenListTpl = (nodes, parent, parentPath) => {
-    const indentStyle = {paddingLeft: parentPath.length * this.indent + 'px'}
+    const indentStyle = {[!this.rtl ? 'paddingLeft' : 'paddingRight']: parentPath.length * this.indent + 'px'}
     const branchTpl = (node, index) => {
       const path = [...parentPath, index]
       const transitionComponent = this.foldingTransition || 'transition'
@@ -52,7 +52,7 @@ const template = function (h) {
       {nodes.map(branchTpl)}
     </div>
   }
-  return <div class={`he-tree ${this.treeClass}`} data-tree-id={this.treeId}>
+  return <div class={`he-tree ${this.treeClass} ${noUndefined(this.rtl && 'he-tree--rtl')}`} data-tree-id={this.treeId}>
     {this.blockHeader && this.blockHeader()}
     {childrenListTpl(this.rootNode.children, this.rootNode, [])}
     {this.blockFooter && this.blockFooter()}
@@ -71,6 +71,7 @@ const Tree = {
   ],
   props: {
     indent: {type: Number, default: 20},
+    rtl: {type: Boolean},
     rootNode: {default: is => ({})},
   },
   // components: {},
@@ -168,5 +169,8 @@ export default Tree
 }
 .he-tree--hidden{
   display: none;
+}
+.he-tree--rtl{
+  direction: rtl;
 }
 </style>

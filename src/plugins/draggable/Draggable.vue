@@ -126,6 +126,7 @@ export default {
       unfoldWhenDragoverDelay: this.unfoldWhenDragoverDelay,
       draggingNodePositionMode: this.draggingNodePositionMode,
       cloneWhenDrag: this.cloneWhenDrag,
+      rtl: this.rtl,
       treeClass: 'he-tree',
       rootClass: 'tree-root',
       childrenClass: 'tree-children',
@@ -303,7 +304,8 @@ export default {
     'unfoldWhenDragover', 
     'unfoldWhenDragoverDelay', 
     'draggingNodePositionMode', 
-    'cloneWhenDrag', ].forEach(name => {
+    'rtl'
+    ].forEach(name => {
       this.$watch(name, (value) => {
         _makeTreeDraggable_obj.options[name] = value
         _makeTreeDraggable_obj.optionsUpdated()
