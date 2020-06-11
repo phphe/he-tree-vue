@@ -7,6 +7,7 @@ const treesStore = {}
 
 export default {
   props: {
+    triggerClass: {type: [String, Array], default: 'tree-node'},
     triggerBySelf: {type: Boolean},
     draggable: {type: [Boolean, Function], default: true},
     droppable: {type: [Boolean, Function], default: true},
@@ -182,15 +183,13 @@ export default {
         store.startTree.$emit('afterPlaceholderCreated', store)
       },
       getPathByBranchEl: (branchEl) => this.getPathByBranchEl(branchEl),
-      beforeDrag: (store) => {
+      beforeFirstMove: (store) => {
         this.treesStore.store = store
         store.startTree = this.getTreeVmByTreeEl(store.startTreeEl)
         const draggable = hp.resolveValueOrGettter(store.startTree.draggable, [store.startTree, store])
         if (!draggable) {
           return false
         }
-      },
-      ondrag: (store) => {
         const {startTree, dragBranchEl, startPath} = store
         const path = startTree.getPathByBranchEl(dragBranchEl)
         store.dragNode = startTree.getNodeByPath(path)
@@ -235,7 +234,7 @@ export default {
         targetTree.$emit('drop', store)
         this.$root.$emit('he-tree-drop', store)
       },
-      ondrop: (store, t) => {
+      afterDrop: (store, t) => {
         if (store.pathChanged) {
           const {startTree, targetTree, startPath, targetPath, dragNode} = store
           if (this.cloneWhenDrag !== true) {

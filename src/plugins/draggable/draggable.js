@@ -1,6 +1,5 @@
 import * as hp from 'helper-js'
 import draggableHelper from 'draggable-helper'
-// import draggableHelper from '../../../../draggable-helper'
 import doDraggableDecision from './draggable-decision-part.js'
 
 // in follow code, options belongs to makeTreeDraggable, opt belongs to draggableHelper
@@ -28,57 +27,68 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     ...options,
     treeEl,
   }
-  const {destroy, draggableHelperOptions} = draggableHelper(treeEl, {
+  const {destroy, options: draggableHelperOptions} = draggableHelper(treeEl, {
+    triggerClassName: options.triggerClass,
     triggerBySelf: options.triggerBySelf,
-    draggingClass: options.draggingClass,
-    restoreDOMManuallyOndrop: true,
+    draggingClassName: options.draggingClass,
     clone: options.cloneWhenDrag,
-    beforeDrag(startEvent, moveEvent, store, opt) {
-      store.startTreeEl = treeEl
-      if (options.beforeDrag && options.beforeDrag(store, opt) === false) {
-        return false
-      }
-      // if the event target is a trigger
-      const isTrigger = hp.findParent(startEvent.target, (el) => {
-        if (hp.hasClass(el, options.triggerClass)) {
-          return true
-        }
-        if (el === store.startTreeEl || hp.hasClass(el, options.branchClass)) {
-          return 'break'
-        }
-      }, {withSelf: true})
-      if (!isTrigger) {
-        return false
-      }
-      // _triggeredBy
-      if (startEvent._triggeredBy) {
-        return false
-      }
-      startEvent._triggeredBy = store.startTree
-    },
-    // get the element which will be moved
-    getEl: (dragHandlerEl, store, opt) => {
-      const el = hp.findParent(store.startEvent.target, el => hp.hasClass(el, options.branchClass), {withSelf: true})
+    updateMovedElementStyleManually: true,
+    getMovedOrClonedElement: (directTriggerElement, store) => {
+      // find closest branch from parents
+      const el = hp.findParent(store.triggerElement, el => hp.hasClass(el, options.branchClass), {withSelf: true})
       return el
     },
-    drag: (startEvent, moveEvent, store, opt) => {
-      store.dragBranchEl = store.el
-      const movingEl = store.el // branch
-      store.startPath = options.getPathByBranchEl(movingEl)
-      if (options.ondrag && options.ondrag(store, opt) === false) {
+    beforeFirstMove(store, dhOptions) {
+      store.startTreeEl = treeEl
+      store.dragBranchEl = store.movedElement
+      store.startPath = options.getPathByBranchEl(store.movedOrClonedElement)
+      if (options.beforeFirstMove && options.beforeFirstMove(store, dhOptions) === false) {
         return false
       }
-      const treeRoot = hp.findParent(store.dragBranchEl, (el) => hp.hasClass(el, options.rootClass))
-      hp.backupAttr(treeRoot, 'style')
-      treeRoot.style.height = treeRoot.offsetHeight + 'px'
-      setTimeout(() => {
-        hp.restoreAttr(treeRoot, 'style')
-      }, 100)
     },
-    moving: (moveEvent, store, opt) => {
-      // return false in moving will prevent move animation; return undefined just prevent doAction
+    beforeMove: (store, dhOptions) => {
+      const updatePlaceholderIndent = () => {
+        // set indent of placeholder
+        const placeholderPath = options.getPathByBranchEl(store.placeholder)
+        const placeholderNodeBack = store.placeholder.querySelector(`.${options.nodeBackClass}`)
+        placeholderNodeBack.style[!options.rtl ? 'paddingLeft' : 'paddingRight'] = (placeholderPath.length - 1) * options.indent + 'px'
+        // remove tempChildren if empty
+        if (store.tempChildren.children.length === 0) {
+          hp.removeEl(store.tempChildren)
+        }
+      }
+      // first move
+      // 第一次移动
+      if (store.movedCount === 0) {
+        // create placeholder
+        // 创建占位元素
+        const placeholder = hp.createElementFromHTML(`
+          <div id="${options.placeholderId}" class="${options.branchClass} ${options.placeholderClass}">
+            <div class="${options.nodeBackClass} ${options.placeholderNodeBackClass}">
+              <div class="${options.nodeClass} ${options.placeholderNodeClass}">
+              </div>
+            </div>
+          </div>
+        `)
+        hp.insertAfter(placeholder, store.movedOrClonedElement)
+        store.placeholder = placeholder
+        options.afterPlaceholderCreated(store)
+        // create a tree children el to use when can't get childrenEl
+        const tempChildren = document.createElement('DIV')
+        hp.addClass(tempChildren, options.childrenClass)
+        store.tempChildren = tempChildren
+        // update placeholder indent. update moved element style
+        updatePlaceholderIndent()
+        store.updateMovedElementStyle()
+        // skip first move
+        // 跳过第一次移动
+        return
+      }
+      // 
+      store.updateMovedElementStyle()
+      // 
       store.oneMoveStore = {} // life cycle: one move
-      const movingEl = store.el // branch
+      const movingEl = store.movedElement // branch
       // find closest branch and hovering tree
       let tree
       const movingNode = movingEl.querySelector(`.${options.nodeClass}`)
@@ -89,42 +99,29 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         movingNodeOf = {x: moveEvent.pageX, y: moveEvent.pageY}
         movingNodeRect = {x: moveEvent.clientX, y: moveEvent.clientY} 
       }
-      const elsBetweenMovingElAndTree = [] // including tree
-      const elsToTree = [] // start from top, including tree
-      // loop to find put els between movingEl and tree
-      let movingElLooped // 已循环到了movingEl
+      // find tree with elementsFromPoint
+      let found
+      let firstElement
       for (const itemEl of hp.elementsFromPoint(movingNodeRect.x, movingNodeRect.y)) {
-        if (movingElLooped) {
-          elsBetweenMovingElAndTree.push(itemEl)
-        } else if(itemEl === movingEl) {
-          movingElLooped = true
+        if (!firstElement) {
+          firstElement = itemEl
         }
-        elsToTree.push(itemEl)
         if (hp.hasClass(itemEl, options.treeClass)) {
-          tree = itemEl
+          found = itemEl
           break
         }
       }
-      // this is an issue, sometimes, the movingEl is not in elementsFromPoint result
-      if (!movingElLooped) {
-        elsBetweenMovingElAndTree.push(...elsToTree)
+      // check if the found element is covered by other elements
+      if (firstElement !== found && !hp.isDescendantOf(firstElement, found)) {
+        found = null
       }
+      tree = found
       if (!tree) {
-        // out of tree
-        return
-      }
-      // check tree if is covered, like modal
-      let treeBeCoved
-      if (elsBetweenMovingElAndTree && elsBetweenMovingElAndTree[0]) {
-        if (elsBetweenMovingElAndTree[0] !== tree && !hp.isDescendantOf(elsBetweenMovingElAndTree[0], tree)) {
-          treeBeCoved = true
-        }
-      }
-      if (treeBeCoved) {
+        // out of tree or tree is covered by other elements
         return
       }
       // check if target tree right
-      if (options.filterTargetTree(tree, store, opt) === false) {
+      if (options.filterTargetTree(tree, store, dhOptions) === false) {
         return
       }
       store.targetTreeEl = tree
@@ -165,7 +162,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           if (t.hit) {
             found = t.value
           } else {
-            if (t.bigger) {
+            if (t.greater) {
               found = nodes[t.index - 1] || t.value
             } else {
               found = t.value
@@ -291,14 +288,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           const r = action(...args)
           actionRecords.push(name)
           await r
-          // set indent of placeholder
-          const placeholderPath = options.getPathByBranchEl(store.placeholder)
-          const placeholderNodeBack = store.placeholder.querySelector(`.${options.nodeBackClass}`)
-          placeholderNodeBack.style.paddingLeft = (placeholderPath.length - 1) * options.indent + 'px'
-          // remove tempChildren if empty
-          if (store.tempChildren.children.length === 0) {
-            hp.removeEl(store.tempChildren)
-          }
+          updatePlaceholderIndent()
         })
       }
       const actions = {
@@ -411,64 +401,56 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         }
       }
       // actions end ========================================
-      //
-      const checkPlaceholder = () => {
-        if (!store.placeholder) {
-          const placeholder = hp.createElementFromHTML(`
-            <div id="${options.placeholderId}" class="${options.branchClass} ${options.placeholderClass}">
-              <div class="${options.nodeBackClass} ${options.placeholderNodeBackClass}">
-                <div class="${options.nodeClass} ${options.placeholderNodeClass}">
-                </div>
-              </div>
-            </div>
-          `)
-          hp.insertAfter(placeholder, movingEl)
-          store.placeholder = placeholder
-          options.afterPlaceholderCreated(store)
-          // create a tree children el to use when can't get childrenEl
-          const tempChildren = document.createElement('DIV')
-          hp.addClass(tempChildren, options.childrenClass)
-          store.tempChildren = tempChildren
-        }
-      }
-      //
-      checkPlaceholder()
-      doDraggableDecision({options, event, store, opt, info, conditions, actions, doAction})
+      doDraggableDecision({options, event: store.moveEvent, store, opt: dhOptions, info, conditions, actions, doAction})
     },
-    drop: async (endEvent, store, opt) => {
-      const movingEl = store.el // branch
-      const {placeholder, tempChildren} = store
+    beforeDrop: async (store, dhOptions) => {
+      const {endEvent} = store
+      const movingEl = store.movedElement // branch
+      const {placeholder, tempChildren, movedCount, targetTreeEl, startTreeEl} = store
       // use mask tree to avoid flick caused by DOM update in short time
       // 复制 targetTreeEl 作为遮罩, 避免短时间内更新DOM引起的闪烁
-      let maskTree
-      if (placeholder) {
-        // placeholder not mounted is rarely
+      let maskTree, maskTree2
+      if (targetTreeEl) {
+        // No targetTreeEl mean no valid move.
+        // targetTreeEl不存在意味着没有有效移动.
+
         // create mask tree
-        maskTree = store.targetTreeEl.cloneNode(true)
-        store.targetTreeEl.style.display = 'none'
-        hp.insertAfter(maskTree, store.targetTreeEl)
+        maskTree = targetTreeEl.cloneNode(true)
+        targetTreeEl.style.display = 'none'
+        hp.insertAfter(maskTree, targetTreeEl)
+        if (startTreeEl !== targetTreeEl) {
+          maskTree2 = startTreeEl.cloneNode(true)
+          startTreeEl.style.display = 'none'
+          hp.insertAfter(maskTree2, startTreeEl)
+        }
         //
         store.targetPath = options.getPathByBranchEl(placeholder)
         let pathChanged = isPathChanged()
         store.targetPathNotEqualToStartPath = pathChanged
         store.pathChangePrevented = false
-        if (options.beforeDrop && options.beforeDrop(pathChanged, store, opt) === false) {
+        if (options.beforeDrop && options.beforeDrop(pathChanged, store, dhOptions) === false) {
           pathChanged = false
           store.pathChangePrevented = false
         }
         store.pathChanged = pathChanged
-        hp.removeEl(placeholder)
-        if (tempChildren) {
-          hp.removeEl(tempChildren)
-        }
       }
-      store.restoreDOM()
-      await options.ondrop(store, opt)
+      // destroy placeholder and tempChildren
+      hp.removeEl(placeholder)
+      if (tempChildren) {
+        hp.removeEl(tempChildren)
+      }
+      store.updateMovedElementStyle()
+      // 
+      await options.afterDrop(store, dhOptions)
       // remove mask tree
       if (maskTree) {
         await hp.waitTime(30)
         hp.removeEl(maskTree)
-        store.targetTreeEl.style.display = 'block'
+        targetTreeEl.style.display = 'block'
+        if (maskTree2) {
+          hp.removeEl(maskTree2)
+          startTreeEl.style.display = 'block'
+        }
       }
       //
       function isPathChanged() {
@@ -490,7 +472,9 @@ export default function makeTreeDraggable(treeEl, options = {}) {
   }
   function optionsUpdated() {
     Object.assign(draggableHelperOptions, {
+      triggerClassName: options.triggerClass,
       triggerBySelf: options.triggerBySelf,
+      draggingClassName: options.draggingClass,
       clone: options.cloneWhenDrag,
     })
   }
