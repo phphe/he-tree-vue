@@ -7,7 +7,7 @@ const treesStore = {}
 
 export default {
   props: {
-    triggerClass: {type: String, default: 'tree-node'},
+    triggerBySelf: {type: Boolean},
     draggable: {type: [Boolean, Function], default: true},
     droppable: {type: [Boolean, Function], default: true},
     eachDraggable: {type: [Function]}, // type: [Boolean, Function]
@@ -120,6 +120,7 @@ export default {
     const options = this._draggableOptions = {
       indent: this.indent,
       triggerClass: this.triggerClass,
+      triggerBySelf: this.triggerBySelf,
       unfoldWhenDragover: this.unfoldWhenDragover,
       unfoldWhenDragoverDelay: this.unfoldWhenDragoverDelay,
       draggingNodePositionMode: this.draggingNodePositionMode,
@@ -297,7 +298,13 @@ export default {
     }
     const _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options);
     // watch props and update options
-    ['indent', 'triggerClass', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag'].forEach(name => {
+    ['indent', 
+    'triggerClass', 
+    'triggerBySelf', 
+    'unfoldWhenDragover', 
+    'unfoldWhenDragoverDelay', 
+    'draggingNodePositionMode', 
+    'cloneWhenDrag', ].forEach(name => {
       this.$watch(name, (value) => {
         _makeTreeDraggable_obj.options[name] = value
         _makeTreeDraggable_obj.optionsUpdated()
@@ -305,6 +312,7 @@ export default {
     })
   },
 }
+
 </script>
 
 <style>

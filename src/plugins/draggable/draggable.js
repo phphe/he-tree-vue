@@ -8,6 +8,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
   options = {
     // indent: 20,
     // triggerClass: 'tree-node',
+    // triggerBySelf: false,
     // unfoldWhenDragover
     // unfoldWhenDragoverDelay
     // draggingNodePositionMode
@@ -28,6 +29,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     treeEl,
   }
   const {destroy, draggableHelperOptions} = draggableHelper(treeEl, {
+    triggerBySelf: options.triggerBySelf,
     draggingClass: options.draggingClass,
     restoreDOMManuallyOndrop: true,
     clone: options.cloneWhenDrag,
@@ -487,7 +489,10 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     })
   }
   function optionsUpdated() {
-    draggableHelperOptions.clone = options.cloneWhenDrag
+    Object.assign(draggableHelperOptions, {
+      triggerBySelf: options.triggerBySelf,
+      clone: options.cloneWhenDrag,
+    })
   }
 }
 
