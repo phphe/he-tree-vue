@@ -239,8 +239,8 @@ export default {
         if (targetTree.hasHook('ondragend') && targetTree.executeHook('ondragend', [targetTree, store]) === false) {
           return false
         }
-        targetTree.$emit('drop', store)
-        this.$root.$emit('he-tree-drop', store)
+        targetTree.$emit('before-drop', store)
+        this.$root.$emit('he-tree-before-drop', store)
       },
       afterDrop: (store, t) => {
         if (store.pathChanged) {
@@ -290,10 +290,12 @@ export default {
           targetSiblings.splice(targetIndex, 0, dragNode)
           // emit event
           startTree.$emit('input', startTree.treeData)
-          startTree.$emit('change')
+          startTree.$emit('change', store)
+          targetTree.$emit('drop', store)
+          this.$root.$emit('he-tree-drop', store)
           if (targetTree !== startTree) {
             targetTree.$emit('input', targetTree.treeData)
-            targetTree.$emit('change')
+            targetTree.$emit('change', store)
           }
           return new Promise((resolve, reject) => {
             targetTree.$nextTick(() => {
