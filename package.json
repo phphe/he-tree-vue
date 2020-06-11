@@ -24,7 +24,8 @@
     "build:web": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "compile-scripts": "tsc --target ES6 --module CommonJS scripts/build.ts",
-    "build": "rollup -c scripts/build.js & node scripts/build.js --report"
+    "build": "rollup -c scripts/build.js & node scripts/build.js --report",
+    "commit": "git-cz"
   },
   "dependencies": {
     "@babel/runtime": "^7.7.7",
@@ -36,6 +37,9 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
+    "commitizen": "^4.1.2",
+    "conventional-changelog-cli": "^2.0.34",
+    "cz-conventional-changelog": "^3.2.0",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
     "rogo": "^2.0.2",
@@ -50,5 +54,10 @@
   "peerDependencies": {
     "vue": "^2.6.10"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }
