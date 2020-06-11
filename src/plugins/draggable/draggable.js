@@ -174,7 +174,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           }
           //
           let found
-          const t = hp.binarySearch(nodes, (node) => hp.getOffset(node).y - movingNodeOf.y, null, null, true)
+          const t = hp.binarySearch(nodes, (node) => hp.getOffset(node).y - movingNodeOf.y, {returnNearestIfNoHit: true})
           if (t.hit) {
             found = t.value
           } else {

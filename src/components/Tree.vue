@@ -79,7 +79,7 @@ const Tree = {
     return {
       trees,
       treeClass: '',
-      treeId: hp.strRand(),
+      treeId: hp.randString(),
     }
   },
   // computed: {},
@@ -138,7 +138,7 @@ const Tree = {
   },
   mounted() {
     //
-    this.treeId = hp.strRand()
+    this.treeId = hp.randString()
     this.$set(this.trees, this.treeId, this)
     this.$once('hook:beforeDestroy', () => {
       this.$delete(this.trees, this.treeId)
