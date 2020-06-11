@@ -24,6 +24,10 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     // placeholderId
     // unfoldTargetNodeByEl
     // getPathByBranchEl
+    // edgeScroll: false,
+    // edgeScrollTriggerMargin: 50,
+    // edgeScrollSpeed: 0.35,
+    // edgeScrollTriggerMode: 'top_left_corner',
     // rtl: false
     ...options,
     treeEl,
@@ -33,6 +37,10 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     triggerBySelf: options.triggerBySelf,
     draggingClassName: options.draggingClass,
     clone: options.cloneWhenDrag,
+    edgeScroll: options.edgeScroll,
+    edgeScrollTriggerMargin: options.edgeScrollTriggerMargin,
+    edgeScrollSpeed: options.edgeScrollSpeed,
+    edgeScrollTriggerMode: options.edgeScrollTriggerMode,
     rtl: options.rtl,
     updateMovedElementStyleManually: true,
     getMovedOrClonedElement: (directTriggerElement, store) => {
@@ -497,6 +505,11 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       triggerBySelf: options.triggerBySelf,
       draggingClassName: options.draggingClass,
       clone: options.cloneWhenDrag,
+      // edgeScroll
+      edgeScroll: options.edgeScroll,
+      edgeScrollTriggerMargin: options.edgeScrollTriggerMargin,
+      edgeScrollSpeed: options.edgeScrollSpeed,
+      edgeScrollTriggerMode: options.edgeScrollTriggerMode,
       rtl: options.rtl,
     })
   }

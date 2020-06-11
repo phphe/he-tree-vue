@@ -18,6 +18,10 @@ export default {
     unfoldWhenDragover: {type: Boolean, default: true},
     unfoldWhenDragoverDelay: {type: Number, default: 30},
     draggingNodePositionMode: {type: String, default: 'top_left_corner'}, // top_left_corner, mouse
+    edgeScroll: {type: Boolean},
+    edgeScrollTriggerMargin: {type: Number, default: 50},
+    edgeScrollSpeed: {type: Number, default: 0.35},
+    edgeScrollTriggerMode: {type: String, default: 'top_left_corner'},
   },
   // components: {},
   data() {
@@ -126,6 +130,10 @@ export default {
       unfoldWhenDragoverDelay: this.unfoldWhenDragoverDelay,
       draggingNodePositionMode: this.draggingNodePositionMode,
       cloneWhenDrag: this.cloneWhenDrag,
+      edgeScroll: this.edgeScroll,
+      edgeScrollTriggerMargin: this.edgeScrollTriggerMargin,
+      edgeScrollSpeed: this.edgeScrollSpeed,
+      edgeScrollTriggerMode: this.edgeScrollTriggerMode,
       rtl: this.rtl,
       treeClass: 'he-tree',
       rootClass: 'tree-root',
@@ -304,6 +312,7 @@ export default {
     'unfoldWhenDragover', 
     'unfoldWhenDragoverDelay', 
     'draggingNodePositionMode', 
+    'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 
     'rtl'
     ].forEach(name => {
       this.$watch(name, (value) => {
