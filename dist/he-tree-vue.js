@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v1.2.4-beta
+ * he-tree-vue v2.0.0
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -11,6 +11,53 @@
 }(this, (function (exports, Vue) { 'use strict';
 
   Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+
+  var arrayLikeToArray = _arrayLikeToArray;
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return arrayLikeToArray(arr);
+  }
+
+  var arrayWithoutHoles = _arrayWithoutHoles;
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+  }
+
+  var iterableToArray = _iterableToArray;
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
+  }
+
+  var unsupportedIterableToArray = _unsupportedIterableToArray;
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var nonIterableSpread = _nonIterableSpread;
+
+  function _toConsumableArray(arr) {
+    return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
+  }
+
+  var toConsumableArray = _toConsumableArray;
 
   function _defineProperty(obj, key, value) {
     if (key in obj) {
@@ -28,36 +75,6 @@
   }
 
   var defineProperty = _defineProperty;
-
-  function _arrayWithoutHoles(arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-        arr2[i] = arr[i];
-      }
-
-      return arr2;
-    }
-  }
-
-  var arrayWithoutHoles = _arrayWithoutHoles;
-
-  function _iterableToArray(iter) {
-    if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-  }
-
-  var iterableToArray = _iterableToArray;
-
-  function _nonIterableSpread() {
-    throw new TypeError("Invalid attempt to spread non-iterable instance");
-  }
-
-  var nonIterableSpread = _nonIterableSpread;
-
-  function _toConsumableArray(arr) {
-    return arrayWithoutHoles(arr) || iterableToArray(arr) || nonIterableSpread();
-  }
-
-  var toConsumableArray = _toConsumableArray;
 
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -300,7 +317,7 @@
       return { __await: arg };
     };
 
-    function AsyncIterator(generator) {
+    function AsyncIterator(generator, PromiseImpl) {
       function invoke(method, arg, resolve, reject) {
         var record = tryCatch(generator[method], generator, arg);
         if (record.type === "throw") {
@@ -311,14 +328,14 @@
           if (value &&
               typeof value === "object" &&
               hasOwn.call(value, "__await")) {
-            return Promise.resolve(value.__await).then(function(value) {
+            return PromiseImpl.resolve(value.__await).then(function(value) {
               invoke("next", value, resolve, reject);
             }, function(err) {
               invoke("throw", err, resolve, reject);
             });
           }
 
-          return Promise.resolve(value).then(function(unwrapped) {
+          return PromiseImpl.resolve(value).then(function(unwrapped) {
             // When a yielded Promise is resolved, its final value becomes
             // the .value of the Promise<{value,done}> result for the
             // current iteration.
@@ -336,7 +353,7 @@
 
       function enqueue(method, arg) {
         function callInvokeWithMethodAndArg() {
-          return new Promise(function(resolve, reject) {
+          return new PromiseImpl(function(resolve, reject) {
             invoke(method, arg, resolve, reject);
           });
         }
@@ -376,9 +393,12 @@
     // Note that simple async functions are implemented on top of
     // AsyncIterator objects; they just return a Promise for the value of
     // the final result produced by the iterator.
-    exports.async = function(innerFn, outerFn, self, tryLocsList) {
+    exports.async = function(innerFn, outerFn, self, tryLocsList, PromiseImpl) {
+      if (PromiseImpl === void 0) PromiseImpl = Promise;
+
       var iter = new AsyncIterator(
-        wrap(innerFn, outerFn, self, tryLocsList)
+        wrap(innerFn, outerFn, self, tryLocsList),
+        PromiseImpl
       );
 
       return exports.isGeneratorFunction(outerFn)
@@ -899,53 +919,17 @@
   var regenerator = runtime_1;
 
   /*!
-   * helper-js v1.4.36
+   * helper-js v2.0.1
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
    */
 
-  function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-
-    if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      if (enumerableOnly) symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-      keys.push.apply(keys, symbols);
-    }
-
-    return keys;
-  }
-
-  function _objectSpread(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i] != null ? arguments[i] : {};
-
-      if (i % 2) {
-        ownKeys(Object(source), true).forEach(function (key) {
-          defineProperty(target, key, source[key]);
-        });
-      } else if (Object.getOwnPropertyDescriptors) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-      } else {
-        ownKeys(Object(source)).forEach(function (key) {
-          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-      }
-    }
-
-    return target;
-  }
-
-  var _marked =
-  /*#__PURE__*/
-  regenerator.mark(iterateAll);
+  var _marked = /*#__PURE__*/regenerator.mark(iterateAll);
 
   function _createForOfIteratorHelper(o) {
     if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-      if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) {
+      if (Array.isArray(o) || (o = _unsupportedIterableToArray$1(o))) {
         var i = 0;
 
         var F = function F() {};
@@ -998,16 +982,16 @@
     };
   }
 
-  function _unsupportedIterableToArray(o, minLen) {
+  function _unsupportedIterableToArray$1(o, minLen) {
     if (!o) return;
-    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    if (typeof o === "string") return _arrayLikeToArray$1(o, minLen);
     var n = Object.prototype.toString.call(o).slice(8, -1);
     if (n === "Object" && o.constructor) n = o.constructor.name;
     if (n === "Map" || n === "Set") return Array.from(n);
-    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$1(o, minLen);
   }
 
-  function _arrayLikeToArray(arr, len) {
+  function _arrayLikeToArray$1(arr, len) {
     if (len == null || len > arr.length) len = arr.length;
 
     for (var i = 0, arr2 = new Array(len); i < len; i++) {
@@ -1015,7 +999,7 @@
     }
 
     return arr2;
-  } // local store
+  } // 为此库有需要的方法存储信息
 
   function isArray(v) {
     return Object.prototype.toString.call(v) === '[object Array]';
@@ -1028,29 +1012,35 @@
   function isFunction(v) {
     return typeof v === 'function';
   }
+  // 返回指定范围随机整数, 包括范围起始值和终止值
 
 
-  function numRand(min, max) {
-    if (arguments.length === 1) {
-      max = min;
-      min = 0;
-    }
-
+  function randInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
-  }
+  } // rand item in array
+  // 返回数组随机一项
 
-  function strRand() {
+
+  function randChoice(arr) {
+    return arr[randInt(0, arr.length - 1)];
+  } // Pad a string to a certain length with another string
+  // 随机字符串
+
+
+  function randString() {
     var len = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 8;
-    var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+    var seeds = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var r = '';
-    var seeds = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
     for (var i = 0; i < len; i++) {
-      r += seeds[numRand(seeds.length - 1)];
+      r += randChoice(seeds);
     }
 
-    return prefix + r;
-  }
+    return r;
+  } // ## Array
+  // ## 数组
+  // remove item from array. return removed count
+  // 从数组删除项. 返回删除计数
 
 
   function arrayRemove(arr, v) {
@@ -1063,31 +1053,38 @@
     }
 
     return count;
-  }
+  } // remove items from array by sorted indexes. indexes example: [0, 2, 6, 8, 9]
+  // 返回数组末项
+
 
   function arrayLast(arr) {
     return arr[arr.length - 1];
+  } // return arr1 - arr2
+
+  function toArrayIfNot(arrOrNot) {
+    return isArray(arrOrNot) ? arrOrNot : [arrOrNot];
   }
+  // 返回新数组排除末尾n项
 
-  function arrayWithoutEnd(arr, len) {
-    return arr.slice(0, arr.length - len);
-  } // object
 
+  function arrayWithoutEnd(arr, n) {
+    return arr.slice(0, arr.length - n);
+  } // get one-dimensional array from multidimensional array
 
   function iterateAll(val) {
     var opt,
         i,
         info,
-        _i7,
-        _Object$keys2,
+        _i2,
+        _Object$keys,
         key,
         _info,
-        _i8,
+        _i3,
         _info2,
         keys,
-        _i9,
-        _keys2,
-        _key2,
+        _i4,
+        _keys,
+        _key,
         _info3,
         _args = arguments;
 
@@ -1143,15 +1140,15 @@
               break;
             }
 
-            _i7 = 0, _Object$keys2 = Object.keys(val);
+            _i2 = 0, _Object$keys = Object.keys(val);
 
           case 16:
-            if (!(_i7 < _Object$keys2.length)) {
+            if (!(_i2 < _Object$keys.length)) {
               _context.next = 25;
               break;
             }
 
-            key = _Object$keys2[_i7];
+            key = _Object$keys[_i2];
             _info = {
               value: val[key],
               key: key
@@ -1166,7 +1163,7 @@
             return _info;
 
           case 22:
-            _i7++;
+            _i2++;
             _context.next = 16;
             break;
 
@@ -1187,17 +1184,17 @@
               break;
             }
 
-            _i8 = val.length - 1;
+            _i3 = val.length - 1;
 
           case 32:
-            if (!(_i8 >= 0)) {
+            if (!(_i3 >= 0)) {
               _context.next = 40;
               break;
             }
 
             _info2 = {
-              value: val[_i8],
-              index: _i8
+              value: val[_i3],
+              index: _i3
             };
 
             if (!(!opt.exclude || !opt.exclude(_info2))) {
@@ -1209,7 +1206,7 @@
             return _info2;
 
           case 37:
-            _i8--;
+            _i3--;
             _context.next = 32;
             break;
 
@@ -1225,18 +1222,18 @@
 
             keys = Object.keys(val);
             keys.reverse();
-            _i9 = 0, _keys2 = keys;
+            _i4 = 0, _keys = keys;
 
           case 46:
-            if (!(_i9 < _keys2.length)) {
+            if (!(_i4 < _keys.length)) {
               _context.next = 55;
               break;
             }
 
-            _key2 = _keys2[_i9];
+            _key = _keys[_i4];
             _info3 = {
-              value: val[_key2],
-              key: _key2
+              value: val[_key],
+              key: _key
             };
 
             if (!(!opt.exclude || !opt.exclude(_info3))) {
@@ -1248,7 +1245,7 @@
             return _info3;
 
           case 52:
-            _i9++;
+            _i4++;
             _context.next = 46;
             break;
 
@@ -1265,14 +1262,19 @@
         }
       }
     }, _marked);
-  } // Deprecated in next version
-  // Depth-First-Search
-  // TODO change args in next version
+  } // example: objectGet(window, 'document.body.children.0') . source: http://stackoverflow.com/questions/8817394/javascript-get-deep-value-from-object-by-passing-path-to-it-as-string
 
+  function objectAssignIfKeyNull(obj1, obj2) {
+    Object.keys(obj2).forEach(function (key) {
+      if (obj1[key] == null) {
+        obj1[key] = obj2[key];
+      }
+    });
+  }
 
   function depthFirstSearch(obj, handler) {
     var childrenKey = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'children';
-    var reverse = arguments.length > 3 ? arguments[3] : undefined;
+    var opt = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
     var rootChildren = isArray(obj) ? obj : [obj]; //
 
     var StopException = function StopException() {
@@ -1280,7 +1282,7 @@
     };
 
     var func = function func(children, parent, parentPath) {
-      if (reverse) {
+      if (opt.reverse) {
         children = children.slice();
         children.reverse();
       }
@@ -1289,9 +1291,8 @@
 
       for (var i = 0; i < len; i++) {
         var item = children[i];
-        var index = reverse ? len - i - 1 : i;
-        var path = parentPath ? [].concat(toConsumableArray(parentPath), [index]) : []; // TODO change args in next version
-
+        var index = opt.reverse ? len - i - 1 : i;
+        var path = parentPath ? [].concat(toConsumableArray(parentPath), [index]) : [];
         var r = handler(item, index, parent, path);
 
         if (r === false) {
@@ -1316,15 +1317,16 @@
         throw e;
       }
     }
-  }
+  } // refer [depthFirstSearch](#depthFirstSearch)
 
-  var walkTreeData = depthFirstSearch;
 
-  var TreeData =
-  /*#__PURE__*/
-  function () {
+  var walkTreeData = depthFirstSearch; // tree data helpers
+
+  var TreeData = /*#__PURE__*/function () {
     // data = null;
-    function TreeData(data) {
+    function TreeData() {
+      var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
       classCallCheck(this, TreeData);
 
       this.childrenKey = 'children';
@@ -1333,9 +1335,7 @@
 
     createClass(TreeData, [{
       key: "iteratePath",
-      value:
-      /*#__PURE__*/
-      regenerator.mark(function iteratePath(path) {
+      value: /*#__PURE__*/regenerator.mark(function iteratePath(path) {
         var opt,
             childrenKey,
             rootChildren,
@@ -1350,8 +1350,9 @@
             _iterator5,
             _step5,
             _step5$value,
-            _path,
+            path0,
             node,
+            _path,
             _args2 = arguments;
 
         return regenerator.wrap(function iteratePath$(_context2) {
@@ -1414,11 +1415,11 @@
                 return _context2.finish(24);
 
               case 27:
-                _context2.next = 48;
+                _context2.next = 49;
                 break;
 
               case 29:
-                list = toConsumableArray(this.iteratePath(path, _objectSpread({}, opt, {
+                list = toConsumableArray(this.iteratePath(path, Object.assign(Object.assign({}, opt), {
                   reverse: false
                 })));
                 list.reverse();
@@ -1429,44 +1430,45 @@
 
               case 34:
                 if ((_step5 = _iterator5.n()).done) {
-                  _context2.next = 40;
+                  _context2.next = 41;
                   break;
                 }
 
-                _step5$value = _step5.value, _path = _step5$value.path, node = _step5$value.node;
-                _context2.next = 38;
+                _step5$value = _step5.value, path0 = _step5$value.path, node = _step5$value.node;
+                _path = path0;
+                _context2.next = 39;
                 return {
                   path: _path,
                   node: node
                 };
 
-              case 38:
+              case 39:
                 _context2.next = 34;
                 break;
 
-              case 40:
-                _context2.next = 45;
+              case 41:
+                _context2.next = 46;
                 break;
 
-              case 42:
-                _context2.prev = 42;
+              case 43:
+                _context2.prev = 43;
                 _context2.t1 = _context2["catch"](32);
 
                 _iterator5.e(_context2.t1);
 
-              case 45:
-                _context2.prev = 45;
+              case 46:
+                _context2.prev = 46;
 
                 _iterator5.f();
 
-                return _context2.finish(45);
+                return _context2.finish(46);
 
-              case 48:
+              case 49:
               case "end":
                 return _context2.stop();
             }
           }
-        }, iteratePath, this, [[6, 21, 24, 27], [32, 42, 45, 48]]);
+        }, iteratePath, this, [[6, 21, 24, 27], [32, 43, 46, 49]]);
       })
     }, {
       key: "getAllNodes",
@@ -1544,18 +1546,16 @@
       }
     }, {
       key: "walk",
-      value: function walk(handler) {
-        var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      value: function walk(handler, opt) {
         var childrenKey = this.childrenKey,
-            data = this.data; // TODO change args in next version
+            data = this.data; // @ts-ignore
 
-        return walkTreeData(data, handler, childrenKey, opt.reverse);
+        return walkTreeData(data, handler, childrenKey, opt);
       }
     }, {
       key: "clone",
       value: function clone() {
         var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {}; // opt.afterNodeCreated(newNode, {oldNode: node, index, parent, path})
-        // TODO change args in next version
 
         var childrenKey = this.childrenKey;
         var td = new TreeData();
@@ -1583,18 +1583,15 @@
       key: "rootChildren",
       get: function get() {
         var childrenKey = this.childrenKey;
-
-        if (!this.data) {
-          this.data = [];
-        }
-
         var data = this.data;
         return isArray(data) ? data : data[childrenKey];
       }
     }]);
 
     return TreeData;
-  }(); // function helper | method helper ============================
+  }(); // ## function
+  // ## 函数
+  // if it is function, return result, else return it directly.
 
 
   function resolveValueOrGettter(valueOrGetter) {
@@ -1611,37 +1608,35 @@
   function joinFunctionsByNext(funcs) {
     var next = function next() {};
 
-    var _iterator8 = _createForOfIteratorHelper(iterateAll(funcs, {
+    var _iterator7 = _createForOfIteratorHelper(iterateAll(funcs, {
       reverse: true
     })),
-        _step8;
+        _step7;
 
     try {
-      for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
-        var func = _step8.value.value;
+      for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+        var func = _step7.value.value;
         var currentNext = next;
         next = wrapFuncWithNext(func, currentNext);
       }
     } catch (err) {
-      _iterator8.e(err);
+      _iterator7.e(err);
     } finally {
-      _iterator8.f();
+      _iterator7.f();
     }
 
     return next;
 
     function wrapFuncWithNext(func, next) {
       return function () {
-        for (var _len5 = arguments.length, args = new Array(_len5), _key7 = 0; _key7 < _len5; _key7++) {
-          args[_key7] = arguments[_key7];
+        for (var _len4 = arguments.length, args = new Array(_len4), _key5 = 0; _key5 < _len4; _key5++) {
+          args[_key5] = arguments[_key5];
         }
 
         return func.apply(void 0, [next].concat(args));
       };
     }
-  } // promise
-  /* eslint-enable */
-  // dom =====================================================
+  } // ## promise
   // return NodeList if there are multiple top-level nodes
 
 
@@ -1705,42 +1700,6 @@
     };
   } // there is some trap in el.offsetParent, so use this func to fix
 
-
-  function getOffsetParent(el) {
-    var offsetParent = el.offsetParent;
-
-    if (!offsetParent || offsetParent === document.body && getComputedStyle(document.body).position === 'static') {
-      offsetParent = document.body.parentElement;
-    }
-
-    return offsetParent;
-  } // get el current position. like jQuery.position
-  // the position is relative to offsetParent viewport left top. it is for set absolute position, absolute position is relative to offsetParent viewport left top.
-  // 相对于offsetParent可视区域左上角(el.offsetLeft或top包含父元素的滚动距离, 所以要减去). position一般用于设置绝对定位的情况, 而绝对定位就是以可视区域左上角为原点.
-
-
-  function getPosition(el) {
-    var offsetParent = getOffsetParent(el);
-    var ps = {
-      x: el.offsetLeft,
-      y: el.offsetTop
-    };
-    var parent = el;
-
-    while (true) {
-      parent = parent.parentElement;
-
-      if (parent === offsetParent || !parent) {
-        break;
-      }
-
-      ps.x -= parent.scrollLeft;
-      ps.y -= parent.scrollTop;
-    }
-
-    return ps;
-  } // get position of a el if its offset is given. like jQuery.offset.
-
   function getBoundingClientRect(el) {
     // refer: http://www.51xuediannao.com/javascript/getBoundingClientRect.html
     var xy = el.getBoundingClientRect();
@@ -1765,9 +1724,13 @@
       x: x,
       y: y
     };
-  }
+  } // refer [getBoundingClientRect](#getBoundingClientRect)
 
-  function findParent(el, callback, opt) {
+
+  var getViewportPosition = getBoundingClientRect; // TODO not tested
+
+  function findParent(el, callback) {
+    var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     var cur = opt && opt.withSelf ? el : el.parentElement;
 
     while (cur) {
@@ -1790,7 +1753,13 @@
 
   function restoreAttr(el, name) {
     var key = "original_".concat(name);
-    el.setAttribute(name, el[key]);
+    var value = el[key];
+
+    if (value == null) {
+      el.removeAttribute(name);
+    } else {
+      el.setAttribute(name, value);
+    }
   } // source: http://youmightnotneedjquery.com/
 
 
@@ -1813,31 +1782,32 @@
     }
   } // source: http://youmightnotneedjquery.com/
 
-
   function onDOM(el, name, handler) {
-    for (var _len6 = arguments.length, args = new Array(_len6 > 3 ? _len6 - 3 : 0), _key8 = 3; _key8 < _len6; _key8++) {
-      args[_key8 - 3] = arguments[_key8];
+    for (var _len5 = arguments.length, args = new Array(_len5 > 3 ? _len5 - 3 : 0), _key6 = 3; _key6 < _len5; _key6++) {
+      args[_key6 - 3] = arguments[_key6];
     }
 
     if (el.addEventListener) {
       // 所有主流浏览器，除了 IE 8 及更早 IE版本
-      el.addEventListener.apply(el, [name, handler].concat(args));
+      el.addEventListener.apply(el, [name, handler].concat(args)); // @ts-ignore
     } else if (el.attachEvent) {
       // IE 8 及更早 IE 版本
+      // @ts-ignore
       el.attachEvent.apply(el, ["on".concat(name), handler].concat(args));
     }
   }
 
   function offDOM(el, name, handler) {
-    for (var _len7 = arguments.length, args = new Array(_len7 > 3 ? _len7 - 3 : 0), _key9 = 3; _key9 < _len7; _key9++) {
-      args[_key9 - 3] = arguments[_key9];
+    for (var _len6 = arguments.length, args = new Array(_len6 > 3 ? _len6 - 3 : 0), _key7 = 3; _key7 < _len6; _key7++) {
+      args[_key7 - 3] = arguments[_key7];
     }
 
     if (el.removeEventListener) {
       // 所有主流浏览器，除了 IE 8 及更早 IE版本
-      el.removeEventListener.apply(el, [name, handler].concat(args));
+      el.removeEventListener.apply(el, [name, handler].concat(args)); // @ts-ignore
     } else if (el.detachEvent) {
       // IE 8 及更早 IE 版本
+      // @ts-ignore
       el.detachEvent.apply(el, ["on".concat(name), handler].concat(args));
     }
   }
@@ -1868,13 +1838,10 @@
     }
   }
 
-  function elementsFromPoint() {
+  function elementsFromPoint(x, y) {
+    var args = [x, y]; // @ts-ignore
+
     var func = document.elementsFromPoint || document.msElementsFromPoint || elementsFromPoint;
-
-    for (var _len9 = arguments.length, args = new Array(_len9), _key11 = 0; _key11 < _len9; _key11++) {
-      args[_key11] = arguments[_key11];
-    }
-
     return func.apply(document, args);
 
     function elementsFromPoint(x, y) {
@@ -1897,6 +1864,83 @@
       return parents;
     }
   }
+  /* scroll to a positon with duration
+  from https://gist.github.com/andjosh/6764939
+  interface options{
+    x: number // nullable. don't scroll horizontally when null
+    y: number // nullable. don't scroll vertically when null
+    duration: number // default 0
+    element: Element // default is the top scrollable element.
+    beforeEveryFrame: (count: number) => boolean|void // call before requestAnimationFrame execution. return false to stop
+  }
+  return stop
+  */
+
+
+  function scrollTo(options) {
+    if (!options.element) {
+      options.element = document.scrollingElement || document.documentElement;
+    }
+
+    if (options.duration == null) {
+      options.duration = 0;
+    }
+
+    var x = options.x,
+        y = options.y,
+        duration = options.duration,
+        element = options.element;
+    var requestAnimationFrameId;
+    var count = 0;
+
+    var startY = element.scrollTop,
+        changeY = y - startY,
+        startX = element.scrollLeft,
+        changeX = x - startX,
+        startDate = +new Date(),
+        animateScroll = function animateScroll() {
+      if (options.beforeEveryFrame && options.beforeEveryFrame(count) === false) {
+        return;
+      }
+
+      var currentDate = new Date().getTime();
+      var changedTime = currentDate - startDate;
+
+      if (y != null) {
+        element.scrollTop = parseInt(calc(startY, changeY, changedTime, duration));
+      }
+
+      if (x != null) {
+        element.scrollLeft = parseInt(calc(startX, changeX, changedTime, duration));
+      }
+
+      if (changedTime < duration) {
+        requestAnimationFrameId = requestAnimationFrame(animateScroll);
+      } else {
+        if (y != null) {
+          element.scrollTop = y;
+        }
+
+        if (x != null) {
+          element.scrollLeft = x;
+        }
+      }
+
+      count++;
+    };
+
+    var stop = function stop() {
+      cancelAnimationFrame(requestAnimationFrameId);
+    };
+
+    animateScroll(); // return stop
+
+    return stop;
+
+    function calc(startValue, changeInValue, changedTime, duration) {
+      return startValue + changeInValue * (changedTime / duration);
+    }
+  } // ### DOM structure
 
 
   function insertBefore(el, target) {
@@ -1913,13 +1957,21 @@
 
   function appendTo(el, target) {
     target.appendChild(el);
-  } // Date ===================================
-  // binarySearch 二分查找
-  // callback(mid, i) should return mid - your_value
+  } // ## Date
 
-
-  function binarySearch(arr, callback, start, end, returnNearestIfNoHit) {
-    var max = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1000;
+  function binarySearch(arr, callback) {
+    var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    opt = Object.assign({
+      start: 0,
+      end: arr.length - 1,
+      maxTimes: 1000
+    }, opt);
+    var _opt = opt,
+        start = _opt.start,
+        end = _opt.end;
+    var _opt2 = opt,
+        returnNearestIfNoHit = _opt2.returnNearestIfNoHit,
+        maxTimes = _opt2.maxTimes;
     var midNum;
     var mid;
 
@@ -1932,8 +1984,8 @@
     var r;
 
     while (start >= 0 && start <= end) {
-      if (i >= max) {
-        throw Error("binarySearch: loop times is over ".concat(max, ", you can increase the limit."));
+      if (i >= maxTimes) {
+        throw Error("binarySearch: loop times is over ".concat(maxTimes, ", you can increase the limit."));
       }
 
       midNum = Math.floor((end - start) / 2 + start);
@@ -1961,7 +2013,7 @@
       value: mid,
       count: i + 1,
       hit: false,
-      bigger: r > 0
+      greater: r > 0
     } : null;
   } //
 
@@ -1972,11 +2024,9 @@
         resolve();
       }, milliseconds);
     });
-  } // overload waitFor(condition, time = 100, maxCount = 1000))
+  }
 
-  var Cache =
-  /*#__PURE__*/
-  function () {
+  var Cache = /*#__PURE__*/function () {
     function Cache() {
       classCallCheck(this, Cache);
 
@@ -2019,7 +2069,7 @@
   function attachCache(obj, toCache) {
     var cache = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Cache();
 
-    var _loop4 = function _loop4(key) {
+    var _loop3 = function _loop3(key) {
       var getter = toCache[key];
       Object.defineProperty(obj, key, {
         get: function get() {
@@ -2033,12 +2083,12 @@
     };
 
     for (var key in toCache) {
-      _loop4(key);
+      _loop3(key);
     }
-  }
+  } // for animation
 
   /*!
-   * vue-functions v2.0.5
+   * vue-functions v2.0.6
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
@@ -2050,7 +2100,7 @@
    * props eg: {
       value: {$localName: 'current', $localSetter: (value, vm)},
     }
-     default localName is `localProps_${name}`
+    default localName is `localProps_${name}`
    */
 
 
@@ -2215,9 +2265,9 @@
     return cloneTreeData(treeData, opt);
   }
 
-  function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   var template = function template(h) {
     var _this = this;
@@ -2229,9 +2279,7 @@
 
 
     var childrenListTpl = function childrenListTpl(nodes, parent, parentPath) {
-      var indentStyle = {
-        paddingLeft: parentPath.length * _this.indent + 'px'
-      };
+      var indentStyle = defineProperty({}, !_this.rtl ? 'paddingLeft' : 'paddingRight', parentPath.length * _this.indent + 'px');
 
       var branchTpl = function branchTpl(node, index) {
         var path = [].concat(toConsumableArray(parentPath), [index]);
@@ -2268,7 +2316,7 @@
         var nodebackStyle = indentStyle;
 
         if (node.$nodeBackStyle) {
-          nodebackStyle = _objectSpread$1({}, nodebackStyle, {}, node.$nodeBackStyle);
+          nodebackStyle = _objectSpread(_objectSpread({}, nodebackStyle), node.$nodeBackStyle);
         }
 
         return h("div", {
@@ -2297,7 +2345,7 @@
     };
 
     return h("div", {
-      "class": "he-tree ".concat(this.treeClass),
+      "class": "he-tree ".concat(this.treeClass, " ").concat(noUndefined(this.rtl && 'he-tree--rtl')),
       "attrs": {
         "data-tree-id": this.treeId
       }
@@ -2318,6 +2366,9 @@
         type: Number,
         default: 20
       },
+      rtl: {
+        type: Boolean
+      },
       rootNode: {
         default: function _default(is) {
           return {};
@@ -2329,7 +2380,7 @@
       return {
         trees: trees,
         treeClass: '',
-        treeId: strRand()
+        treeId: randString()
       };
     },
     // computed: {},
@@ -2401,7 +2452,7 @@
       var _this3 = this;
 
       //
-      this.treeId = strRand();
+      this.treeId = randString();
       this.$set(this.trees, this.treeId, this);
       this.$once('hook:beforeDestroy', function () {
         _this3.$delete(_this3.trees, _this3.treeId);
@@ -2525,11 +2576,11 @@
 
   /* style inject shadow dom */
 
-  var __vue_component__ = normalizeComponent({}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
+  var __vue_component__ = /*#__PURE__*/normalizeComponent({}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
 
-  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   function foldAll(treeData) {
     walkTreeData$1(treeData, function (childNode) {
       Vue.set(childNode, '$folded', true);
@@ -2559,7 +2610,7 @@
       },
       unfold: function unfold(node, path) {
         var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-        opt = _objectSpread$2({
+        opt = _objectSpread$1({
           foldOthers: false
         }, opt);
 
@@ -2603,6 +2654,11 @@
     }
   };
 
+  function _createForOfIteratorHelper$1(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+  function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$2(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen); }
+
+  function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
   var check = {
     props: {},
     methods: {
@@ -2613,12 +2669,12 @@
         var nodes = this.getAllNodesByPath(path);
         var reversedParents = nodes.slice(0, nodes.length - 1);
         reversedParents.reverse();
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+
+        var _iterator = _createForOfIteratorHelper$1(reversedParents),
+            _step;
 
         try {
-          for (var _iterator = reversedParents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var parent = _step.value;
             this.$set(parent, '$checked', parent.children.every(function (child) {
               return child.$checked;
@@ -2626,18 +2682,9 @@
           } // update children
 
         } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
+          _iterator.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+          _iterator.f();
         }
 
         if (node.children && node.children.length > 0) {
@@ -2700,7 +2747,7 @@
   var asyncToGenerator = _asyncToGenerator;
 
   /*!
-   * drag-event-service v1.0.4
+   * drag-event-service v1.1.6
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
@@ -2710,7 +2757,7 @@
     move: ['mousemove', 'touchmove'],
     end: ['mouseup', 'touchend']
   };
-  var index = {
+  var DragEventService = {
     isTouch: function isTouch(e) {
       return e.type && e.type.startsWith('touch');
     },
@@ -2741,13 +2788,25 @@
           // touch
           mouse = {
             x: e.changedTouches[0].pageX,
-            y: e.changedTouches[0].pageY
+            y: e.changedTouches[0].pageY,
+            pageX: e.changedTouches[0].pageX,
+            pageY: e.changedTouches[0].pageY,
+            clientX: e.changedTouches[0].clientX,
+            clientY: e.changedTouches[0].clientY,
+            screenX: e.changedTouches[0].screenX,
+            screenY: e.changedTouches[0].screenY
           };
         } else {
           // mouse
           mouse = {
             x: e.pageX,
-            y: e.pageY
+            y: e.pageY,
+            pageX: e.pageX,
+            pageY: e.pageY,
+            clientX: e.clientX,
+            clientY: e.clientY,
+            screenX: e.screenX,
+            screenY: e.screenY
           };
 
           if (name === 'start' && e.which !== 1) {
@@ -2811,318 +2870,636 @@
   }
 
   /*!
-   * draggable-helper v4.0.3
+   * draggable-helper v5.0.1
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
    */
 
-  function ownKeys$3(object, enumerableOnly) {
-    var keys = Object.keys(object);
+  function _createForOfIteratorHelper$2(o) {
+    if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+      if (Array.isArray(o) || (o = _unsupportedIterableToArray$3(o))) {
+        var i = 0;
 
-    if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      if (enumerableOnly) symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-      keys.push.apply(keys, symbols);
-    }
+        var F = function F() {};
 
-    return keys;
-  }
-
-  function _objectSpread$3(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i] != null ? arguments[i] : {};
-
-      if (i % 2) {
-        ownKeys$3(Object(source), true).forEach(function (key) {
-          defineProperty(target, key, source[key]);
-        });
-      } else if (Object.getOwnPropertyDescriptors) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-      } else {
-        ownKeys$3(Object(source)).forEach(function (key) {
-          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
+        return {
+          s: F,
+          n: function n() {
+            if (i >= o.length) return {
+              done: true
+            };
+            return {
+              done: false,
+              value: o[i++]
+            };
+          },
+          e: function e(_e) {
+            throw _e;
+          },
+          f: F
+        };
       }
+
+      throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
     }
 
-    return target;
-  }
-  /***
-  const destroy = draggableHelper(HTMLElement dragHandlerEl, Object opt = {})
-  opt.beforeDrag(startEvent, moveEvent, store, opt) return false to prevent drag
-  opt.drag(startEvent, moveEvent, store, opt) return false to prevent drag
-  [Object] opt.style || opt.getStyle(store, opt) set style of moving el style
-  [Boolean] opt.clone
-  opt.draggingClass, default dragging
-  opt.moving(e, store, opt) return false can prevent moving
-  opt.drop(e, store, opt)
-  opt.getEl(dragHandlerEl, store, opt) get the el that will be moved. default is dragHandlerEl
-  opt.minTranslate default 10, unit px
-  [Boolean] opt.triggerBySelf: false if trigger only by self, can not be triggered by children
-  [Boolean] opt.restoreDOMManuallyOndrop the changed DOM will be restored automatically on drop. This disable it and pass restoreDOM function into store.
-
-  add other prop into opt, you can get opt in callback
-  store{
-    el
-    originalEl
-    initialMouse
-    initialPosition
-    mouse
-    move
-    movedCount // start from 0
-    startEvent
-    endEvent
-    restoreDOM // function if opt.restoreDOMManuallyOndrop else null
-  }
-  e.g.
-  draggable(this.$el, {
-    vm: this,
-    data: this.data,
-    drag: (e, store, opt) => {
-      dplh.style.height = store.el.querySelector('.TreeNodeSelf').offsetHeight + 'px'
-      th.insertAfter(dplh, opt.data)
-    },
-    moving: (e, store, opt) => {
-      hp.arrayRemove(dplh.parent.children, dplh)
-    },
-    drop: (e, store, opt) => {
-      hp.arrayRemove(dplh.parent.children, dplh)
-    },
-  })
-  ***/
-
-
-  var IGNORE_TRIGGERS = ['INPUT', 'TEXTAREA', 'SELECT', 'OPTGROUP', 'OPTION'];
-  var UNDRAGGABLE_CLASS = 'undraggable';
-
-  function index$1(dragHandlerEl) {
-    var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    opt = _objectSpread$3({
-      minTranslate: 10,
-      draggingClass: 'dragging'
-    }, opt);
-    var store = getPureStore();
-
-    var destroy = function destroy() {
-      index.off(dragHandlerEl, 'start', dragHandlerEl._draggbleEventHandler);
-      delete dragHandlerEl._draggbleEventHandler;
-    };
-
-    if (dragHandlerEl._draggbleEventHandler) {
-      destroy();
-    }
-
-    dragHandlerEl._draggbleEventHandler = start;
-    index.on(dragHandlerEl, 'start', start);
+    var it,
+        normalCompletion = true,
+        didErr = false,
+        err;
     return {
-      destroy: destroy,
-      options: opt
+      s: function s() {
+        it = o[Symbol.iterator]();
+      },
+      n: function n() {
+        var step = it.next();
+        normalCompletion = step.done;
+        return step;
+      },
+      e: function e(_e2) {
+        didErr = true;
+        err = _e2;
+      },
+      f: function f() {
+        try {
+          if (!normalCompletion && it.return != null) it.return();
+        } finally {
+          if (didErr) throw err;
+        }
+      }
     };
+  }
 
-    function start(e, mouse) {
-      // detect draggable =================================
-      if (opt.triggerBySelf && e.target !== dragHandlerEl) {
+  function _unsupportedIterableToArray$3(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray$3(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(n);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen);
+  }
+
+  function _arrayLikeToArray$3(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+  /* Default export, a function.
+  ```js
+  import draggableHelper from 'draggable-helper'
+  draggableHelper(listenerElement, options)
+  ```
+  Arguments:
+    listenerElement: HTMLElement. The element to bind mouse and touch event listener.
+    options: Options. Optional.
+   */
+
+  /* 默认导出, 一个方法.
+  ```js
+  import draggableHelper from 'draggable-helper'
+  draggableHelper(listenerElement, options)
+  ```
+  参数:
+    listenerElement: HTMLElement. 绑定鼠标和触摸事件监听器的HTML元素.
+    options: Options. 可选.
+   */
+
+
+  var _edgeScroll = {
+    afterFirstMove: function afterFirstMove(store, opt) {},
+    afterMove: function afterMove(store, opt) {},
+    afterDrop: function afterDrop(store, opt) {}
+  };
+
+  function index(listenerElement) {
+    var opt = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var store; // set default value of options
+    // 设置options的默认值
+
+    objectAssignIfKeyNull(opt, defaultOptions); // define the event listener of mousedown and touchstart
+    // 定义mousedown和touchstart事件监听器
+
+    var onMousedownOrTouchStart = function onMousedownOrTouchStart(e, mouse) {
+      var target = e.target; // check if triggered by ignore tags
+      // 检查是否由忽略的标签名触发
+
+      if (opt.ingoreTags.includes(target.tagName)) {
+        return;
+      } // check if trigger element and its parent has undraggable class name
+      // 检查触发事件的元素和其与element之间的父级是否有不允许拖动的类名
+
+
+      if (hasClass(target, opt.undraggableClassName)) {
         return;
       }
 
-      if (IGNORE_TRIGGERS.includes(e.target.tagName)) {
-        return;
-      }
-
-      if (hasClass(e.target, UNDRAGGABLE_CLASS)) {
-        return;
-      }
-
-      var isParentUndraggable = findParent(e.target, function (el) {
-        if (hasClass(el, UNDRAGGABLE_CLASS)) {
+      var isParentUndraggable = findParent(target, function (el) {
+        if (hasClass(el, opt.undraggableClassName)) {
           return true;
         }
 
-        if (el === dragHandlerEl) {
+        if (el === listenerElement) {
           return 'break';
         }
       });
 
       if (isParentUndraggable) {
         return;
-      } // detect draggable end =================================
+      } // Initialize store. Store start event, initial position
+      // 初始化store. 存储开始事件, 事件触发坐标
 
 
-      if (!index.isTouch(e)) {
-        // Do not prevent event now and when the client is mobile. Doing so will result in elements within the node not triggering click event.
-        // 不要在此时, 客户端为移动端时阻止事件. 否则将导致节点内的元素不触发点击事件.
-        e.preventDefault();
+      store = JSON.parse(JSON.stringify(initialStore));
+      store.startEvent = e;
+      store.listenerElement = listenerElement;
+      store.directTriggerElement = target;
+      store.initialMouse = Object.assign({}, mouse); // get triggerElement
+
+      var triggerElementIsMovedOrClonedElement = false;
+
+      if (opt.getTriggerElement) {
+        var el = opt.getTriggerElement(store.directTriggerElement, store);
+
+        if (!el) {
+          return;
+        }
+
+        store.triggerElement = el;
+      } else if (opt.triggerClassName) {
+        var triggerElement;
+
+        var _iterator = _createForOfIteratorHelper$2(toArrayIfNot(opt.triggerClassName)),
+            _step;
+
+        try {
+          var _loop = function _loop() {
+            var className = _step.value;
+            triggerElement = findParent(store.directTriggerElement, function (el) {
+              if (hasClass(el, className)) {
+                return true;
+              }
+
+              if (el === listenerElement) {
+                return 'break';
+              }
+            }, {
+              withSelf: true
+            });
+
+            if (triggerElement) {
+              return "break";
+            }
+          };
+
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var _ret = _loop();
+
+            if (_ret === "break") break;
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+
+        if (!triggerElement) {
+          return;
+        }
+
+        store.triggerElement = triggerElement;
+      } else {
+        triggerElementIsMovedOrClonedElement = true;
+      } // get movedOrClonedElement
+
+
+      store.movedOrClonedElement = opt.getMovedOrClonedElement ? opt.getMovedOrClonedElement(store.directTriggerElement, store, opt) : listenerElement;
+
+      if (!store.movedOrClonedElement) {
+        return;
       }
 
-      store.mouse = {
-        x: mouse.x,
-        y: mouse.y
-      };
-      store.startEvent = e;
-      store.initialMouse = _objectSpread$3({}, store.mouse);
-      /*
-      must set passive false for touch, else the follow error occurs in Chrome:
-      Unable to preventDefault inside passive event listener due to target being treated as passive. See https://www.chromestatus.com/features/5093566007214080
-       */
+      if (triggerElementIsMovedOrClonedElement) {
+        store.triggerElement = store.movedOrClonedElement;
+      } // check if trigger element is same with directTriggerElement when options.triggerBySelf is true
+      // options.triggerBySelf为true时, 检查触发事件的元素是否是允许触发的元素
 
-      index.on(document, 'move', moving, {
+
+      if (opt.triggerBySelf && store.triggerElement !== store.directTriggerElement) {
+        return;
+      } // prevent text be selected
+      // 阻止文字被选中
+
+
+      if (!DragEventService.isTouch(e)) {
+        // Do not prevent when touch. Or the elements within the node can not trigger click event.
+        // 不要在触摸时阻止事件. 否则将导致节点内的元素不触发点击事件.
+        e.preventDefault();
+      } // listen mousemove and touchmove
+      // 监听mousemove和touchmove
+
+
+      DragEventService.on(document, 'move', onMousemoveOrTouchMove, {
         touchArgs: [{
           passive: false
         }]
-      });
-      index.on(window, 'end', drop);
-    }
+      }); // listen mouseup and touchend
+      // 监听mouseup和touchend
 
-    function drag(e) {
-      var canDrag = opt.beforeDrag && opt.beforeDrag(store.startEvent, e, store, opt);
-
-      if (canDrag === false) {
-        return false;
-      }
-
-      var _resolveDragedElAndIn = resolveDragedElAndInitialPosition(),
-          el = _resolveDragedElAndIn.el,
-          position = _resolveDragedElAndIn.position;
-
-      store.el = el;
-      store.initialPosition = _objectSpread$3({}, position);
-      canDrag = opt.drag && opt.drag(store.startEvent, e, store, opt);
-
-      if (canDrag === false) {
-        return false;
-      } // dom actions
+      DragEventService.on(window, 'end', onMouseupOrTouchEnd);
+    }; // bind mousedown or touchstart event listener
+    // 绑定mousedown和touchstart事件监听器
 
 
-      var size = getBoundingClientRect(el);
+    DragEventService.on(listenerElement, 'start', onMousedownOrTouchStart); // define the event listener of mousemove and touchmove
+    // 定义mousemove和touchmove事件监听器
 
-      var style = _objectSpread$3({
-        width: "".concat(Math.ceil(size.width), "px"),
-        height: "".concat(Math.ceil(size.height), "px"),
-        zIndex: 9999,
-        opacity: 0.8,
-        position: 'absolute',
-        left: position.x + 'px',
-        top: position.y + 'px'
-      }, opt.style || opt.getStyle && opt.getStyle(store, opt) || {});
+    var onMousemoveOrTouchMove = function onMousemoveOrTouchMove(e, mouse) {
+      var _store = store,
+          movedOrClonedElement = _store.movedOrClonedElement; // calc move and attach related info to store
+      // 计算move并附加相关信息到store
 
-      backupAttr(el, 'style');
-
-      for (var key in style) {
-        el.style[key] = style[key];
-      } // add class
-
-
-      backupAttr(el, 'class');
-      addClass(el, opt.draggingClass);
-    }
-
-    function moving(e, mouse) {
-      e.preventDefault();
-      store.mouse = {
-        x: mouse.x,
-        y: mouse.y
-      };
       var move = store.move = {
-        x: store.mouse.x - store.initialMouse.x,
-        y: store.mouse.y - store.initialMouse.y
+        x: mouse.clientX - store.initialMouse.clientX,
+        y: mouse.clientY - store.initialMouse.clientY
       };
+      store.moveEvent = e;
+      store.mouse = mouse; // prevent text be selected. prevent page scroll when touch.
+      // 阻止文字被选中. 当触摸时阻止屏幕被拖动.
 
-      if (store.movedCount === 0 && opt.minTranslate) {
-        var x2 = Math.pow(store.move.x, 2);
-        var y2 = Math.pow(store.move.y, 2);
-        var dtc = Math.pow(x2 + y2, 0.5);
-
-        if (dtc < opt.minTranslate) {
-          return;
-        }
-      }
-
-      var canMove = true;
+      e.preventDefault(); // first move
+      // 第一次移动
 
       if (store.movedCount === 0) {
-        if (drag(e) === false) {
-          canMove = false;
-        }
-      } // move started
+        // check if min displacement exceeded.
+        // 检查是否达到最小位移
+        if (opt.minDisplacement) {
+          var x2 = Math.pow(move.x, 2);
+          var y2 = Math.pow(move.y, 2);
+          var dtc = Math.pow(x2 + y2, 0.5);
+
+          if (dtc < opt.minDisplacement) {
+            return;
+          }
+        } // resolve elements
 
 
-      if (canMove && opt.moving) {
-        if (opt.moving(e, store, opt) === false) {
-          canMove = false;
-        }
-      }
+        var movedElement = opt.clone ? movedOrClonedElement.cloneNode(true) : movedOrClonedElement;
+        var initialPosition = getViewportPosition(movedOrClonedElement); // attach elements and initialPosition to store
+        // 附加元素和初始位置到store
 
-      if (canMove) {
-        if (!store || !store.el) {
+        store.movedOrClonedElement = movedOrClonedElement;
+        store.movedElement = movedElement;
+        store.initialPosition = initialPosition; // define the function to update moved element style
+        // 定义更新移动元素样式的方法
+
+        var updateMovedElementStyle = function updateMovedElementStyle() {
+          if (opt.clone) {
+            store.movedOrClonedElement.parentElement.appendChild(movedElement);
+          }
+
+          var size = getBoundingClientRect(movedElement);
+          var style = {
+            width: "".concat(Math.ceil(size.width), "px"),
+            height: "".concat(Math.ceil(size.height), "px"),
+            zIndex: 9999,
+            opacity: 0.8,
+            position: 'fixed',
+            left: initialPosition.x + 'px',
+            top: initialPosition.y + 'px',
+            pointerEvents: 'none'
+          };
+          backupAttr(movedElement, 'style');
+
+          for (var key in style) {
+            movedElement.style[key] = style[key];
+          }
+
+          backupAttr(movedElement, 'class');
+          addClass(movedElement, opt.draggingClassName);
+        };
+
+        store.updateMovedElementStyle = updateMovedElementStyle; // call hook beforeFirstMove, beforeMove
+
+        if (opt.beforeFirstMove && opt.beforeFirstMove(store, opt) === false) {
           return;
         }
 
-        Object.assign(store.el.style, {
-          left: store.initialPosition.x + move.x + 'px',
-          top: store.initialPosition.y + move.y + 'px'
-        });
-        store.movedCount++;
-      }
-    }
+        if (opt.beforeMove && opt.beforeMove(store, opt) === false) {
+          return;
+        } // try to update moved element style
+        // 尝试更新移动元素样式
 
-    function drop(e) {
-      index.off(document, 'move', moving, {
+
+        if (!opt.updateMovedElementStyleManually) {
+          store.updateMovedElementStyle();
+        }
+
+        _edgeScroll.afterFirstMove(store, opt);
+      } // Not the first move
+      // 非第一次移动
+      else {
+          // define the function to update moved element style
+          // 定义更新移动元素样式的方法
+          var _updateMovedElementStyle = function _updateMovedElementStyle() {
+            Object.assign(store.movedElement.style, {
+              left: store.initialPosition.x + move.x + 'px',
+              top: store.initialPosition.y + move.y + 'px'
+            });
+          };
+
+          store.updateMovedElementStyle = _updateMovedElementStyle; // call hook beforeMove
+
+          if (opt.beforeMove && opt.beforeMove(store, opt) === false) {
+            return;
+          } // try to update moved element style
+          // 尝试更新移动元素样式
+
+
+          if (!opt.updateMovedElementStyleManually) {
+            store.updateMovedElementStyle();
+          }
+        }
+
+      _edgeScroll.afterMove(store, opt);
+
+      store.movedCount++;
+    }; // define the event listener of mouseup and touchend
+    // 定义mouseup和touchend事件监听器
+
+
+    var onMouseupOrTouchEnd = function onMouseupOrTouchEnd(e) {
+      // cancel listening mousemove, touchmove, mouseup, touchend
+      // 取消监听事件mousemove, touchmove, mouseup, touchend
+      DragEventService.off(document, 'move', onMousemoveOrTouchMove, {
         touchArgs: [{
           passive: false
         }]
       });
-      index.off(window, 'end', drop); // drag executed if movedCount > 0
+      DragEventService.off(window, 'end', onMouseupOrTouchEnd); // 
 
-      if (store.movedCount > 0) {
-        store.movedCount = 0;
-        store.endEvent = e;
-        var _store = store,
-            el = _store.el;
+      if (store.movedCount === 0) {
+        return;
+      }
 
-        var restoreDOM = function restoreDOM() {
-          if (opt.clone) {
-            el.parentElement.removeChild(el);
-          } else {
-            restoreAttr(el, 'style');
-            restoreAttr(el, 'class');
-          }
-        };
+      store.endEvent = e;
+      var _store2 = store,
+          movedElement = _store2.movedElement; // define the function to update moved element style
+      // 定义更新移动元素样式的方法
 
-        if (!opt.restoreDOMManuallyOndrop) {
-          restoreDOM();
-          restoreDOM = null;
+      var updateMovedElementStyle = function updateMovedElementStyle() {
+        restoreAttr(movedElement, 'style');
+        restoreAttr(movedElement, 'class');
+
+        if (opt.clone) {
+          movedElement.parentElement.removeChild(movedElement);
+        }
+      };
+
+      store.updateMovedElementStyle = updateMovedElementStyle; // call hook beforeDrop
+
+      if (opt.beforeDrop && opt.beforeDrop(store, opt) === false) {
+        return;
+      } // try to update moved element style
+      // 尝试更新移动元素样式
+
+
+      if (!opt.updateMovedElementStyleManually) {
+        updateMovedElementStyle();
+      }
+
+      _edgeScroll.afterDrop(store, opt);
+    }; // define the destroy function
+    // 定义销毁/退出的方法
+
+
+    var destroy = function destroy() {
+      DragEventService.off(listenerElement, 'start', onMousedownOrTouchStart);
+      DragEventService.on(document, 'move', onMousemoveOrTouchMove, {
+        touchArgs: [{
+          passive: false
+        }]
+      });
+      DragEventService.on(window, 'end', onMouseupOrTouchEnd);
+    }; // 
+
+
+    return {
+      destroy: destroy,
+      options: opt
+    };
+  } // available options and default options value
+  // 可用选项和默认选项值
+
+
+  var defaultOptions = {
+    ingoreTags: ['INPUT', 'TEXTAREA', 'SELECT', 'OPTGROUP', 'OPTION'],
+    undraggableClassName: 'undraggable',
+    minDisplacement: 10,
+    draggingClassName: 'dragging',
+    clone: false,
+    updateMovedElementStyleManually: false,
+    edgeScrollTriggerMargin: 50,
+    edgeScrollSpeed: 0.35,
+    edgeScrollTriggerMode: 'top_left_corner'
+  }; // Info after event triggered. Created when mousedown or touchstart, destroied after mouseup or touchend.
+  // 事件触发后的相关信息. mousedown或touchstart时创建, mouseup或touchend后销毁.
+
+  var initialStore = {
+    movedCount: 0
+  }; // edge scroll
+  // 边缘滚动
+
+  var stopHorizontalScroll, stopVerticalScroll;
+
+  _edgeScroll.afterMove = function (store, opt) {
+    if (!opt.edgeScroll) {
+      return;
+    }
+
+    var margin = opt.edgeScrollTriggerMargin;
+    stopOldScrollAnimation(); // get triggerPoint. The point trigger edge scroll.
+
+    var triggerPoint = {
+      x: store.mouse.clientX,
+      y: store.mouse.clientY
+    };
+
+    if (opt.edgeScrollTriggerMode === 'top_left_corner') {
+      var vp = getViewportPosition(store.movedElement);
+      triggerPoint = {
+        x: vp.x,
+        y: vp.y
+      };
+    } // find the scrollable parent elements
+    // 寻找可滚动的父系元素
+
+
+    var foundHorizontal, foundVertical, prevElement, horizontalDir, verticalDir;
+
+    var _iterator2 = _createForOfIteratorHelper$2(elementsFromPoint(triggerPoint.x, triggerPoint.y)),
+        _step2;
+
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var itemEl0 = _step2.value;
+        var itemEl = itemEl0;
+
+        if (prevElement && !isDescendantOf(prevElement, itemEl)) {
+          // itemEl is being covered by other elements
+          // itemEl被其他元素遮挡
+          continue;
         }
 
-        store.restoreDOM = restoreDOM;
-        opt.drop && opt.drop(e, store, opt);
-      }
+        var t = 10; // min scrollable displacement. 最小可滚动距离, 小于此距离不触发滚动.
 
-      store = getPureStore();
+        if (!foundHorizontal) {
+          if (itemEl.scrollWidth > itemEl.clientWidth) {
+            var _vp = fixedGetViewportPosition(itemEl);
+
+            if (triggerPoint.x <= _vp.left + margin) {
+              if (scrollableDisplacement(itemEl, 'left') > t && isScrollable(itemEl, 'x')) {
+                foundHorizontal = itemEl;
+                horizontalDir = 'left';
+              }
+            } else if (triggerPoint.x >= _vp.left + itemEl.clientWidth - margin) {
+              if (scrollableDisplacement(itemEl, 'right') > t && isScrollable(itemEl, 'x')) {
+                foundHorizontal = itemEl;
+                horizontalDir = 'right';
+              }
+            }
+          }
+        }
+
+        if (!foundVertical) {
+          if (itemEl.scrollHeight > itemEl.clientHeight) {
+            var _vp2 = fixedGetViewportPosition(itemEl);
+
+            if (triggerPoint.y <= _vp2.top + margin) {
+              if (scrollableDisplacement(itemEl, 'up') > t && isScrollable(itemEl, 'y')) {
+                foundVertical = itemEl;
+                verticalDir = 'up';
+              }
+            } else if (triggerPoint.y >= _vp2.top + itemEl.clientHeight - margin) {
+              if (scrollableDisplacement(itemEl, 'down') > t && isScrollable(itemEl, 'y')) {
+                foundVertical = itemEl;
+                verticalDir = 'down';
+              }
+            }
+          }
+        }
+
+        if (foundHorizontal && foundVertical) {
+          break;
+        }
+
+        prevElement = itemEl;
+      } // scroll
+
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
     }
 
-    function resolveDragedElAndInitialPosition() {
-      var el0 = opt.getEl ? opt.getEl(dragHandlerEl, store, opt) : dragHandlerEl;
-      var el = el0;
-      store.originalEl = el0;
-
-      if (opt.clone) {
-        el = el0.cloneNode(true);
-        el0.parentElement.appendChild(el);
+    if (foundHorizontal) {
+      if (horizontalDir === 'left') {
+        stopHorizontalScroll = scrollTo({
+          x: 0,
+          element: foundHorizontal,
+          duration: scrollableDisplacement(foundHorizontal, 'left') / opt.edgeScrollSpeed
+        });
+      } else {
+        stopHorizontalScroll = scrollTo({
+          x: foundHorizontal.scrollWidth - foundHorizontal.clientWidth,
+          element: foundHorizontal,
+          duration: scrollableDisplacement(foundHorizontal, 'right') / opt.edgeScrollSpeed
+        });
       }
-
-      return {
-        position: getPosition(el0),
-        el: el
-      };
     }
 
-    function getPureStore() {
-      return {
-        movedCount: 0
-      };
+    if (foundVertical) {
+      if (verticalDir === 'up') {
+        stopVerticalScroll = scrollTo({
+          y: 0,
+          element: foundVertical,
+          duration: scrollableDisplacement(foundVertical, 'up') / opt.edgeScrollSpeed
+        });
+      } else {
+        stopVerticalScroll = scrollTo({
+          y: foundVertical.scrollHeight - foundVertical.clientHeight,
+          element: foundVertical,
+          duration: scrollableDisplacement(foundVertical, 'down') / opt.edgeScrollSpeed
+        });
+      }
+    } // is element scrollable in a direction
+    // 元素某方向是否可滚动
+
+
+    function isScrollable(el, dir) {
+      var style = getComputedStyle(el);
+      var key = "overflow-".concat(dir); // document.documentElement is special
+
+      var special = document.scrollingElement || document.documentElement;
+
+      if (el === special) {
+        return style[key] === 'visible' || style[key] === 'auto' || style[key] === 'scroll';
+      }
+
+      return style[key] === 'auto' || style[key] === 'scroll';
+    } // scrollable displacement of element  in a direction
+    // 元素某方向可滚动距离
+
+
+    function scrollableDisplacement(el, dir) {
+      if (dir === 'up') {
+        return el.scrollTop;
+      } else if (dir === 'down') {
+        return el.scrollHeight - el.scrollTop - el.clientHeight;
+      } else if (dir === 'left') {
+        return el.scrollLeft;
+      } else if (dir === 'right') {
+        return el.scrollWidth - el.scrollLeft - el.clientWidth;
+      }
+    }
+
+    function fixedGetViewportPosition(el) {
+      var r = getViewportPosition(el); // document.documentElement is special
+
+      var special = document.scrollingElement || document.documentElement;
+
+      if (el === special) {
+        r.top = 0;
+        r.left = 0;
+      }
+
+      return r;
+    }
+  };
+
+  _edgeScroll.afterDrop = function (store, opt) {
+    if (!opt.edgeScroll) {
+      return;
+    }
+
+    stopOldScrollAnimation();
+  }; // stop old scroll animation
+  // 结束之前的滚动动画
+
+
+  function stopOldScrollAnimation() {
+    if (stopHorizontalScroll) {
+      stopHorizontalScroll();
+      stopHorizontalScroll = null;
+    }
+
+    if (stopVerticalScroll) {
+      stopVerticalScroll();
+      stopVerticalScroll = null;
     }
   }
 
@@ -3279,93 +3656,103 @@
 
   }
 
-  function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+  function _createForOfIteratorHelper$3(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$4(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
-  function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+  function _unsupportedIterableToArray$4(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$4(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$4(o, minLen); }
+
+  function _arrayLikeToArray$4(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+  function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+  function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
   function makeTreeDraggable(treeEl) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    options = _objectSpread$4({}, options, {
+    options = _objectSpread$2(_objectSpread$2({}, options), {}, {
       treeEl: treeEl
     });
 
-    var _draggableHelper = index$1(treeEl, {
-      draggingClass: options.draggingClass,
-      restoreDOMManuallyOndrop: true,
+    var _draggableHelper = index(treeEl, {
+      triggerClassName: options.triggerClass,
+      triggerBySelf: options.triggerBySelf,
+      draggingClassName: options.draggingClass,
       clone: options.cloneWhenDrag,
-      beforeDrag: function beforeDrag(startEvent, moveEvent, store, opt) {
-        store.startTreeEl = treeEl;
-
-        if (options.beforeDrag && options.beforeDrag(store, opt) === false) {
-          return false;
-        } // if the event target is a trigger
-
-
-        var isTrigger = findParent(startEvent.target, function (el) {
-          if (hasClass(el, options.triggerClass)) {
-            return true;
-          }
-
-          if (el === store.startTreeEl || hasClass(el, options.branchClass)) {
-            return 'break';
-          }
-        }, {
-          withSelf: true
-        });
-
-        if (!isTrigger) {
-          return false;
-        } // _triggeredBy
-
-
-        if (startEvent._triggeredBy) {
-          return false;
-        }
-
-        startEvent._triggeredBy = store.startTree;
-      },
-      // get the element which will be moved
-      getEl: function getEl(dragHandlerEl, store, opt) {
-        var el = findParent(store.startEvent.target, function (el) {
+      edgeScroll: options.edgeScroll,
+      edgeScrollTriggerMargin: options.edgeScrollTriggerMargin,
+      edgeScrollSpeed: options.edgeScrollSpeed,
+      edgeScrollTriggerMode: options.edgeScrollTriggerMode,
+      rtl: options.rtl,
+      updateMovedElementStyleManually: true,
+      getMovedOrClonedElement: function getMovedOrClonedElement(directTriggerElement, store) {
+        // find closest branch from parents
+        var el = findParent(store.triggerElement, function (el) {
           return hasClass(el, options.branchClass);
         }, {
           withSelf: true
         });
         return el;
       },
-      drag: function drag(startEvent, moveEvent, store, opt) {
-        store.dragBranchEl = store.el;
-        var movingEl = store.el; // branch
+      beforeFirstMove: function beforeFirstMove(store, dhOptions) {
+        store.startTreeEl = treeEl;
+        store.dragBranchEl = store.movedElement;
+        store.startPath = options.getPathByBranchEl(store.movedOrClonedElement);
 
-        store.startPath = options.getPathByBranchEl(movingEl);
-
-        if (options.ondrag && options.ondrag(store, opt) === false) {
+        if (options.beforeFirstMove && options.beforeFirstMove(store, dhOptions) === false) {
           return false;
         }
-
-        var treeRoot = findParent(store.dragBranchEl, function (el) {
-          return hasClass(el, options.rootClass);
-        });
-        backupAttr(treeRoot, 'style');
-        treeRoot.style.height = treeRoot.offsetHeight + 'px';
-        setTimeout(function () {
-          restoreAttr(treeRoot, 'style');
-        }, 100);
       },
-      moving: function moving(moveEvent, store, opt) {
-        // return false in moving will prevent move animation; return undefined just prevent doAction
+      beforeMove: function beforeMove(store, dhOptions) {
+        var updatePlaceholderIndent = function updatePlaceholderIndent() {
+          // set indent of placeholder
+          var placeholderPath = options.getPathByBranchEl(store.placeholder);
+          var placeholderNodeBack = store.placeholder.querySelector(".".concat(options.nodeBackClass));
+          placeholderNodeBack.style[!options.rtl ? 'paddingLeft' : 'paddingRight'] = (placeholderPath.length - 1) * options.indent + 'px'; // remove tempChildren if empty
+
+          if (store.tempChildren.children.length === 0) {
+            removeEl(store.tempChildren);
+          }
+        }; // first move
+        // 第一次移动
+
+
+        if (store.movedCount === 0) {
+          // create placeholder
+          // 创建占位元素
+          var placeholder = createElementFromHTML("\n          <div id=\"".concat(options.placeholderId, "\" class=\"").concat(options.branchClass, " ").concat(options.placeholderClass, "\">\n            <div class=\"").concat(options.nodeBackClass, " ").concat(options.placeholderNodeBackClass, "\">\n              <div class=\"").concat(options.nodeClass, " ").concat(options.placeholderNodeClass, "\">\n              </div>\n            </div>\n          </div>\n        "));
+          insertAfter(placeholder, store.movedOrClonedElement);
+          store.placeholder = placeholder;
+          options.afterPlaceholderCreated(store); // create a tree children el to use when can't get childrenEl
+
+          var tempChildren = document.createElement('DIV');
+          addClass(tempChildren, options.childrenClass);
+          store.tempChildren = tempChildren; // update placeholder indent. update moved element style
+
+          updatePlaceholderIndent();
+          store.updateMovedElementStyle(); // skip first move
+          // 跳过第一次移动
+
+          return;
+        } // 
+
+
+        store.updateMovedElementStyle(); // 
+
         store.oneMoveStore = {}; // life cycle: one move
 
-        var movingEl = store.el; // branch
+        var movingEl = store.movedElement; // branch
         // find closest branch and hovering tree
 
-        var tree;
-        var movingNode = movingEl.querySelector(".".concat(options.nodeClass));
+        var _tree;
+
+        var movingNode = movingEl.querySelector(".".concat(options.nodeClass)); // movingNodeOf and movingNodeRect are not always real. when RTL, there 'x' is top right. when draggingNodePositionMode is mouse, there x and y are mouse position. So don't calc them with their width or height.
+        // movingNodeOf 和 movingNodeRect并非一直如字面意义是movingNode真实坐标. RTL时, x坐标是右上角. draggingNodePositionMode是mouse时, x和y是鼠标坐标.
+
         var movingNodeOf = getOffset(movingNode);
         var movingNodeRect = getBoundingClientRect(movingNode);
 
         if (options.draggingNodePositionMode === 'mouse') {
           // use mouse position as dragging node position
+          var moveEvent = store.moveEvent;
           movingNodeOf = {
             x: moveEvent.pageX,
             y: moveEvent.pageY
@@ -3374,96 +3761,61 @@
             x: moveEvent.clientX,
             y: moveEvent.clientY
           };
-        }
+        } else if (options.rtl) {
+          movingNodeOf.x += movingNode.offsetWidth;
+          movingNodeRect.x += movingNode.offsetWidth;
+        } // find tree with elementsFromPoint
 
-        var elsBetweenMovingElAndTree = []; // including tree
 
-        var elsToTree = []; // start from top, including tree
-        // loop to find put els between movingEl and tree
+        var found;
+        var firstElement;
 
-        var movingElLooped; // 已循环到了movingEl
-
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        var _iterator = _createForOfIteratorHelper$3(elementsFromPoint(movingNodeRect.x, movingNodeRect.y)),
+            _step;
 
         try {
-          for (var _iterator = elementsFromPoint(movingNodeRect.x, movingNodeRect.y)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var itemEl = _step.value;
 
-            if (movingElLooped) {
-              elsBetweenMovingElAndTree.push(itemEl);
-            } else if (itemEl === movingEl) {
-              movingElLooped = true;
+            if (!firstElement) {
+              firstElement = itemEl;
             }
-
-            elsToTree.push(itemEl);
 
             if (hasClass(itemEl, options.treeClass)) {
-              tree = itemEl;
+              found = itemEl;
               break;
             }
-          } // this is an issue, sometimes, the movingEl is not in elementsFromPoint result
+          } // check if the found element is covered by other elements
 
         } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
+          _iterator.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+          _iterator.f();
         }
 
-        if (!movingElLooped) {
-          elsBetweenMovingElAndTree.push.apply(elsBetweenMovingElAndTree, elsToTree);
+        if (firstElement !== found && !isDescendantOf(firstElement, found)) {
+          found = null;
         }
 
-        if (!tree) {
-          // out of tree
-          return;
-        } // check tree if is covered, like modal
+        _tree = found;
 
-
-        var treeBeCoved;
-
-        if (elsBetweenMovingElAndTree && elsBetweenMovingElAndTree[0]) {
-          if (elsBetweenMovingElAndTree[0] !== tree && !isDescendantOf(elsBetweenMovingElAndTree[0], tree)) {
-            treeBeCoved = true;
-          }
-        }
-
-        if (treeBeCoved) {
+        if (!_tree) {
+          // out of tree or tree is covered by other elements
           return;
         } // check if target tree right
 
 
-        if (options.filterTargetTree(tree, store, opt) === false) {
+        if (options.filterTargetTree(_tree, store, dhOptions) === false) {
           return;
         }
 
-        store.targetTreeEl = tree; // info ========================================
+        store.targetTreeEl = _tree; // info ========================================
         // life cycle: one move
 
         var info = {
-          tree: function (_tree) {
-            function tree() {
-              return _tree.apply(this, arguments);
-            }
-
-            tree.toString = function () {
-              return _tree.toString();
-            };
-
-            return tree;
-          }(function () {
-            return tree;
-          }),
+          tree: function tree() {
+            return _tree;
+          },
           root: function root() {
             return info.tree.querySelector(".".concat(options.childrenClass));
           },
@@ -3504,12 +3856,14 @@
             var found;
             var t = binarySearch(nodes, function (node) {
               return getOffset(node).y - movingNodeOf.y;
-            }, null, null, true);
+            }, {
+              returnNearestIfNoHit: true
+            });
 
             if (t.hit) {
               found = t.value;
             } else {
-              if (t.bigger) {
+              if (t.greater) {
                 found = nodes[t.index - 1] || t.value;
               } else {
                 found = t.value;
@@ -3584,8 +3938,14 @@
             while (cur) {
               var curNode = cur.querySelector(".".concat(options.nodeClass));
 
-              if (getOffset(curNode).x <= movingNodeOf.x) {
-                break;
+              if (!options.rtl) {
+                if (getOffset(curNode).x <= movingNodeOf.x) {
+                  break;
+                }
+              } else {
+                if (getOffset(curNode).x + curNode.offsetWidth >= movingNodeOf.x) {
+                  break;
+                }
               }
 
               var hasNextBranch = void 0;
@@ -3664,7 +4024,21 @@
               });
             }
           }
-        }; // convert conditions result to Boolean
+        }; // fix for rtl
+
+        if (options.rtl) {
+          Object.assign(conditions, {
+            'at closest indent right': function atClosestIndentRight() {
+              return movingNodeOf.x < info.closestNodeOffset.x + info.closestNode.offsetWidth - options.indent;
+            },
+            // at indent left
+            'at closest left': function atClosestLeft() {
+              return movingNodeOf.x > info.closestNodeOffset.x + info.closestNode.offsetWidth;
+            } // at right
+
+          });
+        } // convert conditions result to Boolean
+
 
         Object.keys(conditions).forEach(function (key) {
           var old = conditions[key];
@@ -3687,12 +4061,8 @@
           }
 
           var queue = store._doActionQueue;
-          store._doActionQueue = queue.then(
-          /*#__PURE__*/
-          asyncToGenerator(
-          /*#__PURE__*/
-          regenerator.mark(function _callee() {
-            var actionRecords, action, r, placeholderPath, placeholderNodeBack;
+          store._doActionQueue = queue.then( /*#__PURE__*/asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
+            var actionRecords, action, r;
             return regenerator.wrap(function _callee$(_context) {
               while (1) {
                 switch (_context.prev = _context.next) {
@@ -3711,16 +4081,9 @@
                     return r;
 
                   case 7:
-                    // set indent of placeholder
-                    placeholderPath = options.getPathByBranchEl(store.placeholder);
-                    placeholderNodeBack = store.placeholder.querySelector(".".concat(options.nodeBackClass));
-                    placeholderNodeBack.style.paddingLeft = (placeholderPath.length - 1) * options.indent + 'px'; // remove tempChildren if empty
+                    updatePlaceholderIndent();
 
-                    if (store.tempChildren.children.length === 0) {
-                      removeEl(store.tempChildren);
-                    }
-
-                  case 11:
+                  case 8:
                   case "end":
                     return _context.stop();
                 }
@@ -3731,9 +4094,7 @@
 
         var actions = {
           'nothing': function nothing() {
-            return asyncToGenerator(
-            /*#__PURE__*/
-            regenerator.mark(function _callee2() {
+            return asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2() {
               return regenerator.wrap(function _callee2$(_context2) {
                 while (1) {
                   switch (_context2.prev = _context2.next) {
@@ -3747,9 +4108,7 @@
           },
           // do nothing
           'append to root': function appendToRoot() {
-            return asyncToGenerator(
-            /*#__PURE__*/
-            regenerator.mark(function _callee3() {
+            return asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3() {
               return regenerator.wrap(function _callee3$(_context3) {
                 while (1) {
                   switch (_context3.prev = _context3.next) {
@@ -3768,9 +4127,7 @@
             }))();
           },
           'insert before': function insertBefore$1() {
-            return asyncToGenerator(
-            /*#__PURE__*/
-            regenerator.mark(function _callee4() {
+            return asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee4() {
               return regenerator.wrap(function _callee4$(_context4) {
                 while (1) {
                   switch (_context4.prev = _context4.next) {
@@ -3796,40 +4153,40 @@
             }))();
           },
           'insert after': function insertAfter$1() {
-            var branch = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : info.closestBranch;
-            return asyncToGenerator(
-            /*#__PURE__*/
-            regenerator.mark(function _callee5() {
-              var moved, isFirstTriedAction;
+            var _arguments = arguments;
+            return asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee5() {
+              var branch, moved, isFirstTriedAction;
               return regenerator.wrap(function _callee5$(_context5) {
                 while (1) {
                   switch (_context5.prev = _context5.next) {
                     case 0:
+                      branch = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : info.closestBranch;
+
                       if (!options.isNodeParentDroppable(branch, store.targetTreeEl)) {
-                        _context5.next = 4;
+                        _context5.next = 5;
                         break;
                       }
 
                       insertAfter(store.placeholder, branch);
-                      _context5.next = 10;
+                      _context5.next = 11;
                       break;
 
-                    case 4:
-                      _context5.next = 6;
+                    case 5:
+                      _context5.next = 7;
                       return secondCase(getParentBranchByEl(branch));
 
-                    case 6:
+                    case 7:
                       moved = _context5.sent;
                       isFirstTriedAction = !store.oneMoveStore.actionRecords || store.oneMoveStore.actionRecords.length === 1;
 
                       if (!(!moved && isFirstTriedAction)) {
-                        _context5.next = 10;
+                        _context5.next = 11;
                         break;
                       }
 
                       return _context5.abrupt("return", thirdCase(branch));
 
-                    case 10:
+                    case 11:
                     case "end":
                       return _context5.stop();
                   }
@@ -3838,9 +4195,7 @@
             }))();
           },
           prepend: function prepend() {
-            return asyncToGenerator(
-            /*#__PURE__*/
-            regenerator.mark(function _callee6() {
+            return asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee6() {
               return regenerator.wrap(function _callee6$(_context6) {
                 while (1) {
                   switch (_context6.prev = _context6.next) {
@@ -3885,9 +4240,7 @@
             }))();
           },
           'after above': function afterAbove() {
-            return asyncToGenerator(
-            /*#__PURE__*/
-            regenerator.mark(function _callee7() {
+            return asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7() {
               return regenerator.wrap(function _callee7$(_context7) {
                 while (1) {
                   switch (_context7.prev = _context7.next) {
@@ -3913,9 +4266,7 @@
             }))();
           },
           'append to prev': function appendToPrev() {
-            return asyncToGenerator(
-            /*#__PURE__*/
-            regenerator.mark(function _callee8() {
+            return asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee8() {
               var childrenEl;
               return regenerator.wrap(function _callee8$(_context8) {
                 while (1) {
@@ -3965,12 +4316,8 @@
         }; // second case for actions, when target position not droppable
         // return true if moved
 
-        var secondCase =
-        /*#__PURE__*/
-        function () {
-          var _ref2 = asyncToGenerator(
-          /*#__PURE__*/
-          regenerator.mark(function _callee9(branchEl) {
+        var secondCase = /*#__PURE__*/function () {
+          var _ref2 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee9(branchEl) {
             var targetEl;
             return regenerator.wrap(function _callee9$(_context9) {
               while (1) {
@@ -4006,12 +4353,8 @@
         // 当操作是'after', 第一种第二种情况无效时, 尝试prepend
 
 
-        var thirdCase =
-        /*#__PURE__*/
-        function () {
-          var _ref3 = asyncToGenerator(
-          /*#__PURE__*/
-          regenerator.mark(function _callee10(branchEl) {
+        var thirdCase = /*#__PURE__*/function () {
+          var _ref3 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee10(branchEl) {
             return regenerator.wrap(function _callee10$(_context10) {
               while (1) {
                 switch (_context10.prev = _context10.next) {
@@ -4037,12 +4380,8 @@
           };
         }();
 
-        var unfoldAndGetChildrenEl =
-        /*#__PURE__*/
-        function () {
-          var _ref4 = asyncToGenerator(
-          /*#__PURE__*/
-          regenerator.mark(function _callee11(branch) {
+        var unfoldAndGetChildrenEl = /*#__PURE__*/function () {
+          var _ref4 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee11(branch) {
             var childrenEl;
             return regenerator.wrap(function _callee11$(_context11) {
               while (1) {
@@ -4074,23 +4413,15 @@
           };
         }();
 
-        var tryUnfoldAndPrepend =
-        /*#__PURE__*/
-        function () {
-          var _ref5 = asyncToGenerator(
-          /*#__PURE__*/
-          regenerator.mark(function _callee13(branchEl) {
+        var tryUnfoldAndPrepend = /*#__PURE__*/function () {
+          var _ref5 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee13(branchEl) {
             var func, oneMoveStore;
             return regenerator.wrap(function _callee13$(_context13) {
               while (1) {
                 switch (_context13.prev = _context13.next) {
                   case 0:
-                    func =
-                    /*#__PURE__*/
-                    function () {
-                      var _ref6 = asyncToGenerator(
-                      /*#__PURE__*/
-                      regenerator.mark(function _callee12() {
+                    func = /*#__PURE__*/function () {
+                      var _ref6 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee12() {
                         var childrenEl;
                         return regenerator.wrap(function _callee12$(_context12) {
                           while (1) {
@@ -4148,45 +4479,27 @@
             return _ref5.apply(this, arguments);
           };
         }(); // actions end ========================================
-        //
 
 
-        var checkPlaceholder = function checkPlaceholder() {
-          if (!store.placeholder) {
-            var placeholder = createElementFromHTML("\n            <div id=\"".concat(options.placeholderId, "\" class=\"").concat(options.branchClass, " ").concat(options.placeholderClass, "\">\n              <div class=\"").concat(options.nodeBackClass, " ").concat(options.placeholderNodeBackClass, "\">\n                <div class=\"").concat(options.nodeClass, " ").concat(options.placeholderNodeClass, "\">\n                </div>\n              </div>\n            </div>\n          "));
-            insertAfter(placeholder, movingEl);
-            store.placeholder = placeholder;
-            options.afterPlaceholderCreated(store); // create a tree children el to use when can't get childrenEl
-
-            var tempChildren = document.createElement('DIV');
-            addClass(tempChildren, options.childrenClass);
-            store.tempChildren = tempChildren;
-          }
-        }; //
-
-
-        checkPlaceholder();
         doDraggableDecision({
           options: options,
-          event: event,
+          event: store.moveEvent,
           store: store,
-          opt: opt,
+          opt: dhOptions,
           info: info,
           conditions: conditions,
           actions: actions,
           doAction: doAction
         });
       },
-      drop: function () {
-        var _drop = asyncToGenerator(
-        /*#__PURE__*/
-        regenerator.mark(function _callee14(endEvent, store, opt) {
-          var movingEl, placeholder, tempChildren, maskTree, pathChanged, isPathChanged;
+      beforeDrop: function () {
+        var _beforeDrop = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee14(store, dhOptions) {
+          var endEvent, movingEl, placeholder, tempChildren, movedCount, targetTreeEl, startTreeEl, maskTree, maskTree2, pathChanged, isPathChanged;
           return regenerator.wrap(function _callee14$(_context14) {
             while (1) {
               switch (_context14.prev = _context14.next) {
                 case 0:
-                  isPathChanged = function _ref7() {
+                  isPathChanged = function _isPathChanged() {
                     var startTree = store.startTree,
                         targetTree = store.targetTree,
                         startPath = store.startPath,
@@ -4194,54 +4507,71 @@
                     return startTree !== targetTree || startPath.toString() !== targetPath.toString();
                   };
 
-                  movingEl = store.el; // branch
+                  endEvent = store.endEvent;
+                  movingEl = store.movedElement; // branch
 
-                  placeholder = store.placeholder, tempChildren = store.tempChildren; // use mask tree to avoid flick caused by DOM update in short time
+                  placeholder = store.placeholder, tempChildren = store.tempChildren, movedCount = store.movedCount, targetTreeEl = store.targetTreeEl, startTreeEl = store.startTreeEl; // use mask tree to avoid flick caused by DOM update in short time
                   // 复制 targetTreeEl 作为遮罩, 避免短时间内更新DOM引起的闪烁
 
-                  if (placeholder) {
-                    // placeholder not mounted is rarely
+                  if (targetTreeEl) {
+                    // No targetTreeEl mean no valid move.
+                    // targetTreeEl不存在意味着没有有效移动.
                     // create mask tree
-                    maskTree = store.targetTreeEl.cloneNode(true);
-                    store.targetTreeEl.style.display = 'none';
-                    insertAfter(maskTree, store.targetTreeEl); //
+                    maskTree = targetTreeEl.cloneNode(true);
+                    targetTreeEl.style.display = 'none';
+                    insertAfter(maskTree, targetTreeEl);
+
+                    if (startTreeEl !== targetTreeEl) {
+                      maskTree2 = startTreeEl.cloneNode(true);
+                      startTreeEl.style.display = 'none';
+                      insertAfter(maskTree2, startTreeEl);
+                    } //
+
 
                     store.targetPath = options.getPathByBranchEl(placeholder);
                     pathChanged = isPathChanged();
                     store.targetPathNotEqualToStartPath = pathChanged;
                     store.pathChangePrevented = false;
 
-                    if (options.beforeDrop && options.beforeDrop(pathChanged, store, opt) === false) {
+                    if (options.beforeDrop && options.beforeDrop(pathChanged, store, dhOptions) === false) {
                       pathChanged = false;
                       store.pathChangePrevented = false;
                     }
 
                     store.pathChanged = pathChanged;
-                    removeEl(placeholder);
+                  } // destroy placeholder and tempChildren
 
-                    if (tempChildren) {
-                      removeEl(tempChildren);
-                    }
+
+                  removeEl(placeholder);
+
+                  if (tempChildren) {
+                    removeEl(tempChildren);
                   }
 
-                  store.restoreDOM();
-                  _context14.next = 7;
-                  return options.ondrop(store, opt);
+                  store.updateMovedElementStyle(); // 
 
-                case 7:
+                  _context14.next = 10;
+                  return options.afterDrop(store, dhOptions);
+
+                case 10:
                   if (!maskTree) {
-                    _context14.next = 12;
+                    _context14.next = 16;
                     break;
                   }
 
-                  _context14.next = 10;
+                  _context14.next = 13;
                   return waitTime(30);
 
-                case 10:
+                case 13:
                   removeEl(maskTree);
-                  store.targetTreeEl.style.display = 'block';
+                  targetTreeEl.style.display = 'block';
 
-                case 12:
+                  if (maskTree2) {
+                    removeEl(maskTree2);
+                    startTreeEl.style.display = 'block';
+                  }
+
+                case 16:
                 case "end":
                   return _context14.stop();
               }
@@ -4249,15 +4579,15 @@
           }, _callee14);
         }));
 
-        function drop(_x5, _x6, _x7) {
-          return _drop.apply(this, arguments);
+        function beforeDrop(_x5, _x6) {
+          return _beforeDrop.apply(this, arguments);
         }
 
-        return drop;
+        return beforeDrop;
       }()
     }),
         destroy = _draggableHelper.destroy,
-        draggableHelperOptions = _draggableHelper.draggableHelperOptions;
+        draggableHelperOptions = _draggableHelper.options;
 
     return {
       destroy: destroy,
@@ -4278,7 +4608,18 @@
     }
 
     function optionsUpdated() {
-      draggableHelperOptions.clone = options.cloneWhenDrag;
+      Object.assign(draggableHelperOptions, {
+        triggerClassName: options.triggerClass,
+        triggerBySelf: options.triggerBySelf,
+        draggingClassName: options.draggingClass,
+        clone: options.cloneWhenDrag,
+        // edgeScroll
+        edgeScroll: options.edgeScroll,
+        edgeScrollTriggerMargin: options.edgeScrollTriggerMargin,
+        edgeScrollSpeed: options.edgeScrollSpeed,
+        edgeScrollTriggerMode: options.edgeScrollTriggerMode,
+        rtl: options.rtl
+      });
     }
   }
 
@@ -4286,12 +4627,20 @@
     return el.offsetWidth === 0 && el.offsetHeight === 0;
   }
 
+  function _createForOfIteratorHelper$4(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$5(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+
+  function _unsupportedIterableToArray$5(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$5(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$5(o, minLen); }
+
+  function _arrayLikeToArray$5(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
   var treesStore = {};
   var script = {
     props: {
       triggerClass: {
-        type: String,
+        type: [String, Array],
         default: 'tree-node'
+      },
+      triggerBySelf: {
+        type: Boolean
       },
       draggable: {
         type: [Boolean, Function],
@@ -4326,8 +4675,23 @@
       draggingNodePositionMode: {
         type: String,
         default: 'top_left_corner'
-      } // top_left_corner, mouse
-
+      },
+      // top_left_corner, mouse
+      edgeScroll: {
+        type: Boolean
+      },
+      edgeScrollTriggerMargin: {
+        type: Number,
+        default: 50
+      },
+      edgeScrollSpeed: {
+        type: Number,
+        default: 0.35
+      },
+      edgeScrollTriggerMode: {
+        type: String,
+        default: 'top_left_corner'
+      }
     },
     // components: {},
     data: function data() {
@@ -4353,14 +4717,14 @@
         var store = this.treesStore.store;
         var allNodes = this.getAllNodesByPath(path);
         allNodes.unshift(this.rootNode);
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+
+        var _iterator = _createForOfIteratorHelper$4(iterateAll(allNodes, {
+          reverse: true
+        })),
+            _step;
 
         try {
-          for (var _iterator = iterateAll(allNodes, {
-            reverse: true
-          })[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var _step$value = _step.value,
                 _node = _step$value.value,
                 index = _step$value.index;
@@ -4375,18 +4739,9 @@
             }
           }
         } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
+          _iterator.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+          _iterator.f();
         }
 
         return true;
@@ -4396,14 +4751,14 @@
         var allNodes = this.getAllNodesByPath(path);
         allNodes.unshift(this.rootNode);
         var droppableFinal, resolved;
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
+
+        var _iterator2 = _createForOfIteratorHelper$4(iterateAll(allNodes, {
+          reverse: true
+        })),
+            _step2;
 
         try {
-          for (var _iterator2 = iterateAll(allNodes, {
-            reverse: true
-          })[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
             var _step2$value = _step2.value,
                 _node2 = _step2$value.value,
                 index = _step2$value.index;
@@ -4420,18 +4775,9 @@
             }
           }
         } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
+          _iterator2.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-              _iterator2.return();
-            }
-          } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
-            }
-          }
+          _iterator2.f();
         }
 
         if (!resolved) {
@@ -4481,12 +4827,12 @@
           }
         });
         var index = 0;
-        var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
+
+        var _iterator3 = _createForOfIteratorHelper$4(iterateAll(branchEl.parentElement.children)),
+            _step3;
 
         try {
-          for (var _iterator3 = iterateAll(branchEl.parentElement.children)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
             var _step3$value = _step3.value,
                 el = _step3$value.value,
                 index2 = _step3$value.index;
@@ -4500,18 +4846,9 @@
             }
           }
         } catch (err) {
-          _didIteratorError3 = true;
-          _iteratorError3 = err;
+          _iterator3.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-              _iterator3.return();
-            }
-          } finally {
-            if (_didIteratorError3) {
-              throw _iteratorError3;
-            }
-          }
+          _iterator3.f();
         }
 
         return [].concat(toConsumableArray(parentPath), [index]);
@@ -4524,10 +4861,16 @@
       var options = this._draggableOptions = {
         indent: this.indent,
         triggerClass: this.triggerClass,
+        triggerBySelf: this.triggerBySelf,
         unfoldWhenDragover: this.unfoldWhenDragover,
         unfoldWhenDragoverDelay: this.unfoldWhenDragoverDelay,
         draggingNodePositionMode: this.draggingNodePositionMode,
         cloneWhenDrag: this.cloneWhenDrag,
+        edgeScroll: this.edgeScroll,
+        edgeScrollTriggerMargin: this.edgeScrollTriggerMargin,
+        edgeScrollSpeed: this.edgeScrollSpeed,
+        edgeScrollTriggerMode: this.edgeScrollTriggerMode,
+        rtl: this.rtl,
         treeClass: 'he-tree',
         rootClass: 'tree-root',
         childrenClass: 'tree-children',
@@ -4577,14 +4920,14 @@
           var path = tree.getPathByBranchEl(branchEl);
           var findPath = arrayWithoutEnd(path, 1);
           var cur = path;
-          var _iteratorNormalCompletion4 = true;
-          var _didIteratorError4 = false;
-          var _iteratorError4 = undefined;
+
+          var _iterator4 = _createForOfIteratorHelper$4(tree.iteratePath(findPath, {
+            reverse: true
+          })),
+              _step4;
 
           try {
-            for (var _iterator4 = tree.iteratePath(findPath, {
-              reverse: true
-            })[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+            for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
               var _step4$value = _step4.value,
                   node = _step4$value.node,
                   _path = _step4$value.path;
@@ -4596,18 +4939,9 @@
               }
             }
           } catch (err) {
-            _didIteratorError4 = true;
-            _iteratorError4 = err;
+            _iterator4.e(err);
           } finally {
-            try {
-              if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-                _iterator4.return();
-              }
-            } finally {
-              if (_didIteratorError4) {
-                throw _iteratorError4;
-              }
-            }
+            _iterator4.f();
           }
 
           if (tree.isNodeDroppable(_this.rootNode, [])) {
@@ -4620,7 +4954,7 @@
         getPathByBranchEl: function getPathByBranchEl(branchEl) {
           return _this.getPathByBranchEl(branchEl);
         },
-        beforeDrag: function beforeDrag(store) {
+        beforeFirstMove: function beforeFirstMove(store) {
           _this.treesStore.store = store;
           store.startTree = _this.getTreeVmByTreeEl(store.startTreeEl);
           var draggable = resolveValueOrGettter(store.startTree.draggable, [store.startTree, store]);
@@ -4628,19 +4962,17 @@
           if (!draggable) {
             return false;
           }
-        },
-        ondrag: function ondrag(store) {
+
           var startTree = store.startTree,
               dragBranchEl = store.dragBranchEl,
               startPath = store.startPath;
-          var path = startTree.getPathByBranchEl(dragBranchEl);
-          store.dragNode = startTree.getNodeByPath(path);
+          store.dragNode = startTree.getNodeByPath(startPath);
 
           if (_this.cloneWhenDrag) {
             store.dragNode = cloneTreeData(store.dragNode);
           }
 
-          if (!startTree.isNodeDraggable(store.dragNode, path)) {
+          if (!startTree.isNodeDraggable(store.dragNode, startPath)) {
             return false;
           }
 
@@ -4686,11 +5018,11 @@
             return false;
           }
 
-          targetTree.$emit('drop', store);
+          targetTree.$emit('before-drop', store);
 
-          _this.$root.$emit('he-tree-drop', store);
+          _this.$root.$emit('he-tree-before-drop', store);
         },
-        ondrop: function ondrop(store, t) {
+        afterDrop: function afterDrop(store, t) {
           if (store.pathChanged) {
             var startTree = store.startTree,
                 targetTree = store.targetTree,
@@ -4751,11 +5083,14 @@
             targetSiblings.splice(targetIndex, 0, dragNode); // emit event
 
             startTree.$emit('input', startTree.treeData);
-            startTree.$emit('change');
+            startTree.$emit('change', store);
+            targetTree.$emit('drop', store);
+
+            _this.$root.$emit('he-tree-drop', store);
 
             if (targetTree !== startTree) {
               targetTree.$emit('input', targetTree.treeData);
-              targetTree.$emit('change');
+              targetTree.$emit('change', store);
             }
 
             return new Promise(function (resolve, reject) {
@@ -4770,7 +5105,7 @@
       var _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
 
 
-      ['indent', 'triggerClass', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag'].forEach(function (name) {
+      ['indent', 'triggerClass', 'triggerBySelf', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag', 'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 'rtl'].forEach(function (name) {
         _this.$watch(name, function (value) {
           _makeTreeDraggable_obj.options[name] = value;
 
@@ -4802,7 +5137,7 @@
 
   /* style inject shadow dom */
 
-  var __vue_component__$1 = normalizeComponent({}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
+  var __vue_component__$1 = /*#__PURE__*/normalizeComponent({}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
 
   exports.Check = check;
   exports.Draggable = __vue_component__$1;

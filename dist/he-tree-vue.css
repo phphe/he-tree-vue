@@ -7,6 +7,9 @@
 .he-tree--hidden{
   display: none;
 }
+.he-tree--rtl{
+  direction: rtl;
+}
 
 
 .he-tree .tree-placeholder{

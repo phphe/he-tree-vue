@@ -1,3 +1,5 @@
+# The documentation for v2 is being written...
+
 # he-tree-vue
 A draggable sortable vue tree component, with dragging placeholder, types definition. 14 KB gzipped. [Demo](https://he-tree-vue.phphe.com), [Document](https://he-tree-vue.phphe.com)
 
