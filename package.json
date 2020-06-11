@@ -47,6 +47,7 @@
     "rollup-plugin-vue": "^5.1.1",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
+    "standard-version": "^8.0.0",
     "vue": "^2.6.10",
     "vue-property-decorator": "^8.4.0",
     "vue-template-compiler": "^2.6.10"
