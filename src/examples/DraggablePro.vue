@@ -51,10 +51,16 @@ import Tree from '@/components/Tree.vue'
 import fold from '@/plugins/fold.js'
 import check from '@/plugins/check.js'
 import Draggable from '@/plugins/draggable/Draggable.vue'
+import DraggablePro from "../../../he-tree-vue-pro";
 
-const plugins = [fold, check, Draggable]
+DraggablePro.LICENSE_NUMBER = 'your license number'
+
+const MixedTree = Tree.mixPlugins([fold, check, Draggable, DraggablePro])
+
 export default {
-  components: {Tree: resolve => import('../../../he-tree-vue-pro').then((DraggablePro) => resolve(Tree.mixPlugins(plugins.concat(DraggablePro.default))), () => resolve(Tree.mixPlugins(plugins)))},
+  components: {
+    Tree: MixedTree
+  },
   data() {
     return {
       treeData: [
