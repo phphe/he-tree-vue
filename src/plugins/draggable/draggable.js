@@ -29,6 +29,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     // edgeScrollSpeed: 0.35,
     // edgeScrollTriggerMode: 'top_left_corner',
     // rtl: false
+    // preventTextSelection: boolean
     ...options,
     treeEl,
   }
@@ -42,6 +43,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     edgeScrollSpeed: options.edgeScrollSpeed,
     edgeScrollTriggerMode: options.edgeScrollTriggerMode,
     rtl: options.rtl,
+    preventTextSelection: options.preventTextSelection,
     updateMovedElementStyleManually: true,
     getMovedOrClonedElement: (directTriggerElement, store) => {
       // find closest branch from parents
@@ -510,7 +512,9 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       edgeScrollTriggerMargin: options.edgeScrollTriggerMargin,
       edgeScrollSpeed: options.edgeScrollSpeed,
       edgeScrollTriggerMode: options.edgeScrollTriggerMode,
+      // 
       rtl: options.rtl,
+      preventTextSelection: options.preventTextSelection,
     })
   }
 }

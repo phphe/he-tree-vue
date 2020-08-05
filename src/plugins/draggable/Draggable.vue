@@ -22,6 +22,7 @@ export default {
     edgeScrollTriggerMargin: {type: Number, default: 50},
     edgeScrollSpeed: {type: Number, default: 0.35},
     edgeScrollTriggerMode: {type: String, default: 'top_left_corner'},
+    preventTextSelection: {type: Boolean, default: true},
   },
   // components: {},
   data() {
@@ -135,6 +136,7 @@ export default {
       edgeScrollSpeed: this.edgeScrollSpeed,
       edgeScrollTriggerMode: this.edgeScrollTriggerMode,
       rtl: this.rtl,
+      preventTextSelection: this.preventTextSelection,
       treeClass: 'he-tree',
       rootClass: 'tree-root',
       childrenClass: 'tree-children',
@@ -315,7 +317,8 @@ export default {
     'draggingNodePositionMode', 
     'cloneWhenDrag', 
     'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 
-    'rtl'
+    'rtl',
+    'preventTextSelection', 
     ].forEach(name => {
       this.$watch(name, (value) => {
         _makeTreeDraggable_obj.options[name] = value
