@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v2.0.1
+ * he-tree-vue v2.0.2-beta
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -578,6 +578,7 @@ function makeTreeDraggable(treeEl) {
     edgeScrollSpeed: options.edgeScrollSpeed,
     edgeScrollTriggerMode: options.edgeScrollTriggerMode,
     rtl: options.rtl,
+    preventTextSelection: options.preventTextSelection,
     updateMovedElementStyleManually: true,
     getMovedOrClonedElement: function getMovedOrClonedElement(directTriggerElement, store) {
       // find closest branch from parents
@@ -1514,7 +1515,9 @@ function makeTreeDraggable(treeEl) {
       edgeScrollTriggerMargin: options.edgeScrollTriggerMargin,
       edgeScrollSpeed: options.edgeScrollSpeed,
       edgeScrollTriggerMode: options.edgeScrollTriggerMode,
-      rtl: options.rtl
+      // 
+      rtl: options.rtl,
+      preventTextSelection: options.preventTextSelection
     });
   }
 }
@@ -1587,6 +1590,10 @@ var script = {
     edgeScrollTriggerMode: {
       type: String,
       default: 'top_left_corner'
+    },
+    preventTextSelection: {
+      type: Boolean,
+      default: true
     }
   },
   // components: {},
@@ -1767,6 +1774,7 @@ var script = {
       edgeScrollSpeed: this.edgeScrollSpeed,
       edgeScrollTriggerMode: this.edgeScrollTriggerMode,
       rtl: this.rtl,
+      preventTextSelection: this.preventTextSelection,
       treeClass: 'he-tree',
       rootClass: 'tree-root',
       childrenClass: 'tree-children',
@@ -2001,7 +2009,7 @@ var script = {
     var _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
 
 
-    ['indent', 'triggerClass', 'triggerBySelf', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag', 'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 'rtl'].forEach(function (name) {
+    ['indent', 'triggerClass', 'triggerBySelf', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag', 'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 'rtl', 'preventTextSelection'].forEach(function (name) {
       _this.$watch(name, function (value) {
         _makeTreeDraggable_obj.options[name] = value;
 
