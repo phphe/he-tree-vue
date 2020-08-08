@@ -1,6 +1,6 @@
 {
   "name": "he-tree-vue",
-  "version": "2.0.2-beta",
+  "version": "2.0.3",
   "description": "A draggable sortable nested vue tree component.",
   "main": "dist/he-tree-vue.cjs.js",
   "module": "dist/he-tree-vue.esm.js",
@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.7",
-    "draggable-helper": "^5.0.2",
+    "draggable-helper": "^5.0.3",
     "helper-js": "^2.0.1",
     "vue-functions": "^2.0.6",
     "vue-runtime-helpers": "^1.1.2"
