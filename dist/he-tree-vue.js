@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v2.0.2-beta
+ * he-tree-vue v2.0.3
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -2747,7 +2747,7 @@
   var asyncToGenerator = _asyncToGenerator;
 
   /*!
-   * drag-event-service v1.1.6
+   * drag-event-service v1.1.7
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
@@ -2870,7 +2870,7 @@
   }
 
   /*!
-   * draggable-helper v5.0.2
+   * draggable-helper v5.0.3
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
