@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.3](https://github.com/phphe/he-tree-vue/compare/v2.0.1...v2.0.3) (2020-08-08)
+
+
+### Features
+
+* **draggable plugin:** up draggable-helper,add opt preventTextSelection fix about stacking context ([9df8670](https://github.com/phphe/he-tree-vue/commit/9df8670fa95b7bbdb4cac72cb533bccffdb90a36))
+
+
+### Bug Fixes
+
+* **draggable plugin:** update dependence draggable-helper to 5.0.3 ([7cc19de](https://github.com/phphe/he-tree-vue/commit/7cc19deb1cb5360f85898bbf8414a24c93668c31))
+
 ### [2.0.1](https://github.com/phphe/he-tree-vue/compare/v2.0.0...v2.0.1) (2020-06-11)
 
 ## 2.0.0 (2020-06-11)
