@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.7",
-    "draggable-helper": "^5.0.4",
+    "draggable-helper": "^5.0.5",
     "helper-js": "^2.0.1",
     "vue-functions": "^2.0.6",
     "vue-runtime-helpers": "^1.1.2"
