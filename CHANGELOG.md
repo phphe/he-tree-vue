@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.4-beta2](https://github.com/phphe/he-tree-vue/compare/v2.0.4-beta1...v2.0.4-beta2) (2020-09-29)
+
+
+### Features
+
+* **draggable plugin:** add prop: edgeScrollSpecifiedContainerX, edgeScrollSpecifiedContainerY ([ae18703](https://github.com/phphe/he-tree-vue/commit/ae187039baf5ecb99d2006183254441bbfb2d644))
+
 ### [2.0.4-beta1](https://github.com/phphe/he-tree-vue/compare/v2.0.3...v2.0.4-beta1) (2020-09-29)
 
 
