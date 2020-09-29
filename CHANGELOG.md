@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.4-beta1](https://github.com/phphe/he-tree-vue/compare/v2.0.3...v2.0.4-beta1) (2020-09-29)
+
+
+### Features
+
+* **draggable plugin:** add event after-move ([b6aa068](https://github.com/phphe/he-tree-vue/commit/b6aa068b5eff1260808fc5401e44f2d5a8287fef))
+
 ### [2.0.3](https://github.com/phphe/he-tree-vue/compare/v2.0.1...v2.0.3) (2020-08-08)
 
 
