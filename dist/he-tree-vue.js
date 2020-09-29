@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v2.0.3
+ * he-tree-vue v2.0.4-beta2
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -2870,7 +2870,7 @@
   }
 
   /*!
-   * draggable-helper v5.0.3
+   * draggable-helper v5.0.5
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
@@ -3241,6 +3241,8 @@
         }
 
         _edgeScroll.afterFirstMove(store, opt);
+
+        opt.afterFirstMove && opt.afterFirstMove(store, opt);
       } // Not the first move
       // 非第一次移动
       else {
@@ -3269,6 +3271,7 @@
       _edgeScroll.afterMove(store, opt);
 
       store.movedCount++;
+      opt.afterMove && opt.afterMove(store, opt);
     }; // define the event listener of mouseup and touchend
     // 定义mouseup和touchend事件监听器
 
@@ -3321,6 +3324,8 @@
       }
 
       _edgeScroll.afterDrop(store, opt);
+
+      opt.afterDrop && opt.afterDrop(store, opt);
     }; // define the destroy function
     // 定义销毁/退出的方法
 
@@ -3384,19 +3389,40 @@
         x: vp.x,
         y: vp.y
       };
-    } // find the scrollable parent elements
-    // 寻找可滚动的父系元素
+    } // 
 
 
     var foundHorizontal, foundVertical, prevElement, horizontalDir, verticalDir;
+    var findInElements;
+    var cachedElementsFromPoint; // find x container
 
-    var _iterator2 = _createForOfIteratorHelper$2(elementsFromPoint(triggerPoint.x, triggerPoint.y)),
+    var minScrollableDisplacement = 10;
+
+    if (opt.edgeScrollSpecifiedContainerX) {
+      var containerX;
+
+      if (typeof opt.edgeScrollSpecifiedContainerX === 'function') {
+        containerX = opt.edgeScrollSpecifiedContainerX(store, opt);
+      } else {
+        containerX = opt.edgeScrollSpecifiedContainerX;
+      }
+
+      if (containerX) {
+        findInElements = [containerX];
+      }
+    }
+
+    if (!findInElements) {
+      findInElements = elementsFromPoint(triggerPoint.x, triggerPoint.y);
+      cachedElementsFromPoint = findInElements;
+    }
+
+    var _iterator2 = _createForOfIteratorHelper$2(findInElements),
         _step2;
 
     try {
       for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var itemEl0 = _step2.value;
-        var itemEl = itemEl0;
+        var itemEl = _step2.value;
 
         if (prevElement && !isDescendantOf(prevElement, itemEl)) {
           // itemEl is being covered by other elements
@@ -3404,7 +3430,7 @@
           continue;
         }
 
-        var t = 10; // min scrollable displacement. 最小可滚动距离, 小于此距离不触发滚动.
+        var t = minScrollableDisplacement; // min scrollable displacement. 最小可滚动距离, 小于此距离不触发滚动.
 
         if (!foundHorizontal) {
           if (itemEl.scrollWidth > itemEl.clientWidth) {
@@ -3424,35 +3450,84 @@
           }
         }
 
+        if (foundHorizontal) {
+          break;
+        }
+
+        prevElement = itemEl;
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+
+    prevElement = null; // find y container
+
+    findInElements = null;
+
+    if (opt.edgeScrollSpecifiedContainerY) {
+      var containerY;
+
+      if (typeof opt.edgeScrollSpecifiedContainerY === 'function') {
+        containerY = opt.edgeScrollSpecifiedContainerY(store, opt);
+      } else {
+        containerY = opt.edgeScrollSpecifiedContainerY;
+      }
+
+      if (containerY) {
+        findInElements = [containerY];
+      }
+    }
+
+    if (!findInElements) {
+      findInElements = cachedElementsFromPoint || elementsFromPoint(triggerPoint.x, triggerPoint.y);
+    }
+
+    var _iterator3 = _createForOfIteratorHelper$2(findInElements),
+        _step3;
+
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var _itemEl = _step3.value;
+
+        if (prevElement && !isDescendantOf(prevElement, _itemEl)) {
+          // itemEl is being covered by other elements
+          // itemEl被其他元素遮挡
+          continue;
+        }
+
+        var _t = minScrollableDisplacement; // min scrollable displacement. 最小可滚动距离, 小于此距离不触发滚动.
+
         if (!foundVertical) {
-          if (itemEl.scrollHeight > itemEl.clientHeight) {
-            var _vp2 = fixedGetViewportPosition(itemEl);
+          if (_itemEl.scrollHeight > _itemEl.clientHeight) {
+            var _vp2 = fixedGetViewportPosition(_itemEl);
 
             if (triggerPoint.y <= _vp2.top + margin) {
-              if (scrollableDisplacement(itemEl, 'up') > t && isScrollable(itemEl, 'y')) {
-                foundVertical = itemEl;
+              if (scrollableDisplacement(_itemEl, 'up') > _t && isScrollable(_itemEl, 'y')) {
+                foundVertical = _itemEl;
                 verticalDir = 'up';
               }
-            } else if (triggerPoint.y >= _vp2.top + itemEl.clientHeight - margin) {
-              if (scrollableDisplacement(itemEl, 'down') > t && isScrollable(itemEl, 'y')) {
-                foundVertical = itemEl;
+            } else if (triggerPoint.y >= _vp2.top + _itemEl.clientHeight - margin) {
+              if (scrollableDisplacement(_itemEl, 'down') > _t && isScrollable(_itemEl, 'y')) {
+                foundVertical = _itemEl;
                 verticalDir = 'down';
               }
             }
           }
         }
 
-        if (foundHorizontal && foundVertical) {
+        if (foundVertical) {
           break;
         }
 
-        prevElement = itemEl;
+        prevElement = _itemEl;
       } // scroll
 
     } catch (err) {
-      _iterator2.e(err);
+      _iterator3.e(err);
     } finally {
-      _iterator2.f();
+      _iterator3.f();
     }
 
     if (foundHorizontal) {
@@ -3730,6 +3805,8 @@
       edgeScrollTriggerMargin: options.edgeScrollTriggerMargin,
       edgeScrollSpeed: options.edgeScrollSpeed,
       edgeScrollTriggerMode: options.edgeScrollTriggerMode,
+      edgeScrollSpecifiedContainerX: options.edgeScrollSpecifiedContainerX,
+      edgeScrollSpecifiedContainerY: options.edgeScrollSpecifiedContainerY,
       rtl: options.rtl,
       preventTextSelection: options.preventTextSelection,
       updateMovedElementStyleManually: true,
@@ -4099,7 +4176,9 @@
         }); //
 
         attachCache(info, info);
-        attachCache(conditions, conditions); // actions start ========================================
+        attachCache(conditions, conditions);
+        store.oneMoveStore.info = info;
+        store.oneMoveStore.conditions = conditions; // actions start ========================================
 
         var doAction = function doAction(name) {
           for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -4542,6 +4621,9 @@
           doAction: doAction
         });
       },
+      afterMove: function afterMove(store, dhOptions) {
+        options.afterMove && options.afterMove(store, dhOptions);
+      },
       beforeDrop: function () {
         var _beforeDrop = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee14(store, dhOptions) {
           var endEvent, movingEl, placeholder, tempChildren, movedCount, targetTreeEl, startTreeEl, maskTree, maskTree2, pathChanged, isPathChanged;
@@ -4744,6 +4826,10 @@
         type: String,
         default: 'top_left_corner'
       },
+      edgeScrollSpecifiedContainerX: {},
+      // HTMLElement || ((store) => HTMLElement)
+      edgeScrollSpecifiedContainerY: {},
+      // HTMLElement || ((store) => HTMLElement)
       preventTextSelection: {
         type: Boolean,
         default: true
@@ -4926,6 +5012,8 @@
         edgeScrollTriggerMargin: this.edgeScrollTriggerMargin,
         edgeScrollSpeed: this.edgeScrollSpeed,
         edgeScrollTriggerMode: this.edgeScrollTriggerMode,
+        edgeScrollSpecifiedContainerX: this.edgeScrollSpecifiedContainerX,
+        edgeScrollSpecifiedContainerY: this.edgeScrollSpecifiedContainerY,
         rtl: this.rtl,
         preventTextSelection: this.preventTextSelection,
         treeClass: 'he-tree',
@@ -5037,6 +5125,7 @@
             return false;
           }
 
+          store.startTree.$emit('before-first-move', store);
           store.startTree.$emit('drag', store);
 
           _this.$root.$emit('he-tree-drag', store);
@@ -5068,14 +5157,15 @@
             return false;
           }
         },
+        afterMove: function afterMove(store) {
+          store.startTree.$emit('after-move', store);
+        },
         beforeDrop: function beforeDrop(pathChanged, store) {
           var targetTree = store.targetTree;
 
           if (targetTree.hasHook('ondragend') && targetTree.executeHook('ondragend', [targetTree, store]) === false) {
             return false;
           }
-
-          targetTree.$emit('before-drop', store);
 
           _this.$root.$emit('he-tree-before-drop', store);
         },
@@ -5162,7 +5252,7 @@
       var _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
 
 
-      ['indent', 'triggerClass', 'triggerBySelf', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag', 'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 'rtl', 'preventTextSelection'].forEach(function (name) {
+      ['indent', 'triggerClass', 'triggerBySelf', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag', 'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 'edgeScrollSpecifiedContainerY', 'edgeScrollSpecifiedContainerY', 'rtl', 'preventTextSelection'].forEach(function (name) {
         _this.$watch(name, function (value) {
           _makeTreeDraggable_obj.options[name] = value;
 

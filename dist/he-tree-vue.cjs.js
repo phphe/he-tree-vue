@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v2.0.3
+ * he-tree-vue v2.0.4-beta2
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -577,6 +577,8 @@ function makeTreeDraggable(treeEl) {
     edgeScrollTriggerMargin: options.edgeScrollTriggerMargin,
     edgeScrollSpeed: options.edgeScrollSpeed,
     edgeScrollTriggerMode: options.edgeScrollTriggerMode,
+    edgeScrollSpecifiedContainerX: options.edgeScrollSpecifiedContainerX,
+    edgeScrollSpecifiedContainerY: options.edgeScrollSpecifiedContainerY,
     rtl: options.rtl,
     preventTextSelection: options.preventTextSelection,
     updateMovedElementStyleManually: true,
@@ -946,7 +948,9 @@ function makeTreeDraggable(treeEl) {
       }); //
 
       hp.attachCache(info, info);
-      hp.attachCache(conditions, conditions); // actions start ========================================
+      hp.attachCache(conditions, conditions);
+      store.oneMoveStore.info = info;
+      store.oneMoveStore.conditions = conditions; // actions start ========================================
 
       var doAction = function doAction(name) {
         for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -1389,6 +1393,9 @@ function makeTreeDraggable(treeEl) {
         doAction: doAction
       });
     },
+    afterMove: function afterMove(store, dhOptions) {
+      options.afterMove && options.afterMove(store, dhOptions);
+    },
     beforeDrop: function () {
       var _beforeDrop = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee14(store, dhOptions) {
         var endEvent, movingEl, placeholder, tempChildren, movedCount, targetTreeEl, startTreeEl, maskTree, maskTree2, pathChanged, isPathChanged;
@@ -1591,6 +1598,10 @@ var script = {
       type: String,
       default: 'top_left_corner'
     },
+    edgeScrollSpecifiedContainerX: {},
+    // HTMLElement || ((store) => HTMLElement)
+    edgeScrollSpecifiedContainerY: {},
+    // HTMLElement || ((store) => HTMLElement)
     preventTextSelection: {
       type: Boolean,
       default: true
@@ -1773,6 +1784,8 @@ var script = {
       edgeScrollTriggerMargin: this.edgeScrollTriggerMargin,
       edgeScrollSpeed: this.edgeScrollSpeed,
       edgeScrollTriggerMode: this.edgeScrollTriggerMode,
+      edgeScrollSpecifiedContainerX: this.edgeScrollSpecifiedContainerX,
+      edgeScrollSpecifiedContainerY: this.edgeScrollSpecifiedContainerY,
       rtl: this.rtl,
       preventTextSelection: this.preventTextSelection,
       treeClass: 'he-tree',
@@ -1884,6 +1897,7 @@ var script = {
           return false;
         }
 
+        store.startTree.$emit('before-first-move', store);
         store.startTree.$emit('drag', store);
 
         _this.$root.$emit('he-tree-drag', store);
@@ -1915,14 +1929,15 @@ var script = {
           return false;
         }
       },
+      afterMove: function afterMove(store) {
+        store.startTree.$emit('after-move', store);
+      },
       beforeDrop: function beforeDrop(pathChanged, store) {
         var targetTree = store.targetTree;
 
         if (targetTree.hasHook('ondragend') && targetTree.executeHook('ondragend', [targetTree, store]) === false) {
           return false;
         }
-
-        targetTree.$emit('before-drop', store);
 
         _this.$root.$emit('he-tree-before-drop', store);
       },
@@ -2009,7 +2024,7 @@ var script = {
     var _makeTreeDraggable_obj = this._makeTreeDraggable_obj = makeTreeDraggable(this.$el, options); // watch props and update options
 
 
-    ['indent', 'triggerClass', 'triggerBySelf', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag', 'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 'rtl', 'preventTextSelection'].forEach(function (name) {
+    ['indent', 'triggerClass', 'triggerBySelf', 'unfoldWhenDragover', 'unfoldWhenDragoverDelay', 'draggingNodePositionMode', 'cloneWhenDrag', 'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 'edgeScrollSpecifiedContainerY', 'edgeScrollSpecifiedContainerY', 'rtl', 'preventTextSelection'].forEach(function (name) {
       _this.$watch(name, function (value) {
         _makeTreeDraggable_obj.options[name] = value;
 
