@@ -22,6 +22,8 @@ export default {
     edgeScrollTriggerMargin: {type: Number, default: 50},
     edgeScrollSpeed: {type: Number, default: 0.35},
     edgeScrollTriggerMode: {type: String, default: 'top_left_corner'},
+    edgeScrollSpecifiedContainerX: {}, // HTMLElement || ((store) => HTMLElement)
+    edgeScrollSpecifiedContainerY: {}, // HTMLElement || ((store) => HTMLElement)
     preventTextSelection: {type: Boolean, default: true},
   },
   // components: {},
@@ -135,6 +137,8 @@ export default {
       edgeScrollTriggerMargin: this.edgeScrollTriggerMargin,
       edgeScrollSpeed: this.edgeScrollSpeed,
       edgeScrollTriggerMode: this.edgeScrollTriggerMode,
+      edgeScrollSpecifiedContainerX: this.edgeScrollSpecifiedContainerX,
+      edgeScrollSpecifiedContainerY: this.edgeScrollSpecifiedContainerY,
       rtl: this.rtl,
       preventTextSelection: this.preventTextSelection,
       treeClass: 'he-tree',
@@ -212,6 +216,7 @@ export default {
         if (startTree.hasHook('ondragstart') && startTree.executeHook('ondragstart', [startTree, store]) === false) {
           return false
         }
+        store.startTree.$emit('before-first-move', store)
         store.startTree.$emit('drag', store)
         this.$root.$emit('he-tree-drag', store)
       },
@@ -236,12 +241,14 @@ export default {
           return false
         }
       },
+      afterMove: (store) => {
+        store.startTree.$emit('after-move', store)
+      },
       beforeDrop: (pathChanged, store) => {
         const {targetTree} = store
         if (targetTree.hasHook('ondragend') && targetTree.executeHook('ondragend', [targetTree, store]) === false) {
           return false
         }
-        targetTree.$emit('before-drop', store)
         this.$root.$emit('he-tree-before-drop', store)
       },
       afterDrop: (store, t) => {
@@ -316,7 +323,7 @@ export default {
     'unfoldWhenDragoverDelay', 
     'draggingNodePositionMode', 
     'cloneWhenDrag', 
-    'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 
+    'edgeScroll', 'edgeScrollTriggerMargin', 'edgeScrollSpeed', 'edgeScrollTriggerMode', 'edgeScrollSpecifiedContainerY', 'edgeScrollSpecifiedContainerY',
     'rtl',
     'preventTextSelection', 
     ].forEach(name => {

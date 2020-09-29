@@ -162,7 +162,11 @@ export class Draggable extends Vue{
   @Prop({default: 0.35})
   edgeScrollSpeed: number
   @Prop({default: 'top_left_corner'})
-  edgeScrollTriggerMode: 'top_left_corner'|'mouse'
+  edgeScrollTriggerMode: dh.Options['edgeScrollTriggerMode']
+  @Prop()
+  edgeScrollSpecifiedContainerX: dh.Options['edgeScrollSpecifiedContainerX']
+  @Prop()
+  edgeScrollSpecifiedContainerY: dh.Options['edgeScrollSpecifiedContainerY']
   // data
   treesStore: {store: Store} // just for get the darg info store
   // methods

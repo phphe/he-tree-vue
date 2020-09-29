@@ -28,6 +28,9 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     // edgeScrollTriggerMargin: 50,
     // edgeScrollSpeed: 0.35,
     // edgeScrollTriggerMode: 'top_left_corner',
+    // edgeScrol: 'top_left_corner',
+    // edgeScrollSpecifiedContainerX?: HTMLElement,
+    // edgeScrollSpecifiedContainerY?: HTMLElement,
     // rtl: false
     // preventTextSelection: boolean
     ...options,
@@ -42,6 +45,8 @@ export default function makeTreeDraggable(treeEl, options = {}) {
     edgeScrollTriggerMargin: options.edgeScrollTriggerMargin,
     edgeScrollSpeed: options.edgeScrollSpeed,
     edgeScrollTriggerMode: options.edgeScrollTriggerMode,
+    edgeScrollSpecifiedContainerX: options.edgeScrollSpecifiedContainerX,
+    edgeScrollSpecifiedContainerY: options.edgeScrollSpecifiedContainerY,
     rtl: options.rtl,
     preventTextSelection: options.preventTextSelection,
     updateMovedElementStyleManually: true,
@@ -302,6 +307,8 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       //
       hp.attachCache(info, info)
       hp.attachCache(conditions, conditions)
+      store.oneMoveStore.info = info
+      store.oneMoveStore.conditions = conditions
       // actions start ========================================
       const doAction = (name, ...args) => {
         if (!store._doActionQueue) {
@@ -433,6 +440,9 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       }
       // actions end ========================================
       doDraggableDecision({options, event: store.moveEvent, store, opt: dhOptions, info, conditions, actions, doAction})
+    },
+    afterMove: (store, dhOptions) => {
+      options.afterMove && options.afterMove(store, dhOptions)
     },
     beforeDrop: async (store, dhOptions) => {
       const {endEvent} = store

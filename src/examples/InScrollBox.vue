@@ -2,8 +2,8 @@
 <template lang="pug">
 .InScrollBox
   h2 In scroll box
-  .scrollbox()
-    Tree(:value="treeData" ref="tree" edgeScroll)
+  .scrollbox(ref="scrollbox")
+    Tree(:value="treeData" ref="tree" edgeScroll @after-move="afterMove")
       div(slot-scope="{node, index, path, tree}")
         b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
         input(type="checkbox" :checked="node.$checked" @change="tree.toggleCheck(node, path)")
@@ -47,7 +47,24 @@ export default {
   },
   // computed: {},
   // watch: {},
-  methods: {},
+  methods: {
+    afterMove(store) {
+      const closestBranch = store.oneMoveStore?.info?.closestBranch
+      const {placeholder} = store
+      if (closestBranch && placeholder) {
+        if (placeholder.parentElement.parentElement === closestBranch) {
+          // is child
+          console.log('child');
+        } else if (placeholder.nextSibling === closestBranch) {
+          // is previous sibling
+          console.log('previous');
+        } else if (placeholder.previousSibling === closestBranch) {
+          // is next sibling
+          console.log('next');
+        }
+      }
+    },
+  },
   // created() {},
   mounted() {
   },
