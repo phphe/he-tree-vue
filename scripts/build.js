@@ -22,7 +22,7 @@ const getBabelConfig = () => ({
         ['@vue/cli-plugin-babel/preset', {
                 useBuiltIns: false,
                 polyfills: [],
-                targets: 'defaults',
+                targets: { browsers: 'defaults' },
             }],
     ],
     plugins: [
@@ -45,7 +45,7 @@ exports.default = [
         input,
         external: (source) => rogo_1.belongsTo(source, Object.keys(pkg.dependencies || {})) || rogo_1.belongsTo(source, Object.keys(pkg.peerDependencies || {})),
         plugins: [
-            vue({ css: false }),
+            vue(),
             postcss({ extract: extractCssPath }),
             babel(esmBabelConfig),
             node(), cjs(), json(),
@@ -62,7 +62,7 @@ exports.default = [
         input,
         external: (source) => rogo_1.belongsTo(source, Object.keys(pkg.dependencies || {})) || rogo_1.belongsTo(source, Object.keys(pkg.peerDependencies || {})),
         plugins: [
-            vue({ css: false }),
+            vue(),
             postcss({ extract: extractCssPath }),
             babel(cjsBabelConfig),
             node(), cjs(), json(),
@@ -79,7 +79,7 @@ exports.default = [
         input,
         external: (source) => rogo_1.belongsTo(source, Object.keys(pkg.peerDependencies || {})),
         plugins: [
-            vue({ css: false }),
+            vue(),
             postcss({ extract: extractCssPath }),
             babel(umdBabelConfig),
             node(), cjs(), json(),
@@ -97,7 +97,7 @@ exports.default = [
         input,
         external: (source) => rogo_1.belongsTo(source, Object.keys(pkg.peerDependencies || {})),
         plugins: [
-            vue({ css: false }),
+            vue(),
             postcss({ extract: extractCssPath }),
             babel(umdBabelConfig),
             node(), cjs(), json(),

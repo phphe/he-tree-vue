@@ -23,7 +23,7 @@ const getBabelConfig = () => ({
     ['@vue/cli-plugin-babel/preset', {
       useBuiltIns: false,
       polyfills: [],
-      targets: 'defaults', // default browsers, coverage 90%
+      targets: {browsers: 'defaults'}, // default browsers, coverage 90%
     }],
   ],
   plugins: [
@@ -50,7 +50,7 @@ export default <rollup.RollupOptions[]>[
     input,
     external: (source) => belongsTo(source, Object.keys(pkg.dependencies||{})) || belongsTo(source, Object.keys(pkg.peerDependencies||{})),
     plugins: [
-      vue({css: false}),
+      vue(),
       postcss({extract: extractCssPath}),
       babel(esmBabelConfig),
       node(), cjs(), json(),
@@ -67,7 +67,7 @@ export default <rollup.RollupOptions[]>[
     input,
     external: (source) => belongsTo(source, Object.keys(pkg.dependencies||{})) || belongsTo(source, Object.keys(pkg.peerDependencies||{})),
     plugins: [
-      vue({css: false}),
+      vue(),
       postcss({extract: extractCssPath}),
       babel(cjsBabelConfig),
       node(), cjs(), json(),
@@ -84,7 +84,7 @@ export default <rollup.RollupOptions[]>[
     input,
     external: (source) => belongsTo(source, Object.keys(pkg.peerDependencies||{})),
     plugins: [
-      vue({css: false}),
+      vue(),
       postcss({extract: extractCssPath}),
       babel(umdBabelConfig),
       node(), cjs(), json(),
@@ -102,7 +102,7 @@ export default <rollup.RollupOptions[]>[
     input,
     external: (source) => belongsTo(source, Object.keys(pkg.peerDependencies||{})),
     plugins: [
-      vue({css: false}),
+      vue(),
       postcss({extract: extractCssPath}),
       babel(umdBabelConfig),
       node(), cjs(), json(),
