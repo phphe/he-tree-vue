@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.6](https://github.com/phphe/he-tree-vue/compare/v2.0.5...v2.0.6) (2020-12-13)
+
+
+### Features
+
+* **draggable plugin:** add alias after-placeholder-created for event afterPlaceholderCreated ([9c64bcc](https://github.com/phphe/he-tree-vue/commit/9c64bcce6a576beb49bebd56c4126057466da366))
+* **fold plugin:** add alias node-folded-changed for event nodeFoldedChanged ([b70fc80](https://github.com/phphe/he-tree-vue/commit/b70fc80a40b035aad2cbd79d0f40b990375074a6))
+
+
+### Bug Fixes
+
+* **draggable plugin:** update dependence draggable-helper ([de98c11](https://github.com/phphe/he-tree-vue/commit/de98c114e1a22cf32d0521c86d016779028c50cd))
+
 ### [2.0.5](https://github.com/phphe/he-tree-vue/compare/v2.0.5-beta.1...v2.0.5) (2020-11-26)
 
 ### [2.0.5-beta.1](https://github.com/phphe/he-tree-vue/compare/v2.0.4-beta2...v2.0.5-beta.1) (2020-11-26)
