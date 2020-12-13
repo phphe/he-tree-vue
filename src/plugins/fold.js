@@ -36,6 +36,7 @@ export default {
       if (node.$folded) {
         this.$set(node, '$folded', false)
         this.$emit('nodeFoldedChanged', node)
+        this.$emit('node-folded-changed', node)
       }
     },
     toggleFold(node, path, opt) {
