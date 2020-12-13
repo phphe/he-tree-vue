@@ -196,6 +196,7 @@ export default {
       },
       afterPlaceholderCreated: (store) => {
         store.startTree.$emit('afterPlaceholderCreated', store)
+        store.startTree.$emit('after-placeholder-created', store)
       },
       getPathByBranchEl: (branchEl) => this.getPathByBranchEl(branchEl),
       beforeFirstMove: (store) => {
@@ -338,8 +339,8 @@ export default {
 </script>
 
 <style>
-.he-tree .tree-placeholder{
-}
+/* .he-tree .tree-placeholder{
+} */
 .he-tree .tree-placeholder-node{
   background: #ddf2f9;
   border: 1px dashed #00d9ff;
