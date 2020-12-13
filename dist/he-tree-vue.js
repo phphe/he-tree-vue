@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v2.0.6
+ * he-tree-vue v2.0.7-beta.1
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -2088,7 +2088,7 @@
   } // for animation
 
   /*!
-   * vue-functions v2.0.6
+   * vue-functions v2.0.7-beta.1
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
