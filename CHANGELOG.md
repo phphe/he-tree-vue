@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/phphe/he-tree-vue/compare/v2.0.7-beta.3...v3.0.0) (2020-12-13)
+
+
+### Features
+
+* **all:** update for vue3 ([fd2e1ac](https://github.com/phphe/he-tree-vue/commit/fd2e1acdf001f23a5e87528a13361eb7828fa62b))
+* **types:** update types declaration for vue3 ([175c0f2](https://github.com/phphe/he-tree-vue/commit/175c0f27e7a19f17befe8784f1b289a90cb50500))
+
+
+### Bug Fixes
+
+* **dist:** use .js instead of .vue to fix 'render overrided issue' ([5b2fcc3](https://github.com/phphe/he-tree-vue/commit/5b2fcc3ca3d209999cd9ce400f0af65cb9421dad))
+
 ### [2.0.7-beta.3](https://github.com/phphe/he-tree-vue/compare/v2.0.7-beta.2...v2.0.7-beta.3) (2020-12-13)
 
 ### [2.0.7-beta.2](https://github.com/phphe/he-tree-vue/compare/v2.0.7-beta.1...v2.0.7-beta.2) (2020-12-13)
