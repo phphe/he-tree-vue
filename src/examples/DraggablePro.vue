@@ -4,7 +4,7 @@
   h2 Draggable Pro (cross tree)
   .flex
     Tree.ml(:value="treeData" ref="tree" triggerClass="trigger" crossTree)
-      div(slot-scope="{node, index, path, tree}")
+      template(v-slot:default="{node, index, path, tree}")
         button.trigger drag
         div(style="width:.5em;height:1em;display:inline-block;")
         b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
@@ -16,7 +16,7 @@
       Tree(:value="treeDataEmpty" ref="tree4" crossTree)
       hr
       Tree(:value="treeData2" ref="tree" triggerClass="trigger" crossTree)
-        div(slot-scope="{node, index, path, tree}")
+        template(v-slot:default="{node, index, path, tree}")
           button.trigger drag
           div(style="width:.5em;height:1em;display:inline-block;")
           b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
@@ -26,7 +26,7 @@
     .ml
       h3 Clone when drag
       Tree(:value="treeData3" ref="tree" triggerClass="trigger" crossTree cloneWhenDrag)
-        div(slot-scope="{node, index, path, tree}")
+        template(v-slot:default="{node, index, path, tree}")
           button.trigger drag
           div(style="width:.5em;height:1em;display:inline-block;")
           b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
@@ -36,7 +36,7 @@
     .ml
       h3 Max level (2)
       Tree(:value="treeData3" ref="tree" triggerClass="trigger" crossTree :maxLevel="2")
-        div(slot-scope="{node, index, path, tree}")
+        template(v-slot:default="{node, index, path, tree}")
           button.trigger drag
           div(style="width:.5em;height:1em;display:inline-block;")
           b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;

@@ -14,10 +14,8 @@ const template = function (h) {
       const transitionComponent = this.foldingTransition || 'transition'
       const slotDefault = () => {
         const original = () => {
-          if (this.$scopedSlots.default) {
-            return this.$scopedSlots.default({node, index, path, tree: this})
-          } else if (this.$slots.default) {
-            return this.$slots.default
+          if (this.$slots.default) {
+            return this.$slots.default({node, index, path, tree: this})
           } else {
             return node.text
           }
@@ -80,6 +78,10 @@ const Tree = {
       trees,
       treeClass: '',
       treeId: hp.randString(),
+      // hooks of render
+      blockHeader: null,
+      blockFooter: null,
+      overrideSlotDefault: null,
     }
   },
   // computed: {},
@@ -132,19 +134,18 @@ const Tree = {
   },
   created() {
     //
-    const updateRootNode = () => { this.$set(this.rootNode, 'children', this.treeData) }
+    const updateRootNode = () => { this.rootNode.children = this.treeData }
     this.$watch('rootNode', updateRootNode, {immediate: true})
     this.$watch('treeData', updateRootNode, {immediate: true})
   },
   mounted() {
     //
     this.treeId = hp.randString()
-    this.$set(this.trees, this.treeId, this)
-    this.$once('hook:beforeDestroy', () => {
-      this.$delete(this.trees, this.treeId)
-    })
+    this.trees[this.treeId] = this
   },
-  // beforeDestroy() {},
+  beforeUnmount() {
+    delete this.trees[this.treeId]
+  },
 
   //
   mixPlugins(plugins) {

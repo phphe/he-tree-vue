@@ -1,14 +1,13 @@
-import Vue from 'vue'
 import { walkTreeData } from "../utils";
 
 export function foldAll(treeData) {
   walkTreeData(treeData, childNode => {
-    Vue.set(childNode, '$folded', true)
+    childNode.$folded = true
   })
 }
 export function unfoldAll(treeData) {
   walkTreeData(treeData, childNode => {
-    Vue.set(childNode, '$folded', false)
+    childNode.$folded = false
   })
 }
 
@@ -18,11 +17,13 @@ export default {
     foldingTransition: {},
     foldAllAfterMounted: {type: Boolean},
   },
+  emits: ['nodeFoldedChanged', 'node-folded-changed'],
   methods: {
     fold(node, path) {
       if (!node.$folded) {
-        this.$set(node, '$folded', true)
+        node['$folded'] = true
         this.$emit('nodeFoldedChanged', node)
+        this.$emit('node-folded-changed', node)
       }
     },
     unfold(node, path, opt = {}) {
@@ -34,9 +35,8 @@ export default {
         this.foldAll()
       }
       if (node.$folded) {
-        this.$set(node, '$folded', false)
+        node['$folded'] = false
         this.$emit('nodeFoldedChanged', node)
-        this.$emit('node-folded-changed', node)
       }
     },
     toggleFold(node, path, opt) {

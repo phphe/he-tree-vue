@@ -7,7 +7,7 @@
   <body>
     <div id="app">
       <he-tree :value="treeData" ref="tree">
-          <div slot-scope="props">
+          <div v-slot:default="props">
             <b v-if="props.node.children &amp;&amp; props.node.children.length &gt; 0" @click="props.tree.toggleFold(props.node, props.path)">{{props.node.$folded ? '+' : '-'}}&nbsp;</b>
             <input type="checkbox" :checked="props.node.$checked" @change="props.tree.toggleCheck(props.node, props.path)" />&nbsp;
             <span>{{props.node.text}}</span>

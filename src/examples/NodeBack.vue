@@ -3,7 +3,7 @@
 div
   h2 Node Back
   Tree.tree-with-nodeba-back(:value="treeData" ref="tree")
-    div(slot-scope="{node, index, path, tree}")
+    template(v-slot:default="{node, index, path, tree}")
       b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
       input(type="checkbox" :checked="node.$checked" @change="tree.toggleCheck(node, path)")
       | &nbsp;

@@ -3,7 +3,7 @@
 .CustomTrigger
   h2 RTL
   Tree(:value="treeData" ref="tree" triggerClass="trigger" rtl)
-    div(slot-scope="{node, index, path, tree}")
+    template(v-slot:default="{node, index, path, tree}")
       button.trigger drag
       div(style="width:.5em;height:1em;display:inline-block;")
       b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;

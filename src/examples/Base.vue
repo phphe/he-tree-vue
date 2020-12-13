@@ -4,9 +4,9 @@ div
   h2 Base
   .base-trees.flex
     Tree.base-tree(:value="treeData1" ref="tree1")
-      //- div(slot-scope="{node, index}") {{node}}
+      template(v-slot:default="{node, index}") {{node.text}}
     Tree.base-tree.ml(:value="treeData1" ref="tree2")
-      div(slot-scope="{node, index, path, tree}")
+      template(v-slot:default="{node, index, path, tree}")
         b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
         input(type="checkbox" :checked="node.$checked" @change="tree.toggleCheck(node, path)")
         | &nbsp;
@@ -14,7 +14,7 @@ div
     .ml
       b Fola all after mounted:
       Tree.base-tree(:value="treeData2" ref="tree3" foldAllAfterMounted)
-        div(slot-scope="{node, index, path, tree}")
+        template(v-slot:default="{node, index, path, tree}")
           b(v-if="node.children && node.children.length > 0" @click="tree.toggleFold(node, path)") {{node.$folded ? '+' : '-'}}&nbsp;
           input(type="checkbox" :checked="node.$checked" @change="tree.toggleCheck(node, path)")
           | &nbsp;

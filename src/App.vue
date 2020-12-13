@@ -10,7 +10,7 @@
     InScrollBox.mr
     CustomTrigger.mr
     RTLTree.mr
-    //- DraggableProTree.mr
+    DraggableProTree.mr
 </template>
 
 <script>
@@ -21,18 +21,22 @@ import DragTransition from '@/examples/DragTransition.vue'
 import InScrollBox from '@/examples/InScrollBox.vue'
 import CustomTrigger from '@/examples/CustomTrigger.vue'
 import RTLTree from '@/examples/RTLTree.vue'
+import {defineAsyncComponent }  from 'vue'
 
 export default {
   components: {BaseTree, NodeBackTree, ThirdCase, DragTransition, InScrollBox, CustomTrigger, RTLTree,
-    // DraggableProTree: () => import('@/examples/DraggablePro'),
+    DraggableProTree: defineAsyncComponent (() => import('@/examples/DraggablePro')),
   },
-  // data() {
-  //   return {}
-  // },
+  data() {
+    return {
+      a:{b:123}
+    }
+  },
   // computed: {},
   // watch: {},
   // methods: {},
-  // created() {},
+  created() {
+  },
   // mounted() {},
 }
 </script>

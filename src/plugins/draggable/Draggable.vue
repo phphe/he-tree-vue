@@ -26,6 +26,7 @@ export default {
     edgeScrollSpecifiedContainerY: {}, // HTMLElement || ((store) => HTMLElement)
     preventTextSelection: {type: Boolean, default: true},
   },
+  emits: ['afterPlaceholderCreated', 'after-placeholder-created', 'before-first-move', 'drag', 'he-tree-drag', 'after-move', 'he-tree-before-drop', 'input', 'change', 'drop', 'he-tree-drop'],
   // components: {},
   data() {
     return {
@@ -292,7 +293,7 @@ export default {
             targetSiblings = targetTree.treeData
           } else {
             if (!targetParent.children) {
-              this.$set(targetParent, 'children', [])
+              targetParent['children'] = []
             }
             targetSiblings = targetParent.children
           }
@@ -339,8 +340,8 @@ export default {
 </script>
 
 <style>
-/* .he-tree .tree-placeholder{
-} */
+.he-tree .tree-placeholder{
+}
 .he-tree .tree-placeholder-node{
   background: #ddf2f9;
   border: 1px dashed #00d9ff;
