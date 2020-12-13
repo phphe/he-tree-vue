@@ -53,8 +53,7 @@
     "vue": "^3.0.0"
   },
   "peerDependencies": {
-    "vue": "^3.0.0",
-    "vue-property-decorator": "^8.4.0"
+    "vue": "^3.0.0"
   },
   "license": "MIT",
   "config": {
