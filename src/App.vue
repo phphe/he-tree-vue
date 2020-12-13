@@ -25,7 +25,7 @@ import {defineAsyncComponent }  from 'vue'
 
 export default {
   components: {BaseTree, NodeBackTree, ThirdCase, DragTransition, InScrollBox, CustomTrigger, RTLTree,
-    DraggableProTree: defineAsyncComponent (() => import('@/examples/DraggablePro')),
+    // DraggableProTree: defineAsyncComponent (() => import('@/examples/DraggablePro')),
   },
   data() {
     return {
