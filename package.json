@@ -1,6 +1,6 @@
 {
   "name": "he-tree-vue",
-  "version": "2.0.7-beta.3",
+  "version": "3.0.0-beta.1",
   "description": "A draggable sortable nested vue tree component.",
   "main": "dist/he-tree-vue.cjs.js",
   "module": "dist/he-tree-vue.esm.js",

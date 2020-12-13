@@ -1,15 +1,14 @@
 /*!
- * he-tree-vue v2.0.7-beta.1
+ * he-tree-vue v3.0.0-beta.1
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
+import { createVNode } from 'vue';
 import _toConsumableArray from '@babel/runtime/helpers/toConsumableArray';
 import _defineProperty from '@babel/runtime/helpers/defineProperty';
 import { TreeData, randString, findParent, hasClass, createElementFromHTML, insertAfter, addClass, getOffset, getBoundingClientRect, elementsFromPoint, isDescendantOf, attachCache, removeEl, binarySearch, findNodeList, appendTo, insertBefore, prependTo, waitTime, iterateAll, resolveValueOrGettter, arrayWithoutEnd, arrayLast } from 'helper-js';
 import { updatablePropsEvenUnbound, hookHelper } from 'vue-functions';
-import __vue_normalize__ from 'vue-runtime-helpers/dist/normalize-component.mjs';
-import Vue from 'vue';
 import _regeneratorRuntime from '@babel/runtime/regenerator';
 import _asyncToGenerator from '@babel/runtime/helpers/asyncToGenerator';
 import draggableHelper from 'draggable-helper';
@@ -55,15 +54,13 @@ var template = function template(h) {
 
       var slotDefault = function slotDefault() {
         var original = function original() {
-          if (_this.$scopedSlots.default) {
-            return _this.$scopedSlots.default({
+          if (_this.$slots.default) {
+            return _this.$slots.default({
               node: node,
               index: index,
               path: path,
               tree: _this
             });
-          } else if (_this.$slots.default) {
-            return _this.$slots.default;
           } else {
             return node.text;
           }
@@ -87,36 +84,34 @@ var template = function template(h) {
         nodebackStyle = _objectSpread(_objectSpread({}, nodebackStyle), node.$nodeBackStyle);
       }
 
-      return h("div", {
+      return createVNode("div", {
         "class": "tree-branch ".concat(noUndefined(node.$branchClass), " ").concat(noUndefined(node.$hidden && 'he-tree--hidden')),
         "style": node.$branchStyle || {},
-        "attrs": {
-          "data-tree-node-path": path.join(',')
-        }
-      }, [h("div", {
+        "data-tree-node-path": path.join(',')
+      }, [createVNode("div", {
         "class": "tree-node-back ".concat(noUndefined(node.$nodeBackClass)),
         "style": nodebackStyle || {}
-      }, [h("div", {
+      }, [createVNode("div", {
         "class": "tree-node ".concat(noUndefined(node.$nodeClass)),
         "style": node.$nodeStyle || {}
-      }, [slotDefault()])]), (node.children && node.children.length) > 0 && h(transitionComponent, {
-        "attrs": {
-          "name": _this.$props.foldingTransitionName
+      }, [slotDefault()])]), (node.children && node.children.length) > 0 && createVNode(transitionComponent, {
+        "name": _this.$props.foldingTransitionName
+      }, {
+        default: function _default() {
+          return [!node.$folded && childrenListTpl(node.children, node, path)];
         }
-      }, [!node.$folded && childrenListTpl(node.children, node, path)])]);
+      })]);
     };
 
-    return h("div", {
+    return createVNode("div", {
       "class": "tree-children ".concat(noUndefined(parent === _this.rootNode && 'tree-root'), " ").concat(noUndefined(parent.$childrenClass)),
       "style": parent.$childrenStyle || {}
     }, [nodes.map(branchTpl)]);
   };
 
-  return h("div", {
+  return createVNode("div", {
     "class": "he-tree ".concat(this.treeClass, " ").concat(noUndefined(this.rtl && 'he-tree--rtl')),
-    "attrs": {
-      "data-tree-id": this.treeId
-    }
+    "data-tree-id": this.treeId
   }, [this.blockHeader && this.blockHeader(), childrenListTpl(this.rootNode.children, this.rootNode, []), this.blockFooter && this.blockFooter()]);
 };
 
@@ -148,7 +143,11 @@ var Tree = {
     return {
       trees: trees,
       treeClass: '',
-      treeId: randString()
+      treeId: randString(),
+      // hooks of render
+      blockHeader: null,
+      blockFooter: null,
+      overrideSlotDefault: null
     };
   },
   // computed: {},
@@ -206,7 +205,7 @@ var Tree = {
 
     //
     var updateRootNode = function updateRootNode() {
-      _this2.$set(_this2.rootNode, 'children', _this2.treeData);
+      _this2.rootNode.children = _this2.treeData;
     };
 
     this.$watch('rootNode', updateRootNode, {
@@ -217,16 +216,13 @@ var Tree = {
     });
   },
   mounted: function mounted() {
-    var _this3 = this;
-
     //
     this.treeId = randString();
-    this.$set(this.trees, this.treeId, this);
-    this.$once('hook:beforeDestroy', function () {
-      _this3.$delete(_this3.trees, _this3.treeId);
-    });
+    this.trees[this.treeId] = this;
   },
-  // beforeDestroy() {},
+  beforeUnmount: function beforeUnmount() {
+    delete this.trees[this.treeId];
+  },
   //
   mixPlugins: function mixPlugins(plugins) {
     var MixedTree = {
@@ -239,41 +235,21 @@ var Tree = {
   }
 };
 
-/* script */
-var __vue_script__ = Tree;
-/* template */
-
-/* style */
-
-var __vue_inject_styles__ = undefined;
-/* scoped */
-
-var __vue_scope_id__ = undefined;
-/* module identifier */
-
-var __vue_module_identifier__ = undefined;
-/* functional template */
-
-var __vue_is_functional_template__ = undefined;
-/* style inject */
-
-/* style inject SSR */
-
-/* style inject shadow dom */
-
-var __vue_component__ = /*#__PURE__*/__vue_normalize__({}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
+var render = function render() {};
+Tree.render = render;
+Tree.__file = "src/components/Tree.vue";
 
 function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 function foldAll(treeData) {
   walkTreeData(treeData, function (childNode) {
-    Vue.set(childNode, '$folded', true);
+    childNode.$folded = true;
   });
 }
 function unfoldAll(treeData) {
   walkTreeData(treeData, function (childNode) {
-    Vue.set(childNode, '$folded', false);
+    childNode.$folded = false;
   });
 }
 var fold = {
@@ -286,11 +262,13 @@ var fold = {
       type: Boolean
     }
   },
+  emits: ['nodeFoldedChanged', 'node-folded-changed'],
   methods: {
     fold: function fold(node, path) {
       if (!node.$folded) {
-        this.$set(node, '$folded', true);
+        node['$folded'] = true;
         this.$emit('nodeFoldedChanged', node);
+        this.$emit('node-folded-changed', node);
       }
     },
     unfold: function unfold(node, path) {
@@ -304,9 +282,8 @@ var fold = {
       }
 
       if (node.$folded) {
-        this.$set(node, '$folded', false);
+        node['$folded'] = false;
         this.$emit('nodeFoldedChanged', node);
-        this.$emit('node-folded-changed', node);
       }
     },
     toggleFold: function toggleFold(node, path, opt) {
@@ -349,8 +326,6 @@ var check = {
   props: {},
   methods: {
     afterCheckChanged: function afterCheckChanged(node, path) {
-      var _this = this;
-
       // update parent
       var nodes = this.getAllNodesByPath(path);
       var reversedParents = nodes.slice(0, nodes.length - 1);
@@ -362,9 +337,9 @@ var check = {
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var parent = _step.value;
-          this.$set(parent, '$checked', parent.children.every(function (child) {
+          parent['$checked'] = parent.children.every(function (child) {
             return child.$checked;
-          }));
+          });
         } // update children
 
       } catch (err) {
@@ -375,20 +350,20 @@ var check = {
 
       if (node.children && node.children.length > 0) {
         walkTreeData(node.children, function (childNode) {
-          _this.$set(childNode, '$checked', node.$checked);
+          childNode['$checked'] = node.$checked;
         });
       }
     },
     check: function check(node, path) {
-      this.$set(node, '$checked', true);
+      node['$checked'] = true;
       this.afterCheckChanged(node, path);
     },
     uncheck: function uncheck(node, path) {
-      this.$set(node, '$checked', false);
+      node['$checked'] = false;
       this.afterCheckChanged(node, path);
     },
     toggleCheck: function toggleCheck(node, path) {
-      this.$set(node, '$checked', !node.$checked);
+      node['$checked'] = !node.$checked;
       this.afterCheckChanged(node, path);
     }
   }
@@ -1602,6 +1577,7 @@ var script = {
       default: true
     }
   },
+  emits: ['afterPlaceholderCreated', 'after-placeholder-created', 'before-first-move', 'drag', 'he-tree-drag', 'after-move', 'he-tree-before-drop', 'input', 'change', 'drop', 'he-tree-drop'],
   // components: {},
   data: function data() {
     return {
@@ -1988,7 +1964,7 @@ var script = {
             targetSiblings = targetTree.treeData;
           } else {
             if (!targetParent.children) {
-              _this.$set(targetParent, 'children', []);
+              targetParent['children'] = [];
             }
 
             targetSiblings = targetParent.children;
@@ -2030,28 +2006,8 @@ var script = {
   }
 };
 
-/* script */
-var __vue_script__$1 = script;
-/* template */
+var render$1 = function render() {};
+script.render = render$1;
+script.__file = "src/plugins/draggable/Draggable.vue";
 
-/* style */
-
-var __vue_inject_styles__$1 = undefined;
-/* scoped */
-
-var __vue_scope_id__$1 = undefined;
-/* module identifier */
-
-var __vue_module_identifier__$1 = undefined;
-/* functional template */
-
-var __vue_is_functional_template__$1 = undefined;
-/* style inject */
-
-/* style inject SSR */
-
-/* style inject shadow dom */
-
-var __vue_component__$1 = /*#__PURE__*/__vue_normalize__({}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
-
-export { check as Check, __vue_component__$1 as Draggable, fold as Fold, __vue_component__ as Tree, cloneTreeData, foldAll, getPureTreeData, unfoldAll, walkTreeData };
+export { check as Check, script as Draggable, fold as Fold, Tree, cloneTreeData, foldAll, getPureTreeData, unfoldAll, walkTreeData };

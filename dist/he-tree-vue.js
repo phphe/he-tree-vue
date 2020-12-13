@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v2.0.7-beta.1
+ * he-tree-vue v3.0.0-beta.1
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -7,10 +7,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue')) :
   typeof define === 'function' && define.amd ? define(['exports', 'vue'], factory) :
-  (global = global || self, factory(global.heTreeVue = {}, global.Vue));
-}(this, (function (exports, Vue) { 'use strict';
-
-  Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
+  (global = global || self, factory(global.heTreeVue = {}, global.vue));
+}(this, (function (exports, vue) { 'use strict';
 
   function _arrayLikeToArray(arr, len) {
     if (len == null || len > arr.length) len = arr.length;
@@ -203,6 +201,24 @@
     var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
     var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
 
+    function define(obj, key, value) {
+      Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+      return obj[key];
+    }
+    try {
+      // IE 8 has a broken Object.defineProperty that only works on DOM objects.
+      define({}, "");
+    } catch (err) {
+      define = function(obj, key, value) {
+        return obj[key] = value;
+      };
+    }
+
     function wrap(innerFn, outerFn, self, tryLocsList) {
       // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
       var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
@@ -273,16 +289,19 @@
       Generator.prototype = Object.create(IteratorPrototype);
     GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
     GeneratorFunctionPrototype.constructor = GeneratorFunction;
-    GeneratorFunctionPrototype[toStringTagSymbol] =
-      GeneratorFunction.displayName = "GeneratorFunction";
+    GeneratorFunction.displayName = define(
+      GeneratorFunctionPrototype,
+      toStringTagSymbol,
+      "GeneratorFunction"
+    );
 
     // Helper for defining the .next, .throw, and .return methods of the
     // Iterator interface in terms of a single ._invoke method.
     function defineIteratorMethods(prototype) {
       ["next", "throw", "return"].forEach(function(method) {
-        prototype[method] = function(arg) {
+        define(prototype, method, function(arg) {
           return this._invoke(method, arg);
-        };
+        });
       });
     }
 
@@ -301,9 +320,7 @@
         Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
       } else {
         genFun.__proto__ = GeneratorFunctionPrototype;
-        if (!(toStringTagSymbol in genFun)) {
-          genFun[toStringTagSymbol] = "GeneratorFunction";
-        }
+        define(genFun, toStringTagSymbol, "GeneratorFunction");
       }
       genFun.prototype = Object.create(Gp);
       return genFun;
@@ -573,7 +590,7 @@
     // unified ._invoke helper method.
     defineIteratorMethods(Gp);
 
-    Gp[toStringTagSymbol] = "Generator";
+    define(Gp, toStringTagSymbol, "Generator");
 
     // A Generator should always return itself as the iterator object when the
     // @@iterator function is called on it. Some browsers' implementations of the
@@ -919,7 +936,7 @@
   var regenerator = runtime_1;
 
   /*!
-   * helper-js v2.0.1
+   * helper-js v2.0.3
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
@@ -2088,7 +2105,7 @@
   } // for animation
 
   /*!
-   * vue-functions v2.0.7-beta.1
+   * vue-functions v2.0.6
    * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
    * Homepage: undefined
    * Released under the MIT License.
@@ -2287,15 +2304,13 @@
 
         var slotDefault = function slotDefault() {
           var original = function original() {
-            if (_this.$scopedSlots.default) {
-              return _this.$scopedSlots.default({
+            if (_this.$slots.default) {
+              return _this.$slots.default({
                 node: node,
                 index: index,
                 path: path,
                 tree: _this
               });
-            } else if (_this.$slots.default) {
-              return _this.$slots.default;
             } else {
               return node.text;
             }
@@ -2319,36 +2334,34 @@
           nodebackStyle = _objectSpread(_objectSpread({}, nodebackStyle), node.$nodeBackStyle);
         }
 
-        return h("div", {
+        return vue.createVNode("div", {
           "class": "tree-branch ".concat(noUndefined(node.$branchClass), " ").concat(noUndefined(node.$hidden && 'he-tree--hidden')),
           "style": node.$branchStyle || {},
-          "attrs": {
-            "data-tree-node-path": path.join(',')
-          }
-        }, [h("div", {
+          "data-tree-node-path": path.join(',')
+        }, [vue.createVNode("div", {
           "class": "tree-node-back ".concat(noUndefined(node.$nodeBackClass)),
           "style": nodebackStyle || {}
-        }, [h("div", {
+        }, [vue.createVNode("div", {
           "class": "tree-node ".concat(noUndefined(node.$nodeClass)),
           "style": node.$nodeStyle || {}
-        }, [slotDefault()])]), (node.children && node.children.length) > 0 && h(transitionComponent, {
-          "attrs": {
-            "name": _this.$props.foldingTransitionName
+        }, [slotDefault()])]), (node.children && node.children.length) > 0 && vue.createVNode(transitionComponent, {
+          "name": _this.$props.foldingTransitionName
+        }, {
+          default: function _default() {
+            return [!node.$folded && childrenListTpl(node.children, node, path)];
           }
-        }, [!node.$folded && childrenListTpl(node.children, node, path)])]);
+        })]);
       };
 
-      return h("div", {
+      return vue.createVNode("div", {
         "class": "tree-children ".concat(noUndefined(parent === _this.rootNode && 'tree-root'), " ").concat(noUndefined(parent.$childrenClass)),
         "style": parent.$childrenStyle || {}
       }, [nodes.map(branchTpl)]);
     };
 
-    return h("div", {
+    return vue.createVNode("div", {
       "class": "he-tree ".concat(this.treeClass, " ").concat(noUndefined(this.rtl && 'he-tree--rtl')),
-      "attrs": {
-        "data-tree-id": this.treeId
-      }
+      "data-tree-id": this.treeId
     }, [this.blockHeader && this.blockHeader(), childrenListTpl(this.rootNode.children, this.rootNode, []), this.blockFooter && this.blockFooter()]);
   };
 
@@ -2380,7 +2393,11 @@
       return {
         trees: trees,
         treeClass: '',
-        treeId: randString()
+        treeId: randString(),
+        // hooks of render
+        blockHeader: null,
+        blockFooter: null,
+        overrideSlotDefault: null
       };
     },
     // computed: {},
@@ -2438,7 +2455,7 @@
 
       //
       var updateRootNode = function updateRootNode() {
-        _this2.$set(_this2.rootNode, 'children', _this2.treeData);
+        _this2.rootNode.children = _this2.treeData;
       };
 
       this.$watch('rootNode', updateRootNode, {
@@ -2449,16 +2466,13 @@
       });
     },
     mounted: function mounted() {
-      var _this3 = this;
-
       //
       this.treeId = randString();
-      this.$set(this.trees, this.treeId, this);
-      this.$once('hook:beforeDestroy', function () {
-        _this3.$delete(_this3.trees, _this3.treeId);
-      });
+      this.trees[this.treeId] = this;
     },
-    // beforeDestroy() {},
+    beforeUnmount: function beforeUnmount() {
+      delete this.trees[this.treeId];
+    },
     //
     mixPlugins: function mixPlugins(plugins) {
       var MixedTree = {
@@ -2471,124 +2485,21 @@
     }
   };
 
-  function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
-  /* server only */
-  , shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-    if (typeof shadowMode !== 'boolean') {
-      createInjectorSSR = createInjector;
-      createInjector = shadowMode;
-      shadowMode = false;
-    } // Vue.extend constructor export interop.
-
-
-    var options = typeof script === 'function' ? script.options : script; // render functions
-
-    if (template && template.render) {
-      options.render = template.render;
-      options.staticRenderFns = template.staticRenderFns;
-      options._compiled = true; // functional template
-
-      if (isFunctionalTemplate) {
-        options.functional = true;
-      }
-    } // scopedId
-
-
-    if (scopeId) {
-      options._scopeId = scopeId;
-    }
-
-    var hook;
-
-    if (moduleIdentifier) {
-      // server build
-      hook = function hook(context) {
-        // 2.3 injection
-        context = context || // cached call
-        this.$vnode && this.$vnode.ssrContext || // stateful
-        this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
-        // 2.2 with runInNewContext: true
-
-        if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-          context = __VUE_SSR_CONTEXT__;
-        } // inject component styles
-
-
-        if (style) {
-          style.call(this, createInjectorSSR(context));
-        } // register component module identifier for async chunk inference
-
-
-        if (context && context._registeredComponents) {
-          context._registeredComponents.add(moduleIdentifier);
-        }
-      }; // used by ssr in case component is cached and beforeCreate
-      // never gets called
-
-
-      options._ssrRegister = hook;
-    } else if (style) {
-      hook = shadowMode ? function (context) {
-        style.call(this, createInjectorShadow(context, this.$root.$options.shadowRoot));
-      } : function (context) {
-        style.call(this, createInjector(context));
-      };
-    }
-
-    if (hook) {
-      if (options.functional) {
-        // register for functional component in vue file
-        var originalRender = options.render;
-
-        options.render = function renderWithStyleInjection(h, context) {
-          hook.call(context);
-          return originalRender(h, context);
-        };
-      } else {
-        // inject component registration as beforeCreate hook
-        var existing = options.beforeCreate;
-        options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-      }
-    }
-
-    return script;
-  }
-
-  /* script */
-  var __vue_script__ = Tree;
-  /* template */
-
-  /* style */
-
-  var __vue_inject_styles__ = undefined;
-  /* scoped */
-
-  var __vue_scope_id__ = undefined;
-  /* module identifier */
-
-  var __vue_module_identifier__ = undefined;
-  /* functional template */
-
-  var __vue_is_functional_template__ = undefined;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  var __vue_component__ = /*#__PURE__*/normalizeComponent({}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
+  var render = function render() {};
+  Tree.render = render;
+  Tree.__file = "src/components/Tree.vue";
 
   function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
   function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
   function foldAll(treeData) {
     walkTreeData$1(treeData, function (childNode) {
-      Vue.set(childNode, '$folded', true);
+      childNode.$folded = true;
     });
   }
   function unfoldAll(treeData) {
     walkTreeData$1(treeData, function (childNode) {
-      Vue.set(childNode, '$folded', false);
+      childNode.$folded = false;
     });
   }
   var fold = {
@@ -2601,11 +2512,13 @@
         type: Boolean
       }
     },
+    emits: ['nodeFoldedChanged', 'node-folded-changed'],
     methods: {
       fold: function fold(node, path) {
         if (!node.$folded) {
-          this.$set(node, '$folded', true);
+          node['$folded'] = true;
           this.$emit('nodeFoldedChanged', node);
+          this.$emit('node-folded-changed', node);
         }
       },
       unfold: function unfold(node, path) {
@@ -2619,9 +2532,8 @@
         }
 
         if (node.$folded) {
-          this.$set(node, '$folded', false);
+          node['$folded'] = false;
           this.$emit('nodeFoldedChanged', node);
-          this.$emit('node-folded-changed', node);
         }
       },
       toggleFold: function toggleFold(node, path, opt) {
@@ -2664,8 +2576,6 @@
     props: {},
     methods: {
       afterCheckChanged: function afterCheckChanged(node, path) {
-        var _this = this;
-
         // update parent
         var nodes = this.getAllNodesByPath(path);
         var reversedParents = nodes.slice(0, nodes.length - 1);
@@ -2677,9 +2587,9 @@
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var parent = _step.value;
-            this.$set(parent, '$checked', parent.children.every(function (child) {
+            parent['$checked'] = parent.children.every(function (child) {
               return child.$checked;
-            }));
+            });
           } // update children
 
         } catch (err) {
@@ -2690,20 +2600,20 @@
 
         if (node.children && node.children.length > 0) {
           walkTreeData$1(node.children, function (childNode) {
-            _this.$set(childNode, '$checked', node.$checked);
+            childNode['$checked'] = node.$checked;
           });
         }
       },
       check: function check(node, path) {
-        this.$set(node, '$checked', true);
+        node['$checked'] = true;
         this.afterCheckChanged(node, path);
       },
       uncheck: function uncheck(node, path) {
-        this.$set(node, '$checked', false);
+        node['$checked'] = false;
         this.afterCheckChanged(node, path);
       },
       toggleCheck: function toggleCheck(node, path) {
-        this.$set(node, '$checked', !node.$checked);
+        node['$checked'] = !node.$checked;
         this.afterCheckChanged(node, path);
       }
     }
@@ -4844,6 +4754,7 @@
         default: true
       }
     },
+    emits: ['afterPlaceholderCreated', 'after-placeholder-created', 'before-first-move', 'drag', 'he-tree-drag', 'after-move', 'he-tree-before-drop', 'input', 'change', 'drop', 'he-tree-drop'],
     // components: {},
     data: function data() {
       return {
@@ -5230,7 +5141,7 @@
               targetSiblings = targetTree.treeData;
             } else {
               if (!targetParent.children) {
-                _this.$set(targetParent, 'children', []);
+                targetParent['children'] = [];
               }
 
               targetSiblings = targetParent.children;
@@ -5272,34 +5183,14 @@
     }
   };
 
-  /* script */
-  var __vue_script__$1 = script;
-  /* template */
-
-  /* style */
-
-  var __vue_inject_styles__$1 = undefined;
-  /* scoped */
-
-  var __vue_scope_id__$1 = undefined;
-  /* module identifier */
-
-  var __vue_module_identifier__$1 = undefined;
-  /* functional template */
-
-  var __vue_is_functional_template__$1 = undefined;
-  /* style inject */
-
-  /* style inject SSR */
-
-  /* style inject shadow dom */
-
-  var __vue_component__$1 = /*#__PURE__*/normalizeComponent({}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
+  var render$1 = function render() {};
+  script.render = render$1;
+  script.__file = "src/plugins/draggable/Draggable.vue";
 
   exports.Check = check;
-  exports.Draggable = __vue_component__$1;
+  exports.Draggable = script;
   exports.Fold = fold;
-  exports.Tree = __vue_component__;
+  exports.Tree = Tree;
   exports.cloneTreeData = cloneTreeData;
   exports.foldAll = foldAll;
   exports.getPureTreeData = getPureTreeData;
