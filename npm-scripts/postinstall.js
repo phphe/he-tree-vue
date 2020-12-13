@@ -1,0 +1,1 @@
+console.log(`he-tree-vue@2 is for Vue2. he-tree-vue@3 is for Vue3. Beware!`)

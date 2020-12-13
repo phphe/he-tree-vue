@@ -20,6 +20,7 @@
     "url": "https://github.com/phphe/he-tree-vue.git"
   },
   "scripts": {
+    "postinstall": "node npm-scripts/postinstall.js",
     "dev": "vue-cli-service serve",
     "build:web": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
