@@ -14,10 +14,10 @@ div
 
 <script>
 import * as hp from 'helper-js'
-import Tree from '@/components/Tree.vue'
+import Tree from '@/components/Tree.js'
 import fold from '@/plugins/fold.js'
 import check from '@/plugins/check.js'
-import Draggable from '@/plugins/draggable/Draggable.vue'
+import Draggable from '@/plugins/draggable/Draggable_vue.js'
 
 const MixedTree = Tree.mixPlugins([fold, check, Draggable])
 
