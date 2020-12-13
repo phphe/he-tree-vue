@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v3.0.0-beta.1
+ * he-tree-vue v3.0.0-beta.2
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -36,7 +36,7 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-var template = function template(h) {
+var template = function template() {
   var _this = this;
 
   // convert undefined to empty str
@@ -234,10 +234,6 @@ var Tree = {
     return MixedTree;
   }
 };
-
-var render = function render() {};
-Tree.render = render;
-Tree.__file = "src/components/Tree.vue";
 
 function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -1509,7 +1505,7 @@ function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o
 
 function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 var treesStore = {};
-var script = {
+var Draggable_vue = {
   props: {
     triggerClass: {
       type: [String, Array],
@@ -2006,8 +2002,4 @@ var script = {
   }
 };
 
-var render$1 = function render() {};
-script.render = render$1;
-script.__file = "src/plugins/draggable/Draggable.vue";
-
-export { check as Check, script as Draggable, fold as Fold, Tree, cloneTreeData, foldAll, getPureTreeData, unfoldAll, walkTreeData };
+export { check as Check, Draggable_vue as Draggable, fold as Fold, Tree, cloneTreeData, foldAll, getPureTreeData, unfoldAll, walkTreeData };

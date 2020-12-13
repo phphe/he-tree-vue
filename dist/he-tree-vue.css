@@ -1,4 +1,3 @@
-
 .he-tree .tree-node{
   border: 1px solid #ccc;
   margin-bottom: 5px;
@@ -10,8 +9,6 @@
 .he-tree--rtl{
   direction: rtl;
 }
-
-
 .he-tree .tree-placeholder{
 }
 .he-tree .tree-placeholder-node{
