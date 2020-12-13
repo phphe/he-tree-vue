@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v2.0.5
+ * he-tree-vue v2.0.6
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -312,6 +312,7 @@ var fold = {
       if (node.$folded) {
         this.$set(node, '$folded', false);
         this.$emit('nodeFoldedChanged', node);
+        this.$emit('node-folded-changed', node);
       }
     },
     toggleFold: function toggleFold(node, path, opt) {
@@ -1867,6 +1868,7 @@ var script = {
       },
       afterPlaceholderCreated: function afterPlaceholderCreated(store) {
         store.startTree.$emit('afterPlaceholderCreated', store);
+        store.startTree.$emit('after-placeholder-created', store);
       },
       getPathByBranchEl: function getPathByBranchEl(branchEl) {
         return _this.getPathByBranchEl(branchEl);
