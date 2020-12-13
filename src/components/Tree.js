@@ -1,9 +1,10 @@
-<script>
+
 import * as hp from 'helper-js'
 import * as vf from 'vue-functions'
 import * as ut from '../utils.js'
+import './Tree.css'
 
-const template = function (h) {
+const template = function () {
   // convert undefined to empty str
   const noUndefined = (str) => str ? str : ''
   // tree tpl, to render recursively
@@ -50,11 +51,11 @@ const template = function (h) {
       {nodes.map(branchTpl)}
     </div>
   }
-  return <div class={`he-tree ${this.treeClass} ${noUndefined(this.rtl && 'he-tree--rtl')}`} data-tree-id={this.treeId}>
+  return (<div class={`he-tree ${this.treeClass} ${noUndefined(this.rtl && 'he-tree--rtl')}`} data-tree-id={this.treeId}>
     {this.blockHeader && this.blockHeader()}
     {childrenListTpl(this.rootNode.children, this.rootNode, [])}
     {this.blockFooter && this.blockFooter()}
-  </div>
+  </div>)
 }
 
 const trees = {}
@@ -159,19 +160,3 @@ const Tree = {
   },
 }
 export default Tree
-
-</script>
-
-<style>
-.he-tree .tree-node{
-  border: 1px solid #ccc;
-  margin-bottom: 5px;
-  padding: 5px;
-}
-.he-tree--hidden{
-  display: none;
-}
-.he-tree--rtl{
-  direction: rtl;
-}
-</style>

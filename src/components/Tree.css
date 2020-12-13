@@ -1,0 +1,11 @@
+.he-tree .tree-node{
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+.he-tree--hidden{
+  display: none;
+}
+.he-tree--rtl{
+  direction: rtl;
+}
