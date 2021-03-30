@@ -485,7 +485,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       await options.afterDrop(store, dhOptions)
       // remove mask tree
       if (maskTree) {
-        await hp.waitTime(30)
+        await hp.waitTime(0)
         hp.removeEl(maskTree)
         targetTreeEl.style.display = 'block'
         if (maskTree2) {
