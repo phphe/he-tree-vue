@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v2.0.7
+ * he-tree-vue v2.0.8
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -1465,7 +1465,7 @@ function makeTreeDraggable(treeEl) {
                 }
 
                 _context14.next = 13;
-                return hp.waitTime(30);
+                return hp.waitTime(0);
 
               case 13:
                 hp.removeEl(maskTree);
@@ -1712,6 +1712,8 @@ var script = {
     },
     // override
     getPathByBranchEl: function getPathByBranchEl(branchEl) {
+      var store = this.treesStore.store;
+
       var getAttrPath = function getAttrPath(el) {
         var pathStr = el.getAttribute('data-tree-node-path');
 
@@ -1753,6 +1755,10 @@ var script = {
               index2 = _step3$value.index;
 
           if (hp.hasClass(el, 'tree-branch') || hp.hasClass(el, 'tree-placeholder')) {
+            if (el === store.dragBranchEl) {
+              continue;
+            }
+
             if (el === branchEl) {
               break;
             }
