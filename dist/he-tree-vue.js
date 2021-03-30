@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v3.0.0
+ * he-tree-vue v3.0.1
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -4855,6 +4855,8 @@
       },
       // override
       getPathByBranchEl: function getPathByBranchEl(branchEl) {
+        var store = this.treesStore.store;
+
         var getAttrPath = function getAttrPath(el) {
           var pathStr = el.getAttribute('data-tree-node-path');
 
@@ -4896,6 +4898,10 @@
                 index2 = _step3$value.index;
 
             if (hasClass(el, 'tree-branch') || hasClass(el, 'tree-placeholder')) {
+              if (el === store.dragBranchEl) {
+                continue;
+              }
+
               if (el === branchEl) {
                 break;
               }
