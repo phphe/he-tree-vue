@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/phphe/he-tree-vue/compare/v3.0.0...v3.0.1) (2021-03-30)
+
+
+### Bug Fixes
+
+* **draggable plugin:** fix change even ([72c1b08](https://github.com/phphe/he-tree-vue/commit/72c1b08785a895040ce65f6175cf5db093383173))
+
 ## [3.0.0](https://github.com/phphe/he-tree-vue/compare/v2.0.7-beta.3...v3.0.0) (2020-12-13)
 
 
