@@ -90,6 +90,7 @@ export default {
     },
     // override
     getPathByBranchEl(branchEl) {
+      const store = this.treesStore.store
       const getAttrPath = (el) => {
         const pathStr = el.getAttribute('data-tree-node-path')
         if (pathStr) {
@@ -115,6 +116,9 @@ export default {
       let index = 0
       for (const {value: el, index: index2} of hp.iterateAll(branchEl.parentElement.children)) {
         if (hp.hasClass(el, 'tree-branch') || hp.hasClass(el, 'tree-placeholder')) {
+          if (el === store.dragBranchEl) {
+            continue
+          }
           if (el === branchEl) {
             break
           }
