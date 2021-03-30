@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.8](https://github.com/phphe/he-tree-vue/compare/v2.0.7...v2.0.8) (2021-03-30)
+
+
+### Bug Fixes
+
+* **draggable plugin:** decrease delay before remove mask tree ([d9074c2](https://github.com/phphe/he-tree-vue/commit/d9074c27e848139186ad9a694d6da70f6e2a4517))
+* **draggable plugin:** fix change event ([7c6e1e7](https://github.com/phphe/he-tree-vue/commit/7c6e1e7ba17d26ff76e323d73085063e5b3578c7))
+
 ### [2.0.7](https://github.com/phphe/he-tree-vue/compare/v2.0.7-beta.3...v2.0.7) (2020-12-13)
 
 ### [2.0.7-beta.3](https://github.com/phphe/he-tree-vue/compare/v2.0.7-beta.2...v2.0.7-beta.3) (2020-12-13)
