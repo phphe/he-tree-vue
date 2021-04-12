@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.9](https://github.com/phphe/he-tree-vue/compare/v2.0.8...v2.0.9) (2021-04-12)
+
+
+### Bug Fixes
+
+* **draggable plugin:** wrong result when move downwards in same level ([cb64dac](https://github.com/phphe/he-tree-vue/commit/cb64dac830c6b2b5e962a556895e3cfd8bddb2a6)), closes [#50](https://github.com/phphe/he-tree-vue/issues/50)
+
 ### [2.0.8](https://github.com/phphe/he-tree-vue/compare/v2.0.7...v2.0.8) (2021-03-30)
 
 
