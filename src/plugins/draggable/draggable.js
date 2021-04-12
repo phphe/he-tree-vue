@@ -466,6 +466,7 @@ export default function makeTreeDraggable(treeEl, options = {}) {
         }
         //
         store.targetPath = options.getPathByBranchEl(placeholder)
+        store.isDownwardsSameLevelMove = isDownwardsSameLevelMove()
         let pathChanged = isPathChanged()
         store.targetPathNotEqualToStartPath = pathChanged
         store.pathChangePrevented = false
@@ -495,8 +496,15 @@ export default function makeTreeDraggable(treeEl, options = {}) {
       }
       //
       function isPathChanged() {
-        const {startTree, targetTree, startPath, targetPath} = store
+        const {startTree, targetTree, startPath, targetPath, isDownwardsSameLevelMove} = store
+        if (isDownwardsSameLevelMove) {
+          return hp.arrayLast(startPath) < hp.arrayLast(targetPath) - 1 // if equal, not moved
+        }
         return startTree !== targetTree || startPath.toString() !== targetPath.toString()
+      }
+      function isDownwardsSameLevelMove() {
+        const {startTree, targetTree, startPath, targetPath} = store
+        return startTree === targetTree && startPath.length === targetPath.length && startPath.slice(0, startPath.length - 1).toString() === targetPath.slice(0, targetPath.length - 1).toString() && hp.arrayLast(startPath) < hp.arrayLast(targetPath)
       }
     },
   })
