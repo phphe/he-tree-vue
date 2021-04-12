@@ -115,9 +115,6 @@ export default {
       let index = 0
       for (const {value: el, index: index2} of hp.iterateAll(branchEl.parentElement.children)) {
         if (hp.hasClass(el, 'tree-branch') || hp.hasClass(el, 'tree-placeholder')) {
-          if (el === store.dragBranchEl) {
-            continue
-          }
           if (el === branchEl) {
             break
           }
@@ -258,7 +255,8 @@ export default {
       },
       afterDrop: (store, t) => {
         if (store.pathChanged) {
-          const {startTree, targetTree, startPath, targetPath, dragNode} = store
+          const {startTree, targetTree, startPath, dragNode} = store
+          let {targetPath} = store
           if (this.cloneWhenDrag !== true) {
             // remove from start position
             const startParentPath = hp.arrayWithoutEnd(startPath, 1)
@@ -266,26 +264,11 @@ export default {
             const startSiblings = startParentPath.length === 0 ? startTree.treeData : startParent.children
             const startIndex = hp.arrayLast(startPath)
             startSiblings.splice(startIndex, 1)
-            // update targetPath
-            if (startTree === targetTree) {
-              if (startPath.length <= targetPath.length) {
-                const lenNoEnd = startPath.length - 1
-                let same = true
-                for (let i = 0; i < lenNoEnd; i++) {
-                  const s = startPath[i]
-                  const t = targetPath[i]
-                  if (s !== t) {
-                    same = false
-                    break
-                  }
-                }
-                if (same) {
-                  const endIndex = startPath.length - 1
-                  if (startPath[endIndex] < targetPath[endIndex]) {
-                    targetPath[endIndex] -= 1
-                  }
-                }
-              }
+            // update targetPath if isDownwardsSameLevelMove
+            if (store.isDownwardsSameLevelMove) {
+              targetPath = targetPath.slice(0)
+              const endIndex = startPath.length - 1
+              targetPath[endIndex] -= 1
             }
           }
           // insert to target position
