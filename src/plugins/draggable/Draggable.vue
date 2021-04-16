@@ -264,11 +264,28 @@ export default {
             const startSiblings = startParentPath.length === 0 ? startTree.treeData : startParent.children
             const startIndex = hp.arrayLast(startPath)
             startSiblings.splice(startIndex, 1)
-            // update targetPath if isDownwardsSameLevelMove
-            if (store.isDownwardsSameLevelMove) {
-              targetPath = targetPath.slice(0)
-              const endIndex = startPath.length - 1
-              targetPath[endIndex] -= 1
+            // remove node from the starting position may affect the target path.
+            // example
+            //  startPath   targetPath
+            //  [0]         [1]
+            //  [0]         [1, 0]
+            //  [3, 1]      [3, 3]
+            //  [3, 1]      [3, 3, 5]
+            // above targetPaths should be transformed to [0], [0, 0] [3, 2] [3, 2, 5]
+            if (startTree === targetTree) {
+              if (startPath.length <= targetPath.length) {
+                const sw = startPath.slice(0, startPath.length - 1) // without end
+                const tw = targetPath.slice(0, sw.length) // same length with sw
+                if (sw.toString() === tw.toString()) {
+                  const endIndex = sw.length
+                  if (startPath[endIndex] < targetPath[endIndex]) {
+                    targetPath = targetPath.slice(0) // create a copy of targetPath
+                    targetPath[endIndex] -= 1
+                  } else if (startPath[endIndex] === targetPath[endIndex]) {
+                    console.error('Draggable.afterDrop: That is impossible!');
+                  }
+                }
+              }
             }
           }
           // insert to target position
