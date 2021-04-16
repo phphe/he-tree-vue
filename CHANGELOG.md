@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.10](https://github.com/phphe/he-tree-vue/compare/v2.0.9...v2.0.10) (2021-04-16)
+
+
+### Bug Fixes
+
+* **draggable plugin:** fix node insert error after drop ([337a09b](https://github.com/phphe/he-tree-vue/commit/337a09baf8ef88532c102a3e414905e7e3e850aa)), closes [#51](https://github.com/phphe/he-tree-vue/issues/51)
+
 ### [2.0.9](https://github.com/phphe/he-tree-vue/compare/v2.0.8...v2.0.9) (2021-04-12)
 
 
