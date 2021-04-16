@@ -1,12 +1,12 @@
 /*!
- * he-tree-vue v2.0.9
+ * he-tree-vue v2.0.10
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
  */
 import _toConsumableArray from '@babel/runtime/helpers/toConsumableArray';
 import _defineProperty from '@babel/runtime/helpers/defineProperty';
-import { TreeData, randString, findParent, hasClass, createElementFromHTML, insertAfter, addClass, getOffset, getBoundingClientRect, elementsFromPoint, isDescendantOf, attachCache, removeEl, binarySearch, findNodeList, appendTo, insertBefore, prependTo, waitTime, arrayLast, iterateAll, resolveValueOrGettter, arrayWithoutEnd } from 'helper-js';
+import { TreeData, randString, findParent, hasClass, createElementFromHTML, insertAfter, addClass, getOffset, getBoundingClientRect, elementsFromPoint, isDescendantOf, attachCache, removeEl, binarySearch, findNodeList, appendTo, insertBefore, prependTo, waitTime, iterateAll, resolveValueOrGettter, arrayWithoutEnd, arrayLast } from 'helper-js';
 import { updatablePropsEvenUnbound, hookHelper } from 'vue-functions';
 import __vue_normalize__ from 'vue-runtime-helpers/dist/normalize-component.mjs';
 import Vue from 'vue';
@@ -1393,31 +1393,33 @@ function makeTreeDraggable(treeEl) {
     },
     beforeDrop: function () {
       var _beforeDrop = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime.mark(function _callee14(store, dhOptions) {
-        var endEvent, movingEl, placeholder, tempChildren, movedCount, targetTreeEl, startTreeEl, maskTree, maskTree2, pathChanged, isPathChanged, isDownwardsSameLevelMove;
+        var endEvent, movingEl, placeholder, tempChildren, movedCount, targetTreeEl, startTreeEl, maskTree, maskTree2, pathChanged, isPathChanged;
         return _regeneratorRuntime.wrap(function _callee14$(_context14) {
           while (1) {
             switch (_context14.prev = _context14.next) {
               case 0:
-                isDownwardsSameLevelMove = function _isDownwardsSameLevel() {
-                  var startTree = store.startTree,
-                      targetTree = store.targetTree,
-                      startPath = store.startPath,
-                      targetPath = store.targetPath;
-                  return startTree === targetTree && startPath.length === targetPath.length && startPath.slice(0, startPath.length - 1).toString() === targetPath.slice(0, targetPath.length - 1).toString() && arrayLast(startPath) < arrayLast(targetPath);
-                };
-
                 isPathChanged = function _isPathChanged() {
                   var startTree = store.startTree,
                       targetTree = store.targetTree,
                       startPath = store.startPath,
-                      targetPath = store.targetPath,
-                      isDownwardsSameLevelMove = store.isDownwardsSameLevelMove;
+                      targetPath = store.targetPath;
 
-                  if (isDownwardsSameLevelMove) {
-                    return arrayLast(startPath) < arrayLast(targetPath) - 1; // if equal, not moved
+                  if (startTree === targetTree && startPath.length === targetPath.length) {
+                    if (startPath.toString() === targetPath.toString()) {
+                      return false;
+                    } else {
+                      // downward same-level move, the end of targetPath is 1 more than real value 
+                      // 同级向下移动时, targetPath的末位比真实值大1
+                      var t = startPath.slice(0);
+                      t[t.length - 1]++;
+
+                      if (t.toString() === targetPath.toString()) {
+                        return false;
+                      }
+                    }
                   }
 
-                  return startTree !== targetTree || startPath.toString() !== targetPath.toString();
+                  return true;
                 };
 
                 endEvent = store.endEvent;
@@ -1442,7 +1444,6 @@ function makeTreeDraggable(treeEl) {
 
 
                   store.targetPath = options.getPathByBranchEl(placeholder);
-                  store.isDownwardsSameLevelMove = isDownwardsSameLevelMove();
                   pathChanged = isPathChanged();
                   store.targetPathNotEqualToStartPath = pathChanged;
                   store.pathChangePrevented = false;
@@ -1464,19 +1465,19 @@ function makeTreeDraggable(treeEl) {
 
                 store.updateMovedElementStyle(); // 
 
-                _context14.next = 11;
+                _context14.next = 10;
                 return options.afterDrop(store, dhOptions);
 
-              case 11:
+              case 10:
                 if (!maskTree) {
-                  _context14.next = 17;
+                  _context14.next = 16;
                   break;
                 }
 
-                _context14.next = 14;
+                _context14.next = 13;
                 return waitTime(0);
 
-              case 14:
+              case 13:
                 removeEl(maskTree);
                 targetTreeEl.style.display = 'block';
 
@@ -1485,7 +1486,7 @@ function makeTreeDraggable(treeEl) {
                   startTreeEl.style.display = 'block';
                 }
 
-              case 17:
+              case 16:
               case "end":
                 return _context14.stop();
             }
@@ -1968,12 +1969,33 @@ var script = {
             var startParent = startTree.getNodeByPath(startParentPath);
             var startSiblings = startParentPath.length === 0 ? startTree.treeData : startParent.children;
             var startIndex = arrayLast(startPath);
-            startSiblings.splice(startIndex, 1); // update targetPath if isDownwardsSameLevelMove
+            startSiblings.splice(startIndex, 1); // remove node from the starting position may affect the target path.
+            // example
+            //  startPath   targetPath
+            //  [0]         [1]
+            //  [0]         [1, 0]
+            //  [3, 1]      [3, 3]
+            //  [3, 1]      [3, 3, 5]
+            // above targetPaths should be transformed to [0], [0, 0] [3, 2] [3, 2, 5]
 
-            if (store.isDownwardsSameLevelMove) {
-              targetPath = targetPath.slice(0);
-              var endIndex = startPath.length - 1;
-              targetPath[endIndex] -= 1;
+            if (startTree === targetTree) {
+              if (startPath.length <= targetPath.length) {
+                var sw = startPath.slice(0, startPath.length - 1); // without end
+
+                var tw = targetPath.slice(0, sw.length); // same length with sw
+
+                if (sw.toString() === tw.toString()) {
+                  var endIndex = sw.length;
+
+                  if (startPath[endIndex] < targetPath[endIndex]) {
+                    targetPath = targetPath.slice(0); // create a copy of targetPath
+
+                    targetPath[endIndex] -= 1;
+                  } else if (startPath[endIndex] === targetPath[endIndex]) {
+                    console.error('Draggable.afterDrop: That is impossible!');
+                  }
+                }
+              }
             }
           } // insert to target position
 
