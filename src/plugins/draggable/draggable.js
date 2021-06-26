@@ -465,9 +465,9 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           hp.insertAfter(maskTree2, startTreeEl)
         }
         //
-        store.targetPath = options.getPathByBranchEl(placeholder)
-        let pathChanged = isPathChanged()
-        store.targetPathNotEqualToStartPath = pathChanged
+        store.placeholderPath = options.getPathByBranchEl(placeholder)
+        store.targetPath = getTargetPath()
+        let pathChanged = targetTreeEl === startTreeEl && store.targetPath.toString() !== store.startPath.toString()
         store.pathChangePrevented = false
         if (options.beforeDrop && options.beforeDrop(pathChanged, store, dhOptions) === false) {
           pathChanged = false
@@ -493,23 +493,33 @@ export default function makeTreeDraggable(treeEl, options = {}) {
           startTreeEl.style.display = 'block'
         }
       }
-      //
-      function isPathChanged() {
-        const {startTree, targetTree, startPath, targetPath} = store
-        if (startTree === targetTree && startPath.length === targetPath.length) {
-          if (startPath.toString() === targetPath.toString()) {
-            return false
-          } else {
-            // downward same-level move, the end of targetPath is 1 more than real value 
-            // 同级向下移动时, targetPath的末位比真实值大1
-            const t = startPath.slice(0)
-            t[t.length - 1] ++
-            if (t.toString() === targetPath.toString()) {
-              return false
+      function getTargetPath() {
+        // example
+        //  startPath   placeholderPath
+        //  [0]         [1]
+        //  [0]         [1, 0]
+        //  [3, 1]      [3, 3]
+        //  [3, 1]      [3, 3, 5]
+        // above targetPaths should be [0], [0, 0] [3, 2] [3, 2, 5]
+        const {startTree, targetTree, startPath, placeholderPath} = store
+        const targetPath = placeholderPath.slice(0)
+        if (options.cloneWhenDrag !== true) {
+          if (startTree === targetTree) {
+            if (startPath.length <= targetPath.length) {
+              const sw = startPath.slice(0, startPath.length - 1) // without end
+              const tw = targetPath.slice(0, sw.length) // same length with sw
+              if (sw.toString() === tw.toString()) {
+                const endIndex = sw.length
+                if (startPath[endIndex] < targetPath[endIndex]) {
+                  targetPath[endIndex] -= 1
+                } else if (startPath[endIndex] === targetPath[endIndex]) {
+                  // position not changed
+                }
+              }
             }
           }
         }
-        return true
+        return targetPath
       }
     },
   })
