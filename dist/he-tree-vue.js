@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v2.0.10
+ * he-tree-vue v2.0.11.beta
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -4635,33 +4635,44 @@
       },
       beforeDrop: function () {
         var _beforeDrop = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee14(store, dhOptions) {
-          var endEvent, movingEl, placeholder, tempChildren, movedCount, targetTreeEl, startTreeEl, maskTree, maskTree2, pathChanged, isPathChanged;
+          var endEvent, movingEl, placeholder, tempChildren, movedCount, targetTreeEl, startTreeEl, maskTree, maskTree2, pathChanged, getTargetPath;
           return regenerator.wrap(function _callee14$(_context14) {
             while (1) {
               switch (_context14.prev = _context14.next) {
                 case 0:
-                  isPathChanged = function _isPathChanged() {
+                  getTargetPath = function _getTargetPath() {
+                    // example
+                    //  startPath   placeholderPath
+                    //  [0]         [1]
+                    //  [0]         [1, 0]
+                    //  [3, 1]      [3, 3]
+                    //  [3, 1]      [3, 3, 5]
+                    // above targetPaths should be [0], [0, 0] [3, 2] [3, 2, 5]
                     var startTree = store.startTree,
                         targetTree = store.targetTree,
                         startPath = store.startPath,
-                        targetPath = store.targetPath;
+                        placeholderPath = store.placeholderPath;
+                    var targetPath = placeholderPath.slice(0);
 
-                    if (startTree === targetTree && startPath.length === targetPath.length) {
-                      if (startPath.toString() === targetPath.toString()) {
-                        return false;
-                      } else {
-                        // downward same-level move, the end of targetPath is 1 more than real value 
-                        // 同级向下移动时, targetPath的末位比真实值大1
-                        var t = startPath.slice(0);
-                        t[t.length - 1]++;
+                    if (options.cloneWhenDrag !== true) {
+                      if (startTree === targetTree) {
+                        if (startPath.length <= targetPath.length) {
+                          var sw = startPath.slice(0, startPath.length - 1); // without end
 
-                        if (t.toString() === targetPath.toString()) {
-                          return false;
+                          var tw = targetPath.slice(0, sw.length); // same length with sw
+
+                          if (sw.toString() === tw.toString()) {
+                            var endIndex = sw.length;
+
+                            if (startPath[endIndex] < targetPath[endIndex]) {
+                              targetPath[endIndex] -= 1;
+                            } else if (startPath[endIndex] === targetPath[endIndex]) ;
+                          }
                         }
                       }
                     }
 
-                    return true;
+                    return targetPath;
                   };
 
                   endEvent = store.endEvent;
@@ -4685,9 +4696,9 @@
                     } //
 
 
-                    store.targetPath = options.getPathByBranchEl(placeholder);
-                    pathChanged = isPathChanged();
-                    store.targetPathNotEqualToStartPath = pathChanged;
+                    store.placeholderPath = options.getPathByBranchEl(placeholder);
+                    store.targetPath = getTargetPath();
+                    pathChanged = targetTreeEl === startTreeEl && store.targetPath.toString() !== store.startPath.toString();
                     store.pathChangePrevented = false;
 
                     if (options.beforeDrop && options.beforeDrop(pathChanged, store, dhOptions) === false) {
@@ -5211,34 +5222,7 @@
               var startParent = startTree.getNodeByPath(startParentPath);
               var startSiblings = startParentPath.length === 0 ? startTree.treeData : startParent.children;
               var startIndex = arrayLast(startPath);
-              startSiblings.splice(startIndex, 1); // remove node from the starting position may affect the target path.
-              // example
-              //  startPath   targetPath
-              //  [0]         [1]
-              //  [0]         [1, 0]
-              //  [3, 1]      [3, 3]
-              //  [3, 1]      [3, 3, 5]
-              // above targetPaths should be transformed to [0], [0, 0] [3, 2] [3, 2, 5]
-
-              if (startTree === targetTree) {
-                if (startPath.length <= targetPath.length) {
-                  var sw = startPath.slice(0, startPath.length - 1); // without end
-
-                  var tw = targetPath.slice(0, sw.length); // same length with sw
-
-                  if (sw.toString() === tw.toString()) {
-                    var endIndex = sw.length;
-
-                    if (startPath[endIndex] < targetPath[endIndex]) {
-                      targetPath = targetPath.slice(0); // create a copy of targetPath
-
-                      targetPath[endIndex] -= 1;
-                    } else if (startPath[endIndex] === targetPath[endIndex]) {
-                      console.error('Draggable.afterDrop: That is impossible!');
-                    }
-                  }
-                }
-              }
+              startSiblings.splice(startIndex, 1);
             } // insert to target position
 
 
