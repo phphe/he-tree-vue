@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v2.0.11.beta-2
+ * he-tree-vue v2.0.11.beta.3
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
