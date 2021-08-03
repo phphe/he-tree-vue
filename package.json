@@ -1,13 +1,9 @@
 {
   "name": "he-tree-vue",
-  "version": "2.0.11.beta.3",
+  "version": "4.0.0-beta",
   "description": "A draggable sortable nested vue tree component.",
-  "main": "dist/he-tree-vue.cjs.js",
-  "module": "dist/he-tree-vue.esm.js",
-  "types": "types/index.d.ts",
   "files": [
     "dist",
-    "types",
     "npm-scripts"
   ],
   "unpkg": "dist/he-tree-vue.js",
@@ -24,44 +20,49 @@
     "postinstall": "node npm-scripts/postinstall.js",
     "dev": "vue-cli-service serve",
     "build:web": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
+    "lint": "vue-cli-service lint",
     "compile-scripts": "tsc --target ES6 --module CommonJS scripts/build.ts",
     "build": "rollup -c scripts/build.js & node scripts/build.js --report",
     "commit": "git-cz"
   },
   "dependencies": {
     "@babel/runtime": "^7.7.7",
-    "draggable-helper": "^5.0.6",
-    "helper-js": "^2.0.1",
-    "vue-functions": "^2.0.6",
+    "draggable-helper": "^6.0.1",
+    "helper-js": "^2.0.4",
+    "tslib": "^1.14.1",
+    "vue-class-component": "^7.2.3",
+    "vue-property-decorator": "^9.1.2",
     "vue-runtime-helpers": "^1.1.2"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
     "@vue/babel-preset-app": "^4.2.3",
-    "@vue/cli-plugin-babel": "^4.1.0",
-    "@vue/cli-service": "^4.1.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.1.5",
+    "@vue/eslint-config-typescript": "^7.0.0",
     "commitizen": "^4.1.2",
     "conventional-changelog-cli": "^2.0.34",
     "cz-conventional-changelog": "^3.2.0",
-    "pug": "^2.0.4",
-    "pug-plain-loader": "^1.0.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "pug": "^3.0.2",
+    "pug-plain-loader": "^1.1.0",
     "rogo": "^2.0.2",
     "rollup-plugin-postcss": "^2.4.1",
-    "rollup-plugin-vue": "^5.1.1",
-    "sass": "^1.23.7",
-    "sass-loader": "^8.0.0",
-    "standard-version": "^9.3.0",
-    "vue": "^2.6.10",
-    "vue-template-compiler": "^2.6.10"
+    "rollup-plugin-typescript2": "^0.27.1",
+    "rollup-plugin-vue": "^6.0.0-beta.10",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
+    "standard-version": "^8.0.0",
+    "typescript": "~4.1.5",
+    "vue": "^2.6.11",
+    "vue-template-compiler": "^2.6.11"
   },
   "peerDependencies": {
-    "vue": "^2.6.10",
-    "vue-property-decorator": "^8.4.0"
-  },
-  "license": "MIT",
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
+    "vue": "^2.6.11"
   }
 }

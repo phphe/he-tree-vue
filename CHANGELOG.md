@@ -2,50 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [2.0.11.beta.3](https://github.com/phphe/he-tree-vue/compare/v2.0.10...v2.0.11.beta.3) (2021-06-26)
+### [3.0.3](https://github.com/phphe/he-tree-vue/compare/v3.0.2...v3.0.3) (2021-04-16)
 
 
 ### Bug Fixes
 
-* **draggable plugin:** correct the value of store.targetPath ([21a5bf7](https://github.com/phphe/he-tree-vue/commit/21a5bf700048e90ed03a31397c797aa41c104fbe))
+* **draggable plugin:** fix node insert error after drop ([04de941](https://github.com/phphe/he-tree-vue/commit/04de9418e893fa3390de6a3863e9abcc47d200c1)), closes [#51](https://github.com/phphe/he-tree-vue/issues/51)
 
-## [2.0.11.beta-2](https://github.com/phphe/he-tree-vue/compare/v2.0.10...v2.0.11.beta-2) (2021-06-26)
-
-
-### Bug Fixes
-
-* **draggable plugin:** correct the value of store.targetPath ([21a5bf7](https://github.com/phphe/he-tree-vue/commit/21a5bf700048e90ed03a31397c797aa41c104fbe))
-
-## [2.0.11.beta](https://github.com/phphe/he-tree-vue/compare/v2.0.10...v2.0.11.beta) (2021-06-26)
+### [3.0.2](https://github.com/phphe/he-tree-vue/compare/v3.0.1...v3.0.2) (2021-04-12)
 
 
 ### Bug Fixes
 
-* **draggable plugin:** correct the value of store.targetPath ([21a5bf7](https://github.com/phphe/he-tree-vue/commit/21a5bf700048e90ed03a31397c797aa41c104fbe))
+* **draggable plugin:** wrong result when move downwards in same level ([9124ec1](https://github.com/phphe/he-tree-vue/commit/9124ec19c72836b3927d1c4065fa1fd135689ab6))
 
-### [2.0.10](https://github.com/phphe/he-tree-vue/compare/v2.0.9...v2.0.10) (2021-04-16)
-
-
-### Bug Fixes
-
-* **draggable plugin:** fix node insert error after drop ([337a09b](https://github.com/phphe/he-tree-vue/commit/337a09baf8ef88532c102a3e414905e7e3e850aa)), closes [#51](https://github.com/phphe/he-tree-vue/issues/51)
-
-### [2.0.9](https://github.com/phphe/he-tree-vue/compare/v2.0.8...v2.0.9) (2021-04-12)
+### [3.0.1](https://github.com/phphe/he-tree-vue/compare/v3.0.0...v3.0.1) (2021-03-30)
 
 
 ### Bug Fixes
 
-* **draggable plugin:** wrong result when move downwards in same level ([cb64dac](https://github.com/phphe/he-tree-vue/commit/cb64dac830c6b2b5e962a556895e3cfd8bddb2a6)), closes [#50](https://github.com/phphe/he-tree-vue/issues/50)
+* **draggable plugin:** fix change even ([72c1b08](https://github.com/phphe/he-tree-vue/commit/72c1b08785a895040ce65f6175cf5db093383173))
 
-### [2.0.8](https://github.com/phphe/he-tree-vue/compare/v2.0.7...v2.0.8) (2021-03-30)
+## [3.0.0](https://github.com/phphe/he-tree-vue/compare/v2.0.7-beta.3...v3.0.0) (2020-12-13)
+
+
+### Features
+
+* **all:** update for vue3 ([fd2e1ac](https://github.com/phphe/he-tree-vue/commit/fd2e1acdf001f23a5e87528a13361eb7828fa62b))
+* **types:** update types declaration for vue3 ([175c0f2](https://github.com/phphe/he-tree-vue/commit/175c0f27e7a19f17befe8784f1b289a90cb50500))
 
 
 ### Bug Fixes
 
-* **draggable plugin:** decrease delay before remove mask tree ([d9074c2](https://github.com/phphe/he-tree-vue/commit/d9074c27e848139186ad9a694d6da70f6e2a4517))
-* **draggable plugin:** fix change event ([7c6e1e7](https://github.com/phphe/he-tree-vue/commit/7c6e1e7ba17d26ff76e323d73085063e5b3578c7))
-
-### [2.0.7](https://github.com/phphe/he-tree-vue/compare/v2.0.7-beta.3...v2.0.7) (2020-12-13)
+* **dist:** use .js instead of .vue to fix 'render overrided issue' ([5b2fcc3](https://github.com/phphe/he-tree-vue/commit/5b2fcc3ca3d209999cd9ce400f0af65cb9421dad))
 
 ### [2.0.7-beta.3](https://github.com/phphe/he-tree-vue/compare/v2.0.7-beta.2...v2.0.7-beta.3) (2020-12-13)
 
