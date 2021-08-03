@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0-beta](https://github.com/phphe/he-tree-vue/compare/v2.0.10...v4.0.0-beta) (2021-08-03)
+
+
+### Bug Fixes
+
+* **draggable plugin:** correct the value of store.targetPath ([21a5bf7](https://github.com/phphe/he-tree-vue/commit/21a5bf700048e90ed03a31397c797aa41c104fbe))
+
 ### [3.0.3](https://github.com/phphe/he-tree-vue/compare/v3.0.2...v3.0.3) (2021-04-16)
 
 
