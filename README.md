@@ -1,8 +1,8 @@
-**Please check the reconstructed new version [he-teee](https://github.com/phphe/he-tree). It has virtualization list feature and Typescript friendly.**
-
-**请移步重构的新版本 [he-teee](https://github.com/phphe/he-tree). he-tree 支持虚拟列表并且对 Typescript 更友好.**
-
 # he-tree-vue
+
+**This project is no longer maintained, please move to the new monorepo [he-tree](https://github.com/phphe/he-tree).**
+
+**本项目不再维护, 请移步到新的 monorepo [he-tree](https://github.com/phphe/he-tree).**
 
 A draggable sortable vue tree component, with dragging placeholder, types definition. Vue3 supported. [Demo](https://he-tree-vue.phphe.com), [Document](https://he-tree-vue.phphe.com)
 
