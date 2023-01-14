@@ -280,7 +280,7 @@ export default {
                 if (sw.toString() === tw.toString()) {
                   const endIndex = sw.length
                   if (startPath[endIndex] < targetPath[endIndex]) {
-                    targetPath = targetPath.slice(0) // create a copy of targetPath
+                    // deprecated. I forgot why create a copy of targetPath. //  targetPath = targetPath.slice(0) // create a copy of targetPath
                     targetPath[endIndex] -= 1
                   } else if (startPath[endIndex] === targetPath[endIndex]) {
                     console.error('Draggable.afterDrop: That is impossible!');
