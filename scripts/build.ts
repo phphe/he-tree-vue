@@ -16,6 +16,9 @@ const outDir = 'dist'
 const outputName = pkg.name // the built file name is outDir/outputName.format.js
 const moduleName = camelize(pkg.name) // for umd, amd
 const extractCssPath = path.resolve(outDir, `${outputName}.css`)
+const globals = {
+  vue: 'Vue',
+}
 
 const getBabelConfig = () => ({
   // .babelrc
@@ -95,6 +98,7 @@ export default <rollup.RollupOptions[]>[
       banner: getBanner(pkg),
       sourcemap: false,
       name: moduleName,
+      globals,
     },
   },
   // umd min
@@ -114,6 +118,7 @@ export default <rollup.RollupOptions[]>[
       banner: getBanner(pkg),
       sourcemap: false,
       name: moduleName,
+      globals,
     },
   },
 ]
