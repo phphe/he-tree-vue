@@ -1,5 +1,5 @@
 /*!
- * he-tree-vue v3.1.1
+ * he-tree-vue v3.1.2
  * (c) phphe <phphe@outlook.com> (https://github.com/phphe)
  * Homepage: https://he-tree-vue.phphe.com
  * Released under the MIT License.
@@ -7,7 +7,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('vue')) :
 	typeof define === 'function' && define.amd ? define(['exports', 'vue'], factory) :
-	(global = global || self, factory(global.heTreeVue = {}, global.vue));
+	(global = global || self, factory(global.heTreeVue = {}, global.Vue));
 }(this, (function (exports, vue) { 'use strict';
 
 	function unwrapExports (x) {

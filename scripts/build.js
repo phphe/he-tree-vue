@@ -14,15 +14,18 @@ const pkg = require("../package.json");
 const input = 'src/index.js';
 const outDir = 'dist';
 const outputName = pkg.name; // the built file name is outDir/outputName.format.js
-const moduleName = rogo_1.camelize(pkg.name); // for umd, amd
+const moduleName = (0, rogo_1.camelize)(pkg.name); // for umd, amd
 const extractCssPath = path.resolve(outDir, `${outputName}.css`);
+const globals = {
+    vue: 'Vue',
+};
 const getBabelConfig = () => ({
     // .babelrc
     presets: [
         ['@vue/cli-plugin-babel/preset', {
                 useBuiltIns: false,
                 polyfills: [],
-                targets: { browsers: 'defaults' },
+                targets: { browsers: 'defaults' }, // default browsers, coverage 90%
             }],
     ],
     plugins: [
@@ -43,7 +46,7 @@ exports.default = [
     // esm
     {
         input,
-        external: (source) => rogo_1.belongsTo(source, Object.keys(pkg.dependencies || {})) || rogo_1.belongsTo(source, Object.keys(pkg.peerDependencies || {})),
+        external: (source) => (0, rogo_1.belongsTo)(source, Object.keys(pkg.dependencies || {})) || (0, rogo_1.belongsTo)(source, Object.keys(pkg.peerDependencies || {})),
         plugins: [
             vue(),
             postcss({ extract: extractCssPath }),
@@ -60,7 +63,7 @@ exports.default = [
     // cjs
     {
         input,
-        external: (source) => rogo_1.belongsTo(source, Object.keys(pkg.dependencies || {})) || rogo_1.belongsTo(source, Object.keys(pkg.peerDependencies || {})),
+        external: (source) => (0, rogo_1.belongsTo)(source, Object.keys(pkg.dependencies || {})) || (0, rogo_1.belongsTo)(source, Object.keys(pkg.peerDependencies || {})),
         plugins: [
             vue(),
             postcss({ extract: extractCssPath }),
@@ -77,7 +80,7 @@ exports.default = [
     // umd
     {
         input,
-        external: (source) => rogo_1.belongsTo(source, Object.keys(pkg.peerDependencies || {})),
+        external: (source) => (0, rogo_1.belongsTo)(source, Object.keys(pkg.peerDependencies || {})),
         plugins: [
             vue(),
             postcss({ extract: extractCssPath }),
@@ -90,18 +93,19 @@ exports.default = [
             banner: getBanner(pkg),
             sourcemap: false,
             name: moduleName,
+            globals,
         },
     },
     // umd min
     {
         input,
-        external: (source) => rogo_1.belongsTo(source, Object.keys(pkg.peerDependencies || {})),
+        external: (source) => (0, rogo_1.belongsTo)(source, Object.keys(pkg.peerDependencies || {})),
         plugins: [
             vue(),
             postcss({ extract: extractCssPath }),
             babel(umdBabelConfig),
             node(), cjs(), json(),
-            rollup_plugin_terser_1.terser(),
+            (0, rollup_plugin_terser_1.terser)(), // to minify bundle
         ],
         output: {
             file: path.resolve(outDir, `${outputName}.min.js`),
@@ -109,11 +113,12 @@ exports.default = [
             banner: getBanner(pkg),
             sourcemap: false,
             name: moduleName,
+            globals,
         },
     },
 ];
 if (process.argv.includes('--report')) {
-    rogo_1.report(outDir);
+    (0, rogo_1.report)(outDir);
 }
 function getBanner(pkg) {
     return `
